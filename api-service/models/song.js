@@ -20,11 +20,36 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Song.init({
-    name: DataTypes.STRING,
-    duration: DataTypes.INTEGER,
-    year: DataTypes.INTEGER,
-    albumId: DataTypes.INTEGER,
-    artistId: DataTypes.INTEGER
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+    },
+    year: {
+      type: DataTypes.INTEGER,
+      validate: {
+        is: /^\d{4}$/
+      }
+    },
+    albumId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Album',
+        key: 'id'
+      }
+    },
+    artistId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'Artist',
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'Song',

@@ -10,7 +10,9 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       username: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       firstname: {
         type: Sequelize.TEXT
@@ -19,19 +21,30 @@ module.exports = {
         type: Sequelize.TEXT
       },
       email: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       registrationDate: {
         type: Sequelize.DATE
       },
       countryId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Country',
+          key: 'id'
+        }
       },
       roleId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'Role',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

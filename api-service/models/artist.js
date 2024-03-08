@@ -18,11 +18,21 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Artist.init({
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     establishmentYear: DataTypes.INTEGER,
     description: DataTypes.STRING,
-    countryId: DataTypes.INTEGER
-  }, {
+    countryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Country',
+        key: 'id'
+      }
+    }
+  },  {
     sequelize,
     modelName: 'Artist',
   });

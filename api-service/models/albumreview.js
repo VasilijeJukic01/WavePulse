@@ -15,11 +15,28 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   AlbumReview.init({
-    review: DataTypes.STRING,
+    review: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     likes: DataTypes.INTEGER,
     dislikes: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    albumId: DataTypes.INTEGER
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'User',
+        key: 'id'
+      }
+    },
+    albumId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Album',
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'AlbumReview',

@@ -15,10 +15,30 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   AlbumRating.init({
-    rate: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    albumId: DataTypes.INTEGER
-  }, {
+    rate: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 1,
+        max: 5
+      }
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'User',
+        key: 'id'
+      }
+    },
+    albumId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Album',
+        key: 'id'
+      }
+    }
+  },{
     sequelize,
     modelName: 'AlbumRating',
   });

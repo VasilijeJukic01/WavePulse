@@ -15,7 +15,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   SongTag.init({
     tag: DataTypes.STRING,
-    songId: DataTypes.INTEGER
+    songId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Song',
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'SongTag',

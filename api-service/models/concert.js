@@ -15,10 +15,27 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Concert.init({
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     concertDate: DataTypes.DATE,
-    countryId: DataTypes.INTEGER,
-    artistId: DataTypes.INTEGER
+    countryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Country',
+        key: 'id'
+      }
+    },
+    artistId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Artist',
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'Concert',

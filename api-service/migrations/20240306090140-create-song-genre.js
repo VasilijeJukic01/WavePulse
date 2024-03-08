@@ -10,10 +10,20 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       songId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Song',
+          key: 'id'
+        }
       },
       genreId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Genre',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

@@ -7,7 +7,7 @@ const handleRoute = async (req, res, operation) => {
         return res.json(result);
     }
     catch (err) {
-        console.log(err);
+        console.error(err);
         res.status(500).json({ error: "Error", data: err });
     }
 };

@@ -10,7 +10,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       establishmentYear: {
         type: Sequelize.INTEGER
@@ -19,7 +20,12 @@ module.exports = {
         type: Sequelize.STRING
       },
       countryId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Country',
+          key: 'id'
+        }
       },
       createdAt: {
         allowNull: false,

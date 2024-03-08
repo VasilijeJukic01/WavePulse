@@ -14,9 +14,28 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   UserSettings.init({
-    userId: DataTypes.INTEGER,
-    language: DataTypes.STRING,
-    theme: DataTypes.INTEGER
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'User',
+        key: 'id'
+      }
+    },
+    language: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    theme: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    }
   }, {
     sequelize,
     modelName: 'UserSettings',

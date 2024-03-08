@@ -16,8 +16,22 @@ module.exports = (sequelize, DataTypes) => {
   }
   SongRating.init({
     rate: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER,
-    songId: DataTypes.INTEGER
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'User',
+        key: 'id'
+      }
+    },
+    songId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Song',
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'SongRating',
