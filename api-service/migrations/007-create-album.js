@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Songs', {
+    await queryInterface.createTable('Albums', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,13 +11,7 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true
-        }
-      },
-      duration: {
-        type: Sequelize.INTEGER,
+        allowNull: false
       },
       year: {
         type: Sequelize.INTEGER,
@@ -25,17 +19,16 @@ module.exports = {
           is: /^\d{4}$/
         }
       },
-      albumId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Album',
-          key: 'id'
-        }
+      songNumber: {
+        type: Sequelize.INTEGER
+      },
+      score: {
+        type: Sequelize.FLOAT
       },
       artistId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Artist',
+          model: 'Artists',
           key: 'id'
         }
       },
@@ -50,6 +43,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Songs');
+    await queryInterface.dropTable('Albums');
   }
 };

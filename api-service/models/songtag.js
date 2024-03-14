@@ -14,7 +14,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   SongTag.init({
-    tag: DataTypes.STRING,
+    tagId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Tag',
+        key: 'id'
+      }
+    },
     songId: {
       type: DataTypes.INTEGER,
       allowNull: false,

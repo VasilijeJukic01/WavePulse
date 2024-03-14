@@ -2,33 +2,35 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Concerts', {
+    await queryInterface.createTable('SongReviews', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false
+      review: {
+        type: Sequelize.STRING
       },
-      concertDate: {
-        type: Sequelize.DATE
+      likes: {
+        type: Sequelize.INTEGER
       },
-      countryId: {
+      dislikes: {
+        type: Sequelize.INTEGER
+      },
+      userId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Country',
+          model: 'Users',
           key: 'id'
         }
       },
-      artistId: {
+      songId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Artist',
+          model: 'Songs',
           key: 'id'
         }
       },
@@ -43,6 +45,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Concerts');
+    await queryInterface.dropTable('SongReviews');
   }
 };

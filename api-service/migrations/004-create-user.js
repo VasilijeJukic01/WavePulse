@@ -2,34 +2,47 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('AlbumRatings', {
+    await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      rate: {
-        type: Sequelize.INTEGER,
+      username: {
+        type: Sequelize.STRING,
         allowNull: false,
-        validate: {
-          min: 1,
-          max: 5
-        }
+        unique: true
       },
-      userId: {
-        type: Sequelize.INTEGER,
+      firstname: {
+        type: Sequelize.TEXT
+      },
+      lastname: {
+        type: Sequelize.TEXT
+      },
+      email: {
+        type: Sequelize.STRING,
         allowNull: false,
+        unique: true
+      },
+      password: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      registrationDate: {
+        type: Sequelize.DATE
+      },
+      countryId: {
+        type: Sequelize.INTEGER,
         references: {
-          model: 'User',
+          model: 'Countries',
           key: 'id'
         }
       },
-      albumId: {
+      roleId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
-          model: 'Album',
+          model: 'Roles',
           key: 'id'
         }
       },
@@ -44,6 +57,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('AlbumRatings');
+    await queryInterface.dropTable('Users');
   }
 };
