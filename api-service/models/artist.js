@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Country, Album, Song, Follow, Concert }) {
+    static associate({ Country, Album, Song, Concert, User }) {
       Artist.belongsTo(Country, { foreignKey: 'countryId' });
-      Artist.belongsTo(Concert, { foreignKey: 'artistId' });
       Artist.hasMany(Album, { foreignKey: 'artistId' });
       Artist.hasMany(Song, { foreignKey: 'artistId' });
-      Artist.belongsToMany(Follow, { through: 'Follow', foreignKey: 'artistId' });
+      Artist.belongsToMany(Concert, { through: "ConcertArtist", foreignKey: 'artistId' });
+      Artist.belongsToMany(User, { through: 'Follow', foreignKey: 'artistId' });
     }
   }
   Artist.init({
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Country',
         key: 'id'
       }
-    }
+    },
   },  {
     sequelize,
     modelName: 'Artist',

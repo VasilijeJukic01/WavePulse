@@ -1,10 +1,8 @@
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
-const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
@@ -16,20 +14,31 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
+const models = [
+    require(path.join(__dirname, 'role'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'genre'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'country'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'user'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'usersettings'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'artist'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'album'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'song'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'songgenre'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'playlist'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'playlistsong'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'songrating'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'songreview'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'tag'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'songtag'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'albumrating'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'albumreview'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'follow'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'concert'))(sequelize, Sequelize.DataTypes),
+];
+
+models.forEach(model => {
+  db[model.name] = model;
+});
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {

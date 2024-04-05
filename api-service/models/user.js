@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(UserSettings, { foreignKey: 'userId' });
       User.hasMany(SongRating, { foreignKey: 'userId' });
       User.hasMany(AlbumRating, { foreignKey: 'userId' });
-      User.belongsToMany(Artist, { through: Follow, foreignKey: 'userId' });
+      User.belongsToMany(Artist, { through: 'Follow', foreignKey: 'userId' });
     }
   }
   User.init({

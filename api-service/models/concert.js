@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Country, Artist }) {
       Concert.belongsTo(Country, { foreignKey: 'countryId' });
-      Concert.hasMany(Artist, { foreignKey: 'artistId' });
+      Concert.belongsToMany(Artist, { through: 'ConcertArtists', foreignKey: 'concertId' });
     }
   }
   Concert.init({
@@ -28,14 +28,6 @@ module.exports = (sequelize, DataTypes) => {
         key: 'id'
       }
     },
-    artistId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'Artist',
-        key: 'id'
-      }
-    }
   }, {
     sequelize,
     modelName: 'Concert',

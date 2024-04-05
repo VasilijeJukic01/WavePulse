@@ -8,7 +8,6 @@ const concertSchema = Joi.object({
     name: Joi.string().required(),
     concertDate: Joi.date().required(),
     countryId: Joi.number().required(),
-    artistId: Joi.number().required()
 });
 
 route.use(express.json());
@@ -33,7 +32,6 @@ const updateConcert = async (id, concertData) => {
     concert.name = concertData.name;
     concert.concertDate = concertData.concertDate;
     concert.countryId = concertData.countryId;
-    concert.artistId = concertData.artistId;
     await concert.save();
     return concert;
 }

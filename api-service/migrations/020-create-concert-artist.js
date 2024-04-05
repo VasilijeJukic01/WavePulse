@@ -2,25 +2,26 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Concerts', {
+    await queryInterface.createTable('ConcertArtists', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      concertDate: {
-        type: Sequelize.DATE
-      },
-      countryId: {
+      artistId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Countries',
+          model: 'Artists',
+          key: 'id'
+        }
+      },
+      concertId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Concerts',
           key: 'id'
         }
       },
@@ -35,6 +36,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Concerts');
+    await queryInterface.dropTable('ConcertArtists');
   }
 };
