@@ -6,9 +6,6 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
-RUN npx sequelize-cli db:migrate
-RUN npx sequelize-cli db:seed:all
-
 FROM node:latest AS runtime
 
 WORKDIR /app
