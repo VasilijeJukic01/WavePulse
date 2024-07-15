@@ -2,12 +2,19 @@ const express = require('express');
 const { sequelize, Account } = require('./models');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const cors = require('cors');
 
 require('dotenv').config();
+
+let corsOptions = {
+    origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
+    optionsSuccessStatus: 200
+}
 
 const app = express();
 
 app.use(express.json());
+app.use(cors(corsOptions));
 
 app.post('/register', (req, res) => {
     const obj = {
