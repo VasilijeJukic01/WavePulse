@@ -15,10 +15,12 @@ module.exports = {
         unique: true
       },
       firstname: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING,
+        allowNull: false
       },
       lastname: {
-        type: Sequelize.TEXT
+        type: Sequelize.STRING,
+        allowNull: false
       },
       email: {
         type: Sequelize.STRING,
@@ -30,10 +32,52 @@ module.exports = {
         allowNull: false
       },
       registrationDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW
       },
       countryId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false
+      },
+      lastLogin: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      loginAttempts: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0
+      },
+      accountStatus: {
+        type: Sequelize.ENUM('ACTIVE', 'LOCKED', 'PENDING', 'DISABLED'),
+        defaultValue: 'PENDING'
+      },
+      emailVerified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      passwordResetToken: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      passwordResetExpires: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      twoFactorEnabled: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
+      twoFactorSecret: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      profileUpdated: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      role: {
+        type: Sequelize.ENUM('Admin', 'User', 'Artist'),
+        defaultValue: 'User'
       },
       createdAt: {
         allowNull: false,

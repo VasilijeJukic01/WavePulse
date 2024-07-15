@@ -1,61 +1,74 @@
 const express = require('express');
-const { sequelize, Account } = require('./models');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const { sequelize } = require('./models');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const routes = require('./routes/account');
 const cors = require('cors');
-
+const csrf = require('csurf');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
-let corsOptions = {
+if (!process.env.ACCESS_TOKEN_SECRET) {
+    throw new Error('Missing ACCESS_TOKEN_SECRET environment variable');
+}
+
+const corsOptions = {
     origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
     optionsSuccessStatus: 200
-}
+};
 
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: [],
+        },
+    },
+    referrerPolicy: { policy: 'strict-origin' },
+    crossOriginResourcePolicy: { policy: 'same-origin' },
+    frameguard: { action: 'deny' },
+    hsts: {
+        maxAge: 31536000, // 1 year
+        includeSubDomains: true,
+        preload: true
+    },
+    noSniff: true,
+    ieNoOpen: true,
+    xssFilter: true
+}));
+app.use(rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100
+}));
+app.use(cookieParser());
 
-app.post('/register', (req, res) => {
-    const obj = {
-        username: req.body.username,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 10),
-        registrationDate: new Date(),
-        countryId: req.body.countryId
-    };
-    Account.create(obj).then( rows => {
-        const usr = {
-            userId: rows.id,
-            user: rows.username
-        };
-        const token = jwt.sign(usr, process.env.ACCESS_TOKEN_SECRET);
-        res.json({ token: token });
-    }).catch( err => res.status(500).json(err) );
-});
+if (process.env.NODE_ENV !== 'production') {
+    app.use((req, res, next) => {
+        req.csrfToken = () => {};
+        next();
+    });
+} else {
+    app.use(csrf({ cookie: true }));
+    app.use((req, res, next) => {
+        res.cookie('XSRF-TOKEN', req.csrfToken());
+        next();
+    });
+}
 
+app.use('/api', routes);
 
-app.post('/login', (req, res) => {
-    Account.findOne({ where: { username: req.body.username } })
-        .then( usr => {
-            if (bcrypt.compareSync(req.body.password, usr.password)) {
-                const obj = {
-                    userId: usr.id,
-                    user: usr.username
-                };
-                const token = jwt.sign(obj, process.env.ACCESS_TOKEN_SECRET);
-                res.json({ token: token });
-            }
-            else {
-                res.status(400).json({ msg: "Invalid credentials"});
-            }
-        })
-        .catch( err => res.status(500).json(err) );
-});
-
-
-app.listen({ port: 8001 }, async () => {
-    await sequelize.authenticate();
+app.listen(8001, async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Database connected and server running on port 8001');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
 });
