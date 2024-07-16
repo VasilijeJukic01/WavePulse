@@ -10,7 +10,7 @@ const router = express.Router();
 
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5,
+    max: 100,
     message: 'Too many login attempts from this IP, please try again after 15 minutes'
 });
 
@@ -35,12 +35,12 @@ const generateToken = (user) => {
 
 // Register
 router.post('/register', registerValidationRules, async (req, res) => {
-    const errors = validationResult(req);
+    /* const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
-    }
+    }*/
 
-    const { username, firstname, lastname, email, password, countryId } = req.body;
+    const { username, firstname, lastname, email, password, countryId, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const userObj = {
@@ -51,13 +51,14 @@ router.post('/register', registerValidationRules, async (req, res) => {
         password: hashedPassword,
         registrationDate: new Date(),
         countryId,
+        role,
         accountStatus: 'PENDING',
         emailVerified: false
     };
 
     try {
         const user = await Account.create(userObj);
-        const tokenPayload = { userId: user.id, username: user.username };
+        const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.status };
         const token = generateToken(tokenPayload);
         // TODO: Send verification email with token
         res.json({ token });
@@ -91,13 +92,12 @@ router.post('/login', loginValidationRules, loginLimiter, async (req, res) => {
             return res.status(403).json({ error: 'Account is disabled' });
         }
 
-        console.log(user.password + " " + password);
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (isPasswordValid) {
             user.lastLogin = new Date();
             user.loginAttempts = 0;
             await user.save();
-            const tokenPayload = { userId: user.id, username: user.username };
+            const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.accountStatus };
             const token = generateToken(tokenPayload);
             res.json({ token });
         } else {

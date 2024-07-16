@@ -11,7 +11,8 @@ export default new Vuex.Store({
   state: {
     status: '',
     token: localStorage.getItem('token') || '',
-    role: -1,
+    role: '',
+    userStatus: '',
     name: '',
     users: [],
     currentPage: 1,
@@ -26,14 +27,16 @@ export default new Vuex.Store({
     },
     logout (state) {
       state.status = ''
+      state.userStatus = ''
       state.token = ''
       state.name = ''
-      state.role = -1
+      state.role = ''
     },
     setRole: (state, role) => state.role = role,
     setName: (state, name) => state.name = name,
     setUsers: (state, users) => state.users = users,
     setUser: (state, user) => state.user = user,
+    setUserStatus: (state, status) => state.userStatus = status,
   },
   // Actions
   actions: {
@@ -45,17 +48,16 @@ export default new Vuex.Store({
       }
       const payload = {
         username: user.username,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        firstname: user.firstName,
+        lastname: user.lastName,
+        role: user.roleId,
         email: user.email,
         password: user.password,
-        status: user.status,
-        registrationDate: new Date(),
         countryId: user.countryId
       }
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({ url: 'http://localhost:8001/register', data: payload, method: 'POST' })
+        axios({ url: 'http://localhost:8001/api/register', data: payload, method: 'POST' })
           .then(resp => {
             resolve(resp)
           })
@@ -65,25 +67,25 @@ export default new Vuex.Store({
       })
     },
     login ({ commit }, user) {
-      console.log(user)
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({ url: 'http://localhost:8001/login', data: user, method: 'POST' })
+        axios({ url: 'http://localhost:8001/api/login', data: user, method: 'POST' })
           .then(resp => {
-            const token = resp.data.payload
+            const token = resp.data.token
             const decodedToken = jwt.decode(token)
-           //const status = decodedToken ? decodedToken.status : null
-            //if (status === '0') {
-              //commit('auth_error')
-              //reject(new Error('User is not active'))
-            //}
-            //const roleId = decodedToken ? Number(decodedToken.role) : null
+            const userStatus = decodedToken ? decodedToken.status : null
+            if (userStatus !== 'ACTIVE') {
+              commit('auth_error')
+              reject(new Error('User is not active'))
+            }
+            const role = decodedToken ? Number(decodedToken.role) : null
             const name = decodedToken ? decodedToken.user : null
             localStorage.setItem('token', token)
             axios.defaults.headers.common.Authorization = token
             commit('auth_success', token)
-            //commit('setRole', roleId)
+            commit('setRole', role)
             commit('setName', name)
+            commit('setUserStatus', userStatus)
             resolve(resp)
           })
           .catch(err => {
@@ -154,6 +156,7 @@ export default new Vuex.Store({
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     userRole: state => state.role,
+    userStatus: state => state.userStatus,
     userName: state => state.name,
     currentPage: state => state.currentPage,
   },
@@ -161,6 +164,7 @@ export default new Vuex.Store({
     paths: [
       'token',
       'role',
+      'userStatus',
       'name',
       'users',
       'currentPage'
