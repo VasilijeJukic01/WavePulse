@@ -1,5 +1,4 @@
 const express = require('express');
-const { sequelize } = require('./models');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const routes = require('./routes/account');
@@ -62,13 +61,12 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-app.use('/api', routes);
-
-app.listen(8001, async () => {
-    try {
-        await sequelize.authenticate();
-        console.log('Database connected and server running on port 8001');
-    } catch (error) {
-        console.error('Unable to connect to the database:', error);
-    }
+// Health Check
+app.get('/health', (req, res) => {
+    res.status(200).send('Service is healthy');
 });
+
+
+app.use('/', routes);
+
+module.exports = app;
