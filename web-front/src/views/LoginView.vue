@@ -30,7 +30,7 @@
               Sign in
             </button>
           </div>
-          <div v-if="loginMessage" class="message">
+          <div v-if="loginMessage" class="message text-white">
             {{ loginMessage }}
           </div>
         </form>

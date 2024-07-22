@@ -150,4 +150,26 @@ router.post('/password-reset', async (req, res) => {
     }
 });
 
+router.put('/edit-profile/:id', async (req, res) => {
+    const { id } = req.params;
+    const { username, firstname, lastname, email } = req.body;
+
+    try {
+        const user = await Account.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        user.username = username;
+        user.firstname = firstname;
+        user.lastname = lastname;
+        user.email = email;
+        await user.save();
+
+        res.json({ message: 'User updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 module.exports = router;

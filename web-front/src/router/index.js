@@ -20,24 +20,23 @@ const routes = [
     name: 'Register',
     component: () => import('@/views/RegisterView.vue')
   },
-  {
+  /*{
     path: '/admin',
     name: 'Admin',
     meta: { requiresAuth: true, requiresAdmin: true },
     component: () => import('@/views/AdminPanelView.vue')
-  },
+  },*/
   {
-    path: '/admin/register',
-    name: 'Register',
-    meta: { requiresAuth: true, requiresAdmin: true },
-    component: () => import('@/views/RegisterView.vue')
+    path: '/edit-profile/:id',
+    name: 'EditProfile',
+    component: () => import('@/views/EditProfileView.vue')
   },
-  {
+  /*{
     path: '/admin/edit/:id',
     name: 'EditUser',
     meta: { requiresAuth: true, requiresAdmin: true },
-    component: () => import('@/views/EditUserView.vue')
-  },
+    component: () => import('@/views/EditProfileView.vue')
+  },*/
   { path: '*', redirect: '/home' },
 ]
 
@@ -55,7 +54,7 @@ router.beforeEach((to, from, next) => {
         query: { redirect: to.fullPath }
       })
     } else if (to.matched.some(record => record.meta.requiresAdmin)) {
-      if (store.getters.userRole !== 1) {
+      if (store.getters.userRole !== 'Admin') {
         next({
           path: '/home',
         })

@@ -9,11 +9,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   // State
   state: {
+    user: {},
     status: '',
     token: localStorage.getItem('token') || '',
-    role: '',
-    userStatus: '',
-    name: '',
     users: [],
     currentPage: 1,
   },
@@ -27,16 +25,12 @@ export default new Vuex.Store({
     },
     logout (state) {
       state.status = ''
-      state.userStatus = ''
       state.token = ''
-      state.name = ''
-      state.role = ''
+      state.user = {}
     },
-    setRole: (state, role) => state.role = role,
-    setName: (state, name) => state.name = name,
     setUsers: (state, users) => state.users = users,
     setUser: (state, user) => state.user = user,
-    setUserStatus: (state, status) => state.userStatus = status,
+    setUserId: (state, userId) => state.userId = userId,
   },
   // Actions
   actions: {
@@ -66,7 +60,7 @@ export default new Vuex.Store({
           })
       })
     },
-    login ({ commit }, user) {
+    login({ commit, dispatch }, user) {
       return new Promise((resolve, reject) => {
         commit('auth_request')
         axios({ url: 'http://localhost:8080/auth/login', data: user, method: 'POST' })
@@ -78,15 +72,18 @@ export default new Vuex.Store({
               commit('auth_error')
               reject(new Error('User is not active'))
             }
-            const role = decodedToken ? Number(decodedToken.role) : null
-            const name = decodedToken ? decodedToken.user : null
+            const userId = decodedToken ? decodedToken.userId : null
             localStorage.setItem('token', token)
             axios.defaults.headers.common.Authorization = token
             commit('auth_success', token)
-            commit('setRole', role)
-            commit('setName', name)
-            commit('setUserStatus', userStatus)
-            resolve(resp)
+            commit('setUserId', userId)
+
+            dispatch('fetchUser', userId).then(() => {
+              resolve(resp)
+            }).catch(err => {
+              commit('auth_error')
+              reject(err)
+            })
           })
           .catch(err => {
             commit('auth_error')
@@ -128,9 +125,10 @@ export default new Vuex.Store({
     },
     fetchUser({ commit }, userId) {
       return new Promise((resolve, reject) => {
-        axios({ url: `http://localhost:8080/api/users/${userId}`, method: 'GET' })
+        axios({ url: `http://localhost:8080/api/user/${userId}`, method: 'GET' })
           .then(resp => {
-            commit('setUser', resp.data.payload)
+            commit('setUser', resp.data)
+            commit('setUserId', resp.data.id)
             resolve(resp)
           })
           .catch(err => {
@@ -140,7 +138,7 @@ export default new Vuex.Store({
     },
     editUser({ commit }, user) {
       return new Promise((resolve, reject) => {
-        axios({ url: `http://localhost:8080/api/users/update/${user.id}`, data: user, method: 'PUT' })
+        axios({ url: `http://localhost:8080/auth/edit-profile/${user.id}`, data: user, method: 'PUT' })
           .then(resp => {
             commit('setUser', resp.data.payload)
             resolve(resp)
@@ -155,17 +153,13 @@ export default new Vuex.Store({
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
-    userRole: state => state.role,
-    userStatus: state => state.userStatus,
-    userName: state => state.name,
+    user: state => state.user,
     currentPage: state => state.currentPage,
   },
   plugins: [createPersistedState({
     paths: [
       'token',
-      'role',
-      'userStatus',
-      'name',
+      'user',
       'users',
       'currentPage'
     ]
