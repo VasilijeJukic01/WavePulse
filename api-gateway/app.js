@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 const axios = require('axios');
 const proxy = require('express-http-proxy');
@@ -12,6 +13,8 @@ const services = config.services;
 
 const authInstances = services.authServiceInstances;
 const apiInstances = services.apiServiceInstances;
+
+app.use(cors());
 
 // Logging
 app.use((req, res, next) => {

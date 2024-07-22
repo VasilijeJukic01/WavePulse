@@ -57,7 +57,7 @@ export default new Vuex.Store({
       }
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({ url: 'http://localhost:8001/api/register', data: payload, method: 'POST' })
+        axios({ url: 'http://localhost:8080/auth/register', data: payload, method: 'POST' })
           .then(resp => {
             resolve(resp)
           })
@@ -69,7 +69,7 @@ export default new Vuex.Store({
     login ({ commit }, user) {
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({ url: 'http://localhost:8001/api/login', data: user, method: 'POST' })
+        axios({ url: 'http://localhost:8080/auth/login', data: user, method: 'POST' })
           .then(resp => {
             const token = resp.data.token
             const decodedToken = jwt.decode(token)
