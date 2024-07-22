@@ -19,7 +19,7 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:1234@db:5432/wavepulse
     command: >
-      bash -c "npx sequelize-cli db:migrate && npm start"
+      bash -c "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all && npm start"
 
 volumes:
   db-data:

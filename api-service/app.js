@@ -32,4 +32,9 @@ Object.entries(routes).forEach(([path, route]) => {
     app.use(path, route);
 });
 
+// Health Check
+app.get('/health', (req, res) => {
+    res.status(200).send('Service is healthy');
+});
+
 module.exports = app;

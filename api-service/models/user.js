@@ -41,15 +41,6 @@ module.exports = (sequelize, DataTypes) => {
         isEmail: true
       }
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-        len: [8, undefined]
-      }
-    },
-    registrationDate: DataTypes.DATE,
     countryId: {
       type: DataTypes.INTEGER,
       references: {

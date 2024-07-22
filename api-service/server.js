@@ -1,8 +1,22 @@
 const app = require('./app.js');
 const { sequelize } = require("./models");
+const axios = require('axios');
 
-app.listen(8000, async () => {
-    console.log('Server started on localhost:8000');
-    await sequelize.sync({ force: false });
-    console.log('DB synced');
+const ports = [8082, 8092, 8102];
+
+ports.forEach(port => {
+    app.listen(port, async () => {
+        await sequelize.sync({ force: false });
+        console.log(`API Service Instance started on localhost:${port}`);
+
+        // Service Registry
+        axios.post('http://localhost:8000/register', {
+            name: `apiService:${port}`,
+            url: `http://localhost:${port}`
+        }).then(() => {
+            console.log(`API Service Instance on port ${port} registered successfully`)
+        }).catch(err => {
+            console.error(`Error registering API service on port ${port}:`, err.message)
+        });
+    });
 });

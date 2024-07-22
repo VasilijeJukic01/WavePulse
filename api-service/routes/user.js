@@ -9,8 +9,6 @@ const userSchema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
     email: Joi.string().email().required(),
-    password: Joi.string().required(),
-    registrationDate: Joi.date().required(),
     countryId: Joi.number().required(),
     role: Joi.string().required()
 });
@@ -38,8 +36,6 @@ const updateUser = async (id, userData) => {
     user.firstName = userData.firstName;
     user.lastName = userData.lastName;
     user.email = userData.email;
-    user.password = userData.password;
-    user.registrationDate = userData.registrationDate;
     user.countryId = userData.countryId;
     user.role = userData.role;
     await user.save();

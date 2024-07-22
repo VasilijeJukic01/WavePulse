@@ -1,0 +1,15 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.custom-bg {
+    background-color: #fdd8ba;
+}
+.active-page {
+    background-color: #262eff;
+    color: white;
+}
+.unselected-page {
+    background-color: white;
+    color: black;
+}

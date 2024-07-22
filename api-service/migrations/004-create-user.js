@@ -25,13 +25,6 @@ module.exports = {
         allowNull: false,
         unique: true
       },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      registrationDate: {
-        type: Sequelize.DATE
-      },
       countryId: {
         type: Sequelize.INTEGER,
         references: {
