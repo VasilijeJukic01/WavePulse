@@ -101,7 +101,7 @@ export default {
       try {
         await this.register(this.user)
         this.registerMessage = 'Registration successful!'
-        await this.$router.push('/home')
+        await this.$router.push('/')
       } catch (error) {
         this.registerMessage = 'Registration failed: ' + error.message
       }

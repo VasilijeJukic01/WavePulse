@@ -6,11 +6,11 @@ const route = express.Router();
 
 const userSchema = Joi.object({
     username: Joi.string().required(),
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
+    firstname: Joi.string().required(),
+    lastname: Joi.string().required(),
     email: Joi.string().email().required(),
     countryId: Joi.number().required(),
-    role: Joi.string().required()
+    roleId: Joi.number().required()
 });
 
 route.use(express.json());
@@ -36,8 +36,6 @@ const updateUser = async (id, userData) => {
     user.firstName = userData.firstName;
     user.lastName = userData.lastName;
     user.email = userData.email;
-    user.countryId = userData.countryId;
-    user.role = userData.role;
     await user.save();
     return user;
 }

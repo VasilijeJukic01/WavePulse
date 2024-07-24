@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/home',
+    path: '/',
     name: 'Home',
     component: () => import('@/views/HomeView.vue')
   },
@@ -37,7 +37,7 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true },
     component: () => import('@/views/EditProfileView.vue')
   },*/
-  { path: '*', redirect: '/home' },
+  { path: '*', redirect: '/' },
 ]
 
 const router = new VueRouter({
@@ -56,7 +56,7 @@ router.beforeEach((to, from, next) => {
     } else if (to.matched.some(record => record.meta.requiresAdmin)) {
       if (store.getters.userRole !== 'Admin') {
         next({
-          path: '/home',
+          path: '/',
         })
       } else {
         next()

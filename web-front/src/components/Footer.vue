@@ -4,7 +4,7 @@
       <div class="flex flex-wrap justify-between">
         <!-- Logo and Description -->
         <div class="w-full md:w-1/5 mb-6">
-          <router-link to="/home">
+          <router-link to="/">
             <img src="../assets/logo.png" alt="WavePulse" class="h-16 w-56">
           </router-link>
           <p class="mt-4 text-gray-400">Explore your dream songs with WavePulse, your personalized music companion.</p>
@@ -13,7 +13,7 @@
         <div class="w-full md:w-1/5 mb-6">
           <h3 class="text-lg font-semibold">Navigation</h3>
           <ul class="mt-4 space-y-2">
-            <li><router-link to="/home" class="text-gray-400 hover:text-white">Home</router-link></li>
+            <li><router-link to="/" class="text-gray-400 hover:text-white">Home</router-link></li>
             <li><router-link to="/explore" class="text-gray-400 hover:text-white">Explore</router-link></li>
             <li><router-link to="/about" class="text-gray-400 hover:text-white">About Us</router-link></li>
             <li><router-link to="/contact" class="text-gray-400 hover:text-white">Contact</router-link></li>

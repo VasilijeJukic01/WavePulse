@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { Account } = require('../models');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
+const axios = require("axios");
 require('dotenv').config();
 
 const router = express.Router();
@@ -39,10 +40,8 @@ router.post('/register', registerValidationRules, async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }*/
-
     const { username, firstname, lastname, email, password, countryId, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 12);
-
     const userObj = {
         username,
         firstname,
@@ -60,12 +59,34 @@ router.post('/register', registerValidationRules, async (req, res) => {
         const user = await Account.create(userObj);
         const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.status };
         const token = generateToken(tokenPayload);
-        // TODO: Send verification email with token
-        res.json({ token });
+        await createUser(userObj, res).then(apiResponse => {
+            res.json({ token, message: 'User created successfully', userDetails: apiResponse });
+        }).catch(error => {
+            res.status(500).json({ error: 'Failed to create user in API service', details: error.message });
+        });
     } catch (err) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
 });
+
+function createUser(userObj, res) {
+    const userCreationPayload = {
+        username: userObj.username,
+        firstname: userObj.firstname,
+        lastname: userObj.lastname,
+        email: userObj.email,
+        countryId: userObj.countryId,
+        roleId: 2
+    };
+    return axios.post('http://localhost:8080/api/user', userCreationPayload)
+        .then(apiResponse => {
+            return apiResponse.data;
+        })
+        .catch(error => {
+            console.error('API Error:', error.message);
+            throw error;
+        });
+}
 
 // Login
 router.post('/login', loginValidationRules, loginLimiter, async (req, res) => {
@@ -166,9 +187,25 @@ router.put('/edit-profile/:id', async (req, res) => {
         user.email = email;
         await user.save();
 
-        res.json({ message: 'User updated successfully' });
+        const apiServicePayload = {
+            username: username,
+            firstname: firstname,
+            lastname: lastname,
+            email: email,
+        };
+
+        await axios.put(`http://localhost:8080/api/user/${id}`, apiServicePayload)
+            .then(apiRes => {
+                console.log('User updated in api-service successfully', apiRes.data);
+            })
+            .catch(apiErr => {
+                console.error('Failed to update user in api-service', apiErr.response.data);
+                throw new Error('Failed to update user in api-service');
+            });
+
+        res.json({ message: 'User updated successfully in both services' });
     } catch (err) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
 });
 

@@ -27,6 +27,7 @@ export default new Vuex.Store({
       state.status = ''
       state.token = ''
       state.user = {}
+      state.user.roleId = -1
     },
     setUsers: (state, users) => state.users = users,
     setUser: (state, user) => state.user = user,
@@ -136,17 +137,23 @@ export default new Vuex.Store({
           })
       })
     },
-    editUser({ commit }, user) {
+    editUser({ commit, dispatch }, user) {
       return new Promise((resolve, reject) => {
         axios({ url: `http://localhost:8080/auth/edit-profile/${user.id}`, data: user, method: 'PUT' })
           .then(resp => {
-            commit('setUser', resp.data.payload)
-            resolve(resp)
+            dispatch('fetchUser', user.id)
+              .then(() => {
+                resolve(resp);
+              })
+              .catch(fetchError => {
+                console.error('Error fetching user after update:', fetchError);
+                reject(fetchError);
+              });
           })
           .catch(err => {
-            reject(err)
-          })
-      })
+            reject(err);
+          });
+      });
     },
   },
   // Getters

@@ -60,7 +60,7 @@ export default {
       try {
         await this.login(this.user)
         this.loginMessage = 'Login successful!'
-        await this.$router.push('/home')
+        await this.$router.push('/')
       } catch (error) {
         this.loginMessage = 'Login failed: ' + error.message
       }

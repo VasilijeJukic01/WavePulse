@@ -1,15 +1,14 @@
 <template>
   <header class="bg-gray-900 shadow-lg">
     <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
-      <router-link to="/home">
+      <router-link to="/">
         <img src="../assets/logo.png" alt="WavePulse" class="h-16 w-56">
       </router-link>
       <div class="flex items-center space-x-4">
-        <router-link to="/home" class="text-gray-300 text-lg hover:text-white transition duration-300">Home</router-link>
-        <router-link v-if="user.role === ''" to="/login" class="text-gray-300 text-lg hover:text-white transition duration-300">Login</router-link>
-        <router-link v-if="user.role === ''" to="/register" class="text-gray-300 text-lg hover:text-white transition duration-300">Register</router-link>
-        <router-link v-if="user.role === 'Admin'" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">Admin Panel</router-link>
-        <div v-if="user.role !== ''" class="relative" >
+        <router-link v-if="user.roleId === -1" to="/login" class="text-gray-300 text-lg hover:text-white transition duration-300">Login</router-link>
+        <router-link v-if="user.roleId === -1" to="/register" class="text-gray-300 text-lg hover:text-white transition duration-300">Register</router-link>
+        <router-link v-if="user.roleId === 1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">Admin Panel</router-link>
+        <div v-if="user.roleId !== -1" class="relative" >
           <button @click="toggleDropdown" class="text-gray-300 text-lg hover:text-white transition duration-300 flex items-center">
             Profile
             <i class="fas fa-caret-down ml-2"></i>

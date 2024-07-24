@@ -66,7 +66,7 @@ export default {
     async modifyUser() {
       try {
         await this.editUser(this.user);
-        await this.$router.push('/admin');
+        await this.$router.push('/');
       } catch (error) {
         console.error('Failed to edit user:', error);
       }
