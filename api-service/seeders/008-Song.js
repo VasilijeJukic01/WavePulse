@@ -8,7 +8,6 @@ module.exports = {
       duration: 260,
       year: 1969,
       albumId: 1,
-      artistId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -16,7 +15,6 @@ module.exports = {
       duration: 243,
       year: 1970,
       albumId: 2,
-      artistId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});

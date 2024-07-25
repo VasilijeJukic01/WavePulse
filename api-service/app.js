@@ -25,7 +25,8 @@ const routes = {
     '/tag': require('./routes/tag.js'),
     '/user': require('./routes/user.js'),
     '/usersettings': require('./routes/usersettings.js'),
-    'concertartist': require('./routes/concertartist.js')
+    '/concertartist': require('./routes/concertartist.js'),
+    "/songartist": require("./routes/songartist.js"),
 };
 
 Object.entries(routes).forEach(([path, route]) => {

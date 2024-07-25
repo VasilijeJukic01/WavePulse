@@ -34,6 +34,7 @@ const models = [
     require(path.join(__dirname, 'albumreview'))(sequelize, Sequelize.DataTypes),
     require(path.join(__dirname, 'follow'))(sequelize, Sequelize.DataTypes),
     require(path.join(__dirname, 'concert'))(sequelize, Sequelize.DataTypes),
+    require(path.join(__dirname, 'songartist'))(sequelize, Sequelize.DataTypes),
 ];
 
 models.forEach(model => {

@@ -22,8 +22,8 @@ const getConcertArtistById = async (id) => {
     return await ConcertArtist.findByPk(id);
 }
 
-const crateConcertArtist = async (songGenreData) => {
-    return await ConcertArtist.create(songGenreData);
+const crateConcertArtist = async (concertArtistData) => {
+    return await ConcertArtist.create(concertArtistData);
 }
 
 const updateConcertArtist = async (id, concertArtistData) => {

@@ -9,7 +9,6 @@ const songSchema = Joi.object({
     duration: Joi.number().required(),
     year: Joi.number().required(),
     albumId: Joi.number().required(),
-    artistId: Joi.number().required()
 });
 
 route.use(express.json());
@@ -35,7 +34,6 @@ const updateSong = async (id, songData) => {
     song.duration = songData.duration;
     song.year = songData.year;
     song.albumId = songData.albumId;
-    song.artistId = songData.artistId;
     await song.save();
     return song;
 }

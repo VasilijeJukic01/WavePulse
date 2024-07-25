@@ -45,14 +45,7 @@ const setupMiddleware = () => {
         max: 100,
     }));
     // Logging
-    morgan.token('instance', (req, res) => req.instance);
-    app.use(morgan(':method :url | Status: :status - Response-Time: :response-time ms - Instance: :instance'));
-    // Init
-    app.use((req, res, next) => {
-        const { instance } = getNextInstance(authInstances, authIndex);
-        req.instance = instance;
-        next();
-    });
+    app.use(morgan('dev'));
 };
 
 // Proxies
@@ -77,6 +70,7 @@ const setupProxies = () => {
     }, {
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
             const instance = apiInstances[apiIndex];
+            console.log('instance:', instance)
             srcReq.headers['x-target-instance'] = instance;
             proxyReqOpts.headers['x-target-instance'] = instance;
             return proxyReqOpts;

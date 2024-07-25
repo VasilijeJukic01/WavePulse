@@ -36,10 +36,10 @@ const generateToken = (user) => {
 
 // Register
 router.post('/register', registerValidationRules, async (req, res) => {
-    /* const errors = validationResult(req);
+    const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
-    }*/
+    }
     const { username, firstname, lastname, email, password, countryId, role } = req.body;
     const hashedPassword = await bcrypt.hash(password, 12);
     const userObj = {
@@ -59,6 +59,7 @@ router.post('/register', registerValidationRules, async (req, res) => {
         const user = await Account.create(userObj);
         const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.status };
         const token = generateToken(tokenPayload);
+
         await createUser(userObj, res).then(apiResponse => {
             res.json({ token, message: 'User created successfully', userDetails: apiResponse });
         }).catch(error => {
@@ -76,8 +77,9 @@ function createUser(userObj, res) {
         lastname: userObj.lastname,
         email: userObj.email,
         countryId: userObj.countryId,
-        roleId: 2
+        roleId: userObj.role === 'Artist' ? 1 : 2
     };
+    // Synchronous call to API service
     return axios.post('http://localhost:8080/api/user', userCreationPayload)
         .then(apiResponse => {
             return apiResponse.data;
@@ -194,12 +196,9 @@ router.put('/edit-profile/:id', async (req, res) => {
             email: email,
         };
 
+        // Synchronous call to API service
         await axios.put(`http://localhost:8080/api/user/${id}`, apiServicePayload)
-            .then(apiRes => {
-                console.log('User updated in api-service successfully', apiRes.data);
-            })
-            .catch(apiErr => {
-                console.error('Failed to update user in api-service', apiErr.response.data);
+            .catch(() => {
                 throw new Error('Failed to update user in api-service');
             });
 
