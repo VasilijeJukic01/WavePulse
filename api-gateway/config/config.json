@@ -1,15 +1,3 @@
 {
-  "port": 8080,
-  "services": {
-    "authServiceInstances": [
-      "http://localhost:8081",
-      "http://localhost:8091",
-      "http://localhost:8101"
-    ],
-    "apiServiceInstances": [
-      "http://localhost:8082",
-      "http://localhost:8092",
-      "http://localhost:8102"
-    ]
-  }
+  "port": 8080
 }
