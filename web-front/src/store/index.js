@@ -13,6 +13,7 @@ export default new Vuex.Store({
     status: '',
     token: localStorage.getItem('token') || '',
     users: [],
+    songs: [],
     currentPage: 1,
   },
   // Mutations
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     setUsers: (state, users) => state.users = users,
     setUser: (state, user) => state.user = user,
     setUserId: (state, userId) => state.userId = userId,
+    setSongs: (state, songs) => state.songs = songs,
   },
   // Actions
   actions: {
@@ -155,12 +157,73 @@ export default new Vuex.Store({
           });
       });
     },
+    fetchReleaseId({ commit }, { title, artist }) {
+      return new Promise((resolve, reject) => {
+        console.log(artist, title)
+        axios({ url: `https://cors-anywhere.herokuapp.com/https://musicbrainz.org/ws/2/release/?query=release:"${title}" AND artist:"${artist}"`, method: 'GET' })
+          .then(resp => {
+            const releaseId = resp.data.releases[1].id;
+            resolve(releaseId);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    fetchCoverImage({ commit }, releaseId) {
+      return new Promise((resolve, reject) => {
+        axios({
+          url: `https://cors-anywhere.herokuapp.com/https://coverartarchive.org/release/${releaseId}/front`,
+          method: 'GET',
+          responseType: 'blob'
+        })
+          .then(resp => {
+            const blob = new Blob([resp.data], { type: resp.headers['content-type'] });
+            const coverImageUrl = URL.createObjectURL(blob);
+            resolve(coverImageUrl);
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    },
+    fetchSongs({ commit, dispatch }, page) {
+      return new Promise((resolve, reject) => {
+        axios({ url: `http://localhost:8080/api/song/full`, method: 'GET' })
+          .then(resp => {
+            const songs = resp.data;
+            const promises = songs.map(song => {
+              return dispatch('fetchReleaseId', { title: song.name, artist: "" })
+                .then(releaseId => {
+                  return dispatch('fetchCoverImage', releaseId)
+                    .then(coverImageUrl => {
+                      song.cover = coverImageUrl;
+                      console.log('Cover image:', coverImageUrl);
+                      return song;
+                    });
+                });
+            });
+            Promise.all(promises)
+              .then(updatedSongs => {
+                commit('setSongs', updatedSongs);
+                resolve(resp);
+              })
+              .catch(err => {
+                reject(err);
+              });
+          })
+          .catch(err => {
+            reject(err);
+          });
+      });
+    }
   },
   // Getters
   getters: {
     isLoggedIn: state => !!state.token,
     authStatus: state => state.status,
     user: state => state.user,
+    songs: state => state.songs,
     currentPage: state => state.currentPage,
   },
   plugins: [createPersistedState({

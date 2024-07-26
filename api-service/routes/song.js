@@ -1,5 +1,5 @@
 const express = require("express");
-const { Song } = require("../models");
+const { Song, Artist, Genre, SongArtist, SongGenre } = require("../models");
 const { handleRoute } = require("./handler");
 const Joi = require('joi');
 const route = express.Router();
@@ -20,8 +20,58 @@ const getAllSongs = async () => {
     return await Song.findAll();
 }
 
-const getSongById = async (id) => {
-    return await Song.findByPk(id);
+const getFullSongs = async () => {
+    return await Song.findAll({
+        include: [
+            {
+                model: SongArtist,
+                as: 'songArtists',
+                include: [
+                    {
+                        model: Artist,
+                        attributes: ['name'],
+                    },
+                ],
+            },
+            {
+                model: SongGenre,
+                as: 'songGenres',
+                include: [
+                    {
+                        model: Genre,
+                        attributes: ['name'],
+                    },
+                ],
+            },
+        ],
+    });
+}
+
+const getFullSongById = async (id) => {
+    return await Song.findByPk(id, {
+        include: [
+            {
+                model: SongArtist,
+                as: 'songArtists',
+                include: [
+                    {
+                        model: Artist,
+                        attributes: ['name'],
+                    },
+                ],
+            },
+            {
+                model: SongGenre,
+                as: 'songGenres',
+                include: [
+                    {
+                        model: Genre,
+                        attributes: ['name'],
+                    },
+                ],
+            },
+        ],
+    });
 }
 
 const createSong = async (songData) => {
@@ -48,8 +98,16 @@ route.get("/", async (req, res) => {
     await handleRoute(req, res, getAllSongs);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/full", async (req, res) => {
+    await handleRoute(req, res, getFullSongs);
+});
+
+route.get("/normal/:id", async (req, res) => {
     await handleRoute(req, res, getSongById);
+});
+
+route.get("/full/:id", async (req, res) => {
+    await handleRoute(req, res, getFullSongById);
 });
 
 route.post("/", async (req, res) => {

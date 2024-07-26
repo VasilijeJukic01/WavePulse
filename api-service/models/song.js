@@ -9,14 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({ Album, Artist, Playlist, SongRating, SongReview, Tag, Genre }) {
+    static associate({ Album, Artist, Playlist, SongRating, SongReview, Tag, Genre, SongArtist, SongGenre }) {
       Song.belongsTo(Album, { foreignKey: 'albumId' });
       Song.hasMany(SongRating, { foreignKey: 'songId' });
       Song.hasMany(SongReview, { foreignKey: 'songId' });
       Song.belongsToMany(Tag, { through: 'SongTag', foreignKey: 'songId' });
       Song.belongsToMany(Playlist, { through: 'PlaylistSong', foreignKey: 'songId' });
-      Song.belongsToMany(Artist, { through: 'SongArtists', foreignKey: 'songId' })
+      Song.belongsToMany(Artist, { through: 'SongArtist', foreignKey: 'songId' })
       Song.belongsToMany(Genre, { through: 'SongGenre', foreignKey: 'songId' });
+
+      Song.hasMany(SongArtist, { as: 'songArtists', foreignKey: 'songId' });
+      Song.hasMany(SongGenre, { as: 'songGenres', foreignKey: 'songId' });
     }
   }
   Song.init({
@@ -40,13 +43,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       references: {
         model: 'Album',
-        key: 'id'
-      }
-    },
-    artistId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'Artist',
         key: 'id'
       }
     }

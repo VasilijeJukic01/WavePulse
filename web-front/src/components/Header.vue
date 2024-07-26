@@ -8,7 +8,7 @@
         <router-link v-if="user.roleId === -1" to="/login" class="text-gray-300 text-lg hover:text-white transition duration-300">Login</router-link>
         <router-link v-if="user.roleId === -1" to="/register" class="text-gray-300 text-lg hover:text-white transition duration-300">Register</router-link>
         <router-link v-if="user.roleId === 1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">Admin Panel</router-link>
-        <div v-if="user.roleId !== -1" class="relative" >
+        <div v-if="user.roleId !== -1" class="relative">
           <button @click="toggleDropdown" class="text-gray-300 text-lg hover:text-white transition duration-300 flex items-center">
             Profile
             <i class="fas fa-caret-down ml-2"></i>
@@ -26,7 +26,6 @@
         </div>
       </div>
     </nav>
-    <hr class="border-gray-700 mt-4 w-full">
   </header>
 </template>
 
@@ -77,7 +76,7 @@ input::placeholder {
   color: white;
 }
 header {
-  height: 14vh;
+  height: 12vh;
 }
 input[type="text"] {
   width: 30vw;
@@ -86,5 +85,24 @@ input[type="text"] {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.bg-gray-900 {
+  background-color: #111;
+}
+.text-gray-300 {
+  color: #b0b0b0;
+}
+.text-gray-300:hover {
+  color: #ffffff;
+}
+.search-text {
+  background-color: #202020;
+}
+.search-text:focus {
+  background-color: #333333;
+}
+.shadow-lg {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 </style>
