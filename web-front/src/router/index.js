@@ -31,6 +31,8 @@ const routes = [
     name: 'EditProfile',
     component: () => import('@/views/EditProfileView.vue')
   },
+  //{ path: '/edit-profile/change-password/:id', component: ChangePasswordView },
+  //{ path: '/edit-profile/appearance/:id', component: AppearanceView },
   /*{
     path: '/admin/edit/:id',
     name: 'EditUser',
