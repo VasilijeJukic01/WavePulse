@@ -8,12 +8,15 @@
         <router-link v-if="user.roleId === -1" to="/login" class="text-gray-300 text-lg hover:text-white transition duration-300">Login</router-link>
         <router-link v-if="user.roleId === -1" to="/register" class="text-gray-300 text-lg hover:text-white transition duration-300">Register</router-link>
         <router-link v-if="user.roleId === 1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">Admin Panel</router-link>
+        <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">News</router-link>
+        <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">Discover</router-link>
         <div v-if="user.roleId !== -1" class="relative">
           <button @click="toggleDropdown" class="text-gray-300 text-lg hover:text-white transition duration-300 flex items-center">
             Profile
             <i class="fas fa-caret-down ml-2"></i>
           </button>
           <div v-if="showDropdown" class="profile-dropdown absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+            <router-link :to="`/settings/${user.id}`" @click.native="toggleDropdown" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</router-link>
             <router-link :to="`/edit-profile/${user.id}`" @click.native="toggleDropdown" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Profile</router-link>
             <button @click="logoutUser" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
           </div>

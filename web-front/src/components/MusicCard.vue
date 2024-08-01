@@ -27,9 +27,6 @@ export default {
   props: {
     music: Object
   },
-  created() {
-    console.log(this.music);
-  },
   methods: {
     playMusic() {
       console.log(`Playing music: ${this.music.name}`);
