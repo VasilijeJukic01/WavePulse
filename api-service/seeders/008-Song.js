@@ -17,7 +17,22 @@ module.exports = {
       albumId: 2,
       createdAt: new Date(),
       updatedAt: new Date()
-    }], {});
+    }, {
+        name: 'A Horse with No Name',
+        duration: 252,
+        year: 1971,
+        albumId: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }, {
+        name: 'Run to You',
+        duration: 226,
+        year: 1984,
+        albumId: 4,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ], {});
   },
 
   down: async (queryInterface, Sequelize) => {

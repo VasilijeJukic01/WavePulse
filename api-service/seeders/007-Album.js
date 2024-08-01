@@ -19,6 +19,22 @@ module.exports = {
       artistId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
+    }, {
+      name: 'America',
+      year: 1971,
+      songNumber: 11,
+      score: 7.5,
+      artistId: 3,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      name: 'Reckless',
+      year: 1984,
+      songNumber: 10,
+      score: 8.0,
+      artistId: 4,
+      createdAt: new Date(),
+      updatedAt: new Date()
     }], {});
   },
 

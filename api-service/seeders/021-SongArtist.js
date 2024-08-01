@@ -17,6 +17,18 @@ module.exports = {
                 artistId: 1,
                 createdAt: new Date(),
                 updatedAt: new Date()
+            },
+            {
+                songId: 3,
+                artistId: 3,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            },
+            {
+                songId: 4,
+                artistId: 4,
+                createdAt: new Date(),
+                updatedAt: new Date()
             }
         ], {});
     },
