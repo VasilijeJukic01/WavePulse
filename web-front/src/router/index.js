@@ -31,11 +31,15 @@ const routes = [
     name: 'EditProfile',
     component: () => import('@/views/edit-profile/EditProfileView.vue')
   },
-  //{ path: '/edit-profile/change-password/:id', component: ChangePasswordView },
+  {
+    path: '/edit-profile/change-password/:id',
+    name: 'EditProfileChangePassword',
+    component: () => import('@/views/edit-profile/EditProfileChangePasswordView.vue')
+  },
   {
     path: '/edit-profile/appearance/:id',
     name: 'EditProfileAppearance',
-    component: () => import('@/views/edit-profile/EditProfileAppearance.vue')
+    component: () => import('@/views/edit-profile/EditProfileAppearanceView.vue')
   },
   /*{
     path: '/admin/edit/:id',

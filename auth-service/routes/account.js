@@ -30,6 +30,11 @@ const loginValidationRules = [
     body('password').isString()
 ];
 
+const changePasswordValidationRules = [
+    body('oldPassword').isString().isLength({ min: 8 }),
+    body('newPassword').isString().isLength({ min: 8 })
+];
+
 const generateToken = (user) => {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 };
@@ -81,7 +86,14 @@ function createUser(userObj, res) {
     };
     // Synchronous call to API service
     return axios.post('http://localhost:8080/api/user', userCreationPayload)
-        .then(apiResponse => {
+        .then(async apiResponse => {
+            const userId = apiResponse.data.id;
+            const userSettingsPayload = {
+                userId: userId,
+                language: 'EN',
+                theme: 1
+            };
+            await axios.post('http://localhost:8080/api/usersettings/', userSettingsPayload);
             return apiResponse.data;
         })
         .catch(error => {
@@ -133,6 +145,36 @@ router.post('/login', loginValidationRules, loginLimiter, async (req, res) => {
         }
     } catch (err) {
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Change password
+router.put('/change-password/:id', changePasswordValidationRules, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { userId, oldPassword, newPassword } = req.body;
+
+    try {
+        const user = await Account.findByPk(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+        if (!isOldPasswordValid) {
+            return res.status(400).json({ error: 'Old password is incorrect' });
+        }
+
+        user.password = await bcrypt.hash(newPassword, 12);
+        user.profileUpdated = new Date();
+        await user.save();
+
+        res.json({ message: 'Password updated successfully' });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
 });
 

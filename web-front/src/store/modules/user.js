@@ -88,6 +88,16 @@ const actions = {
         throw err;
       });
   },
+  // Update password
+  updatePassword({ commit }, passwordData) {
+    return makeApiRequest(`/auth/change-password/${passwordData.userId}`, passwordData, 'PUT')
+      .then(resp => {
+        return resp;
+      })
+      .catch(err => {
+        throw err;
+      });
+  },
   // Logout
   logout ({ commit }) {
     return new Promise(resolve => {
