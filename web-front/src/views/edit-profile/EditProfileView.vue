@@ -76,7 +76,7 @@ export default {
   background-color: #1b1b1b;
   min-height: 100vh;
 }
-input[type="text"], input[type="email"] {
+select {
   border-radius: 10px;
 }
 </style>

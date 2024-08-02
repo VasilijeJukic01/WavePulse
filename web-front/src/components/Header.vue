@@ -16,7 +16,7 @@
             <i class="fas fa-caret-down ml-2"></i>
           </button>
           <div v-if="showDropdown" class="profile-dropdown absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
-            <router-link :to="`/edit-profile/${user.id}`" @click.native="toggleDropdown" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Profile</router-link>
+            <router-link :to="`/edit-profile/${user.id}`" @click.native="toggleDropdown" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</router-link>
             <button @click="logoutUser" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
           </div>
         </div>

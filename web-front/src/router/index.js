@@ -29,10 +29,14 @@ const routes = [
   {
     path: '/edit-profile/:id',
     name: 'EditProfile',
-    component: () => import('@/views/EditProfileView.vue')
+    component: () => import('@/views/edit-profile/EditProfileView.vue')
   },
   //{ path: '/edit-profile/change-password/:id', component: ChangePasswordView },
-  //{ path: '/edit-profile/appearance/:id', component: AppearanceView },
+  {
+    path: '/edit-profile/appearance/:id',
+    name: 'EditProfileAppearance',
+    component: () => import('@/views/edit-profile/EditProfileAppearance.vue')
+  },
   /*{
     path: '/admin/edit/:id',
     name: 'EditUser',
