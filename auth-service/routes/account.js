@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Account } = require('../models');
@@ -17,12 +18,19 @@ const loginLimiter = rateLimit({
 
 // Validation rules
 const registerValidationRules = [
-    body('username').isString().isLength({ min: 3 }),
-    body('firstname').isString().isLength({ min: 2 }),
-    body('lastname').isString().isLength({ min: 2 }),
-    body('email').isEmail(),
-    body('password').isLength({ min: 8 }),
-    body('countryId').isInt()
+    body('username')
+        .isString().withMessage('Username must be a string')
+        .isLength({ min: 3 }).withMessage('Username requires minimum 3 characters'),
+    body('firstname')
+        .isString().withMessage('First name must be a string')
+        .isLength({ min: 2 }).withMessage('First name requires minimum 2 characters'),
+    body('lastname')
+        .isString().withMessage('Last name must be a string')
+        .isLength({ min: 2 }).withMessage('Last name requires minimum 2 characters'),
+    body('email')
+        .isEmail().withMessage('Email must be valid'),
+    body('password')
+        .isLength({ min: 8 }).withMessage('Password requires minimum 8 characters')
 ];
 
 const loginValidationRules = [
@@ -31,7 +39,6 @@ const loginValidationRules = [
 ];
 
 const changePasswordValidationRules = [
-    body('oldPassword').isString().isLength({ min: 8 }),
     body('newPassword').isString().isLength({ min: 8 })
 ];
 
@@ -43,24 +50,36 @@ const generateToken = (user) => {
 router.post('/register', registerValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        const errorMessages = errors.array().map(error => error.msg).join(', ');
+        return res.status(400).json({ error: errorMessages });
     }
     const { username, firstname, lastname, email, password, countryId, role } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const userObj = {
-        username,
-        firstname,
-        lastname,
-        email,
-        password: hashedPassword,
-        registrationDate: new Date(),
-        countryId,
-        role,
-        accountStatus: 'PENDING',
-        emailVerified: false
-    };
 
     try {
+        const existingUserByUsername = await Account.findOne({ where: { username } });
+        if (existingUserByUsername) {
+            return res.status(400).json({ error: 'Username is already taken' });
+        }
+
+        const existingUserByEmail = await Account.findOne({ where: { email } });
+        if (existingUserByEmail) {
+            return res.status(400).json({ error: 'Email is already taken' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const userObj = {
+            username,
+            firstname,
+            lastname,
+            email,
+            password: hashedPassword,
+            registrationDate: new Date(),
+            countryId,
+            role,
+            accountStatus: 'PENDING',
+            emailVerified: false
+        };
+
         const user = await Account.create(userObj);
         const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.status };
         const token = generateToken(tokenPayload);
@@ -152,7 +171,7 @@ router.post('/login', loginValidationRules, loginLimiter, async (req, res) => {
 router.put('/change-password/:id', changePasswordValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ error: 'Minimum password length is 8 characters' });
     }
 
     const { userId, oldPassword, newPassword } = req.body;
@@ -223,6 +242,16 @@ router.put('/edit-profile/:id', async (req, res) => {
         const user = await Account.findByPk(id);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
+        }
+
+        const usernameConflict = await Account.findOne({ where: { username, id: { [Op.ne]: id } } });
+        if (usernameConflict) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        const emailConflict = await Account.findOne({ where: { email, id: { [Op.ne]: id } } });
+        if (emailConflict) {
+            return res.status(400).json({ error: 'Email already exists' });
         }
 
         user.username = username;

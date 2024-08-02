@@ -35,6 +35,14 @@
               required
             />
           </div>
+          <div v-if="errorMessage" class="mb-4 text-red-500 text-sm">
+            {{ errorMessage }}
+          </div>
+          <div v-if="validationErrors.length" class="mb-4 text-red-500 text-sm">
+            <ul>
+              <li v-for="error in validationErrors" :key="error.msg">{{ error.msg }}</li>
+            </ul>
+          </div>
           <div class="flex items-center justify-between">
             <button
               class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -60,7 +68,9 @@ export default {
     return {
       oldPassword: '',
       newPassword: '',
-      repeatNewPassword: ''
+      repeatNewPassword: '',
+      errorMessage: '',
+      validationErrors: []
     };
   },
   computed: {
@@ -74,7 +84,7 @@ export default {
     ]),
     async changePassword() {
       if (this.newPassword !== this.repeatNewPassword) {
-        alert('New passwords do not match');
+        this.errorMessage = 'New passwords do not match';
         return;
       }
       try {
@@ -85,7 +95,7 @@ export default {
         });
         await this.$router.push('/');
       } catch (error) {
-        console.error('Failed to update password:', error);
+          this.errorMessage = error.message;
       }
     }
   }
@@ -97,6 +107,7 @@ export default {
   background-color: #1b1b1b;
   min-height: 100vh;
 }
+
 input {
   border-radius: 10px;
 }

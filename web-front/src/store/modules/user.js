@@ -27,7 +27,7 @@ const mutations = {
 };
 
 const actions = {
-  // Register
+// Register
   register({ commit }, user) {
     if (user.password !== user.confirmation) {
       return Promise.reject(new Error('Password and confirmation do not match'));
@@ -41,7 +41,17 @@ const actions = {
       password: user.password,
       countryId: user.countryId,
     };
-    return makeApiRequest('/auth/register', payload, 'POST');
+    return makeApiRequest('/auth/register', payload, 'POST')
+      .then(resp => {
+        return resp;
+      })
+      .catch(err => {
+        if (err.response) {
+          throw new Error(err.response.data.error || 'An error occurred');
+        } else {
+          throw err;
+        }
+      });
   },
   // Login
   login({ commit, dispatch }, user) {
@@ -63,7 +73,11 @@ const actions = {
       })
       .catch(err => {
         localStorage.removeItem('token');
-        throw err;
+        if (err.response) {
+          throw new Error(err.response.data.error || 'An error occurred');
+        } else {
+          throw err;
+        }
       });
   },
   // Fetch current user info
@@ -78,14 +92,18 @@ const actions = {
         throw err;
       });
   },
-  // Edit user info
+  // Update user
   editUser({ commit, dispatch }, user) {
     return makeApiRequest(`/auth/edit-profile/${user.id}`, user, 'PUT')
       .then(resp => {
         return dispatch('fetchUser', user.id).then(() => resp);
       })
       .catch(err => {
-        throw err;
+        if (err.response) {
+          throw new Error(err.response.data.error || 'An error occurred');
+        } else {
+          throw err;
+        }
       });
   },
   // Update password
@@ -95,7 +113,11 @@ const actions = {
         return resp;
       })
       .catch(err => {
-        throw err;
+        if (err.response) {
+          throw new Error(err.response.data.error || 'An error occurred');
+        } else {
+          throw err;
+        }
       });
   },
   // Logout

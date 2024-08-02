@@ -5,6 +5,7 @@
       <div class="w-full max-w-lg space-y-8 mx-auto mt-12">
         <h1 class="mb-6 text-center text-3xl font-bold text-white">Edit Profile</h1>
         <form @submit.prevent="modifyUser" class="mt-8 space-y-6">
+          <div v-if="errorMessage" class="text-red-500 text-sm mb-4">{{ errorMessage }}</div>
           <div class="mb-4">
             <label class="block text-white text-sm font-bold mb-2" for="firstName">First Name</label>
             <input
@@ -50,6 +51,11 @@ export default {
   components: {
     Sidebar
   },
+  data() {
+    return {
+      errorMessage: ''
+    };
+  },
   computed: {
     ...mapGetters([
       'user'
@@ -64,7 +70,7 @@ export default {
         await this.editUser(this.user);
         await this.$router.push('/');
       } catch (error) {
-        console.error('Failed to edit user:', error);
+        this.errorMessage = error.message || 'An error occurred';
       }
     }
   },
@@ -76,6 +82,7 @@ export default {
   background-color: #1b1b1b;
   min-height: 100vh;
 }
+
 select {
   border-radius: 10px;
 }

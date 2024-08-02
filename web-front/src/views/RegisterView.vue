@@ -65,8 +65,7 @@
               Register
             </button>
           </div>
-          <div v-if="registerMessage" class="message">
-            {{ registerMessage }}
+          <div v-if="registerMessage" class="message text-white" v-html="registerMessage">
           </div>
         </form>
       </div>
@@ -75,7 +74,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   data() {
@@ -103,7 +102,7 @@ export default {
         this.registerMessage = 'Registration successful!'
         await this.$router.push('/')
       } catch (error) {
-        this.registerMessage = 'Registration failed: ' + error.message
+        this.registerMessage = 'Registration failed:<br>- ' + error.message.split(',').join('<br>- ')
       }
     }
   }
@@ -124,5 +123,8 @@ export default {
 }
 input[type="text"], input[type="email"], input[type="password"], select {
   border-radius: 10px;
+}
+.message {
+  color: white;
 }
 </style>
