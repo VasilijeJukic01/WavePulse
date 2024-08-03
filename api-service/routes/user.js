@@ -1,5 +1,5 @@
 const express = require("express");
-const { User } = require("../models");
+const { User, UserSettings } = require("../models");
 const { handleRoute } = require("./handler");
 const Joi = require('joi');
 const route = express.Router();
@@ -42,6 +42,15 @@ const updateUser = async (id, userData) => {
 
 const deleteUser = async (id) => {
     const user = await User.findByPk(id);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    const userSettings = await UserSettings.findOne({ where: { userId: id } });
+    if (userSettings) {
+        await userSettings.destroy();
+    }
+
     await user.destroy();
     return user.id;
 }

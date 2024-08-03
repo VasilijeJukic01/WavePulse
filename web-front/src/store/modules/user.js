@@ -41,7 +41,7 @@ const actions = {
       password: user.password,
       countryId: user.countryId,
     };
-    return makeApiRequest('/auth/register', payload, 'POST')
+    return makeApiRequest('/auth/user/register', payload, 'POST')
       .then(resp => {
         return resp;
       })
@@ -55,7 +55,7 @@ const actions = {
   },
   // Login
   login({ commit, dispatch }, user) {
-    return makeApiRequest('/auth/login', user, 'POST')
+    return makeApiRequest('/auth/user/login', user, 'POST')
       .then(resp => {
         const token = resp.data.token;
         const decodedToken = jwt.decode(token);
@@ -94,7 +94,7 @@ const actions = {
   },
   // Update user
   editUser({ commit, dispatch }, user) {
-    return makeApiRequest(`/auth/edit-profile/${user.id}`, user, 'PUT')
+    return makeApiRequest(`/auth/user/edit-profile/${user.id}`, user, 'PUT')
       .then(resp => {
         return dispatch('fetchUser', user.id).then(() => resp);
       })
@@ -108,7 +108,7 @@ const actions = {
   },
   // Update password
   updatePassword({ commit }, passwordData) {
-    return makeApiRequest(`/auth/change-password/${passwordData.userId}`, passwordData, 'PUT')
+    return makeApiRequest(`/auth/user/change-password/${passwordData.userId}`, passwordData, 'PUT')
       .then(resp => {
         return resp;
       })

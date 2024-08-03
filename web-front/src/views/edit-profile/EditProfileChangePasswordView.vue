@@ -58,7 +58,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import Sidebar from '@/components/Sidebar.vue';
+import Sidebar from '@/components/siderbars/SettingsSidebar.vue';
 
 export default {
   components: {

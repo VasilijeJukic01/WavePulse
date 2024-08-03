@@ -20,12 +20,6 @@ const routes = [
     name: 'Register',
     component: () => import('@/views/RegisterView.vue')
   },
-  /*{
-    path: '/admin',
-    name: 'Admin',
-    meta: { requiresAuth: true, requiresAdmin: true },
-    component: () => import('@/views/AdminPanelView.vue')
-  },*/
   {
     path: '/edit-profile/:id',
     name: 'EditProfile',
@@ -56,6 +50,13 @@ const routes = [
     path: '/privacy',
     name: 'Privacy',
     component: () => import('@/views/policies/PrivacyPolicyView.vue')
+  },
+  // Admin
+  {
+    path: '/admin/manage-users',
+    name: 'Admin',
+    // meta: { requiresAuth: true, requiresAdmin: true },
+    component: () => import('@/views/admin/ManageUsersView.vue')
   },
   { path: '*', redirect: '/' },
 ]
