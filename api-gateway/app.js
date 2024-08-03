@@ -1,11 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan');
 const axios = require('axios');
 const proxy = require('express-http-proxy');
 const config = require('./config/config.json');
 const rateLimit = require('express-rate-limit');
 const schedule = require('node-schedule');
+const winston = require('winston');
+const expressWinston = require('express-winston');
 
 const app = express();
 
@@ -45,7 +46,41 @@ const setupMiddleware = () => {
         max: 100,
     }));
     // Logging
-    app.use(morgan('dev'));
+    app.use(expressWinston.logger({
+        transports: [
+            new winston.transports.Console({
+                format: winston.format.combine(
+                    winston.format.colorize({ all: true }),
+                    winston.format.timestamp(),
+                    winston.format.printf(({ timestamp, level, message, meta }) => {
+                        const { method, url, headers } = meta.req;
+                        const { statusCode } = meta.res;
+                        const responseTime = meta.responseTime;
+                        const targetInstance = headers['x-target-instance'];
+
+                        let statusColor;
+                        if (statusCode >= 500) {
+                            statusColor = '\x1b[31m';
+                        } else if (statusCode >= 400) {
+                            statusColor = '\x1b[33m';
+                        } else if (statusCode >= 300) {
+                            statusColor = '\x1b[36m';
+                        } else {
+                            statusColor = '\x1b[32m';
+                        }
+                        const resetColor = '\x1b[0m';
+
+                        return `${timestamp} [${level}] ${method} ${url} ${statusColor}${statusCode}${resetColor} ${responseTime}ms - Target: ${targetInstance}`;
+                    })
+                )
+            })
+        ],
+        meta: true,
+        msg: "HTTP {{req.method}} {{req.url}}",
+        expressFormat: true,
+        colorize: false,
+        ignoreRoute: function (req, res) { return false; }
+    }));
 };
 
 // Proxies
@@ -70,7 +105,6 @@ const setupProxies = () => {
     }, {
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
             const instance = apiInstances[apiIndex];
-            console.log('instance:', instance)
             srcReq.headers['x-target-instance'] = instance;
             proxyReqOpts.headers['x-target-instance'] = instance;
             return proxyReqOpts;
