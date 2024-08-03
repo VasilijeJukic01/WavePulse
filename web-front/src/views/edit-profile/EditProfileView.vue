@@ -22,7 +22,7 @@
             <label class="block text-white text-sm font-bold mb-2" for="username">Username</label>
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="username" v-model="user.username" type="text" required>
+              id="username" v-model="tempUsername" type="text" required>
           </div>
           <div class="mb-4">
             <label class="block text-white text-sm font-bold mb-2" for="email">Email</label>
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 import Sidebar from '@/components/Sidebar.vue';
 
 export default {
@@ -53,7 +53,8 @@ export default {
   },
   data() {
     return {
-      errorMessage: ''
+      errorMessage: '',
+      tempUsername: ''
     };
   },
   computed: {
@@ -61,12 +62,21 @@ export default {
       'user'
     ])
   },
+  watch: {
+    user: {
+      immediate: true,
+      handler(newValue) {
+        this.tempUsername = newValue.username;
+      }
+    }
+  },
   methods: {
     ...mapActions([
       'editUser'
     ]),
     async modifyUser() {
       try {
+        this.user.username = this.tempUsername;
         await this.editUser(this.user);
         await this.$router.push('/');
       } catch (error) {
@@ -81,9 +91,5 @@ export default {
 .form-bg {
   background-color: #1b1b1b;
   min-height: 100vh;
-}
-
-select {
-  border-radius: 10px;
 }
 </style>

@@ -39,20 +39,23 @@ export default {
 
 <style scoped>
 .home-view {
-  background-color: #181818; /* Slightly lighter black */
+  background-color: #181818;
   min-height: 100vh;
   padding: 20px;
 }
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
 }
+
 .main-title {
   font-size: 2.5rem;
-  color: #ffffff; /* White text for high contrast */
+  color: #ffffff;
   text-align: center;
   margin-bottom: 40px;
 }
+
 .music-grid {
   display: flex;
   flex-wrap: wrap;

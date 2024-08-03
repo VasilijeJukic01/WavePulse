@@ -47,13 +47,30 @@ const routes = [
     meta: { requiresAuth: true, requiresAdmin: true },
     component: () => import('@/views/EditProfileView.vue')
   },*/
+  {
+    path: '/terms-of-service',
+    name: 'TermsOfService',
+    component: () => import('@/views/policies/TermsOfServiceView.vue')
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/views/policies/PrivacyPolicyView.vue')
+  },
   { path: '*', redirect: '/' },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { x: 0, y: 0 };
+    }
+  }
 })
 
 router.beforeEach((to, from, next) => {

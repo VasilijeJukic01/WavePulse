@@ -23,7 +23,7 @@
         <div class="w-full md:w-1/5 mb-6">
           <h3 class="text-lg font-semibold text-gray-100">Legal</h3>
           <ul class="mt-4 space-y-2">
-            <li><router-link to="/terms" class="text-gray-400 hover:text-white">Terms of Service</router-link></li>
+            <li><router-link to="/terms-of-service" class="text-gray-400 hover:text-white">Terms of Service</router-link></li>
             <li><router-link to="/privacy" class="text-gray-400 hover:text-white">Privacy Policy</router-link></li>
           </ul>
         </div>
@@ -73,10 +73,10 @@ export default {
 
 <style scoped>
 .footer {
-  background-color: #111; /* Darker for better contrast */
-  color: #b0b0b0; /* Light grey for readability */
+  background-color: #111;
+  color: #b0b0b0;
 }
 .footer a:hover {
-  color: #ffffff; /* White on hover for high contrast */
+  color: #ffffff;
 }
 </style>

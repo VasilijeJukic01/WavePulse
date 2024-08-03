@@ -3,7 +3,7 @@
 @import 'tailwindcss/utilities';
 
 .custom-bg {
-    background-color: #fdd8ba;
+    background-color: #000000;
 }
 .active-page {
     background-color: #262eff;

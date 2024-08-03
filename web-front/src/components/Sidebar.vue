@@ -3,7 +3,7 @@
     <aside class="w-64 h-screen bg-customColor text-white">
       <div class="p-6 flex items-center">
         <i class="fas fa-user-circle text-2xl mr-2"></i>
-        <router-link to="/" class="text-2xl font-semibold text-white">{{ user.username }}</router-link>
+        <span class="text-2xl font-semibold text-white">{{ user.username }}</span>
       </div>
       <nav class="mt-6">
         <ul>
