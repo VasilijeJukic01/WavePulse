@@ -127,9 +127,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions('admin', ['fetchAccounts', 'updateAccount', 'deleteAccount']),
+    ...mapActions('admin', ['fetchAccounts', 'deleteAccount']),
     editAccount(id) {
-      // TODO: edit account logic here
+      this.$router.push(`/admin/modify-user/${id}`);
     },
     sort(key) {
       if (this.sortKey === key) {

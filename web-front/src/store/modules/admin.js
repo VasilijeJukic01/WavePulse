@@ -42,7 +42,24 @@ const actions = {
         return resp;
       })
       .catch(err => {
-        throw err;
+        if (err.response) {
+          throw new Error(err.response.data.error || 'An error occurred');
+        } else {
+          throw err;
+        }
+      });
+  },
+  updatePassword({ commit }, payload) {
+    return makeApiRequest(`/auth/admin/account/password/${payload.id}`, payload, 'PUT')
+      .then(resp => {
+        return resp;
+      })
+      .catch(err => {
+        if (err.response) {
+          throw new Error(err.response.data.error || 'An error occurred');
+        } else {
+          throw err;
+        }
       });
   },
   // Delete account

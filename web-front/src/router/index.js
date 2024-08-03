@@ -35,12 +35,6 @@ const routes = [
     name: 'EditProfileAppearance',
     component: () => import('@/views/edit-profile/EditProfileAppearanceView.vue')
   },
-  /*{
-    path: '/admin/edit/:id',
-    name: 'EditUser',
-    meta: { requiresAuth: true, requiresAdmin: true },
-    component: () => import('@/views/EditProfileView.vue')
-  },*/
   {
     path: '/terms-of-service',
     name: 'TermsOfService',
@@ -57,6 +51,12 @@ const routes = [
     name: 'Admin',
     // meta: { requiresAuth: true, requiresAdmin: true },
     component: () => import('@/views/admin/ManageUsersView.vue')
+  },
+  {
+  path: '/admin/modify-user/:id',
+  name: 'ModifyUser',
+  // meta: { requiresAuth: true, requiresAdmin: true },
+  component: () => import('@/views/admin/ModifyUserView.vue')
   },
   { path: '*', redirect: '/' },
 ]
