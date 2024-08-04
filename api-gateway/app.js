@@ -12,6 +12,8 @@ const app = express();
 
 let authInstances = [];
 let apiInstances = [];
+let logInstances = [];
+
 let authIndex = 0;
 let apiIndex = 0;
 
@@ -26,6 +28,10 @@ const fetchServices = async () => {
         apiInstances = Object.keys(services)
             .filter(name => name.includes('apiService'))
             .flatMap(name => services[name]);
+        logInstances = Object.keys(services)
+            .filter(name => name.includes('logService'))
+            .flatMap(name => services[name]);
+
     } catch (error) {
         console.error('Error fetching services:', error);
     }
@@ -57,6 +63,7 @@ const setupMiddleware = () => {
                         const { statusCode } = meta.res;
                         const responseTime = meta.responseTime;
                         const targetInstance = headers['x-target-instance'];
+                        const serviceName = headers['x-service-name'];
 
                         let statusColor;
                         if (statusCode >= 500) {
@@ -70,7 +77,11 @@ const setupMiddleware = () => {
                         }
                         const resetColor = '\x1b[0m';
 
-                        return `${timestamp} [${level}] ${method} ${url} ${statusColor}${statusCode}${resetColor} ${responseTime}ms - Target: ${targetInstance}`;
+                        const serviceColor = serviceName === 'AUTH_SERVICE' ? '\x1b[35m' :
+                            serviceName === 'API_SERVICE' ? '\x1b[34m' :
+                                '\x1b[36m';
+
+                        return `[${serviceColor}${serviceName}${resetColor}] ${timestamp} [${level}] ${method} ${url} ${statusColor}${statusCode}${resetColor} ${responseTime}ms - Target: ${targetInstance}`;
                     })
                 )
             })
@@ -93,7 +104,9 @@ const setupProxies = () => {
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
             const instance = authInstances[authIndex];
             srcReq.headers['x-target-instance'] = instance;
+            srcReq.headers['x-service-name'] = 'AUTH_SERVICE';
             proxyReqOpts.headers['x-target-instance'] = instance;
+            proxyReqOpts.headers['x-service-name'] = 'AUTH_SERVICE';
             return proxyReqOpts;
         }
     }));
@@ -106,7 +119,22 @@ const setupProxies = () => {
         proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
             const instance = apiInstances[apiIndex];
             srcReq.headers['x-target-instance'] = instance;
+            srcReq.headers['x-service-name'] = 'API_SERVICE';
             proxyReqOpts.headers['x-target-instance'] = instance;
+            proxyReqOpts.headers['x-service-name'] = 'API_SERVICE';
+            return proxyReqOpts;
+        }
+    }));
+
+    app.use('/log', proxy(() => {
+        return logInstances[0];
+    }, {
+        proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
+            const instance = logInstances[0];
+            srcReq.headers['x-target-instance'] = instance;
+            srcReq.headers['x-service-name'] = 'LOG_SERVICE';
+            proxyReqOpts.headers['x-target-instance'] = instance;
+            proxyReqOpts.headers['x-service-name'] = 'LOG_SERVICE';
             return proxyReqOpts;
         }
     }));
@@ -126,10 +154,12 @@ const setupHealthCheck = () => {
 
         const authHealthChecks = await Promise.all(authInstances.map(checkServiceHealth));
         const apiHealthChecks = await Promise.all(apiInstances.map(checkServiceHealth));
+        const logHealthChecks = await Promise.all(logInstances.map(checkServiceHealth));
 
         res.json({
             authServices: authHealthChecks,
             apiServices: apiHealthChecks,
+            logServices: logHealthChecks
         });
     });
 };
