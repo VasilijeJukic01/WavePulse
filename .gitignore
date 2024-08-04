@@ -1,0 +1,37 @@
+# Node.js
+api-gateway/node_modules/
+service-registry/node_modules/
+auth-service/node_modules/
+api-service/node_modules/
+log-service/node_modules/
+web-front/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Environment variables
+.env
+api-gateway/.env
+web-front/.env
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# OS generated files
+.DS_Store
+Thumbs.db
