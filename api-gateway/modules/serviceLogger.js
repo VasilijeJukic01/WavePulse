@@ -1,14 +1,7 @@
-const cors = require('cors');
-const rateLimit = require('express-rate-limit');
 const expressWinston = require('express-winston');
 const winston = require('winston');
 
-const setupMiddleware = (app) => {
-    app.use(cors());
-    app.use(rateLimit({
-        windowMs: 15 * 60 * 1000,
-        max: 100,
-    }));
+const setupLogger = (app) => {
     app.use(expressWinston.logger({
         transports: [
             new winston.transports.Console({
@@ -34,9 +27,7 @@ const setupMiddleware = (app) => {
                         }
                         const resetColor = '\x1b[0m';
 
-                        const serviceColor = serviceName === 'AUTH_SERVICE' ? '\x1b[35m' :
-                            serviceName === 'API_SERVICE' ? '\x1b[34m' :
-                                '\x1b[36m';
+                        const serviceColor = serviceName === 'AUTH_SERVICE' ? '\x1b[35m' : serviceName === 'API_SERVICE' ? '\x1b[34m' : '\x1b[36m';
 
                         return `[${serviceColor}${serviceName}${resetColor}] ${timestamp} [${level}] ${method} ${url} ${statusColor}${statusCode}${resetColor} ${responseTime}ms - Target: ${targetInstance}`;
                     })
@@ -51,4 +42,4 @@ const setupMiddleware = (app) => {
     }));
 };
 
-module.exports = setupMiddleware;
+module.exports = setupLogger;

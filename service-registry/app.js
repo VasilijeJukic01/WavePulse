@@ -1,8 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const config = require('./config/config');
+const setupSecurity = require('./modules/serviceSecurity');
 
 const app = express();
-
 app.use(bodyParser.json());
 
 const services = {};
@@ -44,6 +45,11 @@ app.get('/services', (req, res) => {
 });
 
 // Core
-app.listen(8000, () => {
-    console.log('Service Registry is running on port 8000');
-});
+const initialize = () => {
+    setupSecurity(app);
+    app.listen(config.port, () => {
+        console.log(`Service Registry is running on port ${config.port}`);
+    });
+};
+
+initialize();
