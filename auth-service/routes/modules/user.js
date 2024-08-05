@@ -2,9 +2,10 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Account } = require('../../models');
+const { Account, sequelize } = require('../../models');
 const rateLimit = require('express-rate-limit');
 const axios = require('axios');
+const { Op } = require('sequelize');
 require('dotenv').config();
 
 const router = express.Router();
@@ -22,10 +23,10 @@ const registerValidationRules = [
         .isLength({ min: 3 }).withMessage('Username requires minimum 3 characters'),
     body('firstname')
         .isString().withMessage('First name must be a string')
-        .isLength({ min: 2 }).withMessage('First name requires minimum 2 characters'),
+        .isLength({ min: 1 }).withMessage('First name requires minimum 2 characters'),
     body('lastname')
         .isString().withMessage('Last name must be a string')
-        .isLength({ min: 2 }).withMessage('Last name requires minimum 2 characters'),
+        .isLength({ min: 1 }).withMessage('Last name requires minimum 2 characters'),
     body('email')
         .isEmail().withMessage('Email must be valid'),
     body('password')
@@ -41,11 +42,24 @@ const changePasswordValidationRules = [
     body('newPassword').isString().isLength({ min: 8 })
 ];
 
+const editProfileValidationRules = [
+    body('username')
+        .isString().withMessage('Username must be a string')
+        .isLength({ min: 3 }).withMessage('Username requires minimum 3 characters'),
+    body('firstname')
+        .isString().withMessage('First name must be a string')
+        .isLength({ min: 1 }).withMessage('First name requires minimum 1 character'),
+    body('lastname')
+        .isString().withMessage('Last name must be a string')
+        .isLength({ min: 1 }).withMessage('Last name requires minimum 1 character'),
+    body('email')
+        .isEmail().withMessage('Email must be valid')
+];
+
 const generateToken = (user) => {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 };
 
-// Register
 router.post('/register', registerValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -53,15 +67,21 @@ router.post('/register', registerValidationRules, async (req, res) => {
         return res.status(400).json({ error: errorMessages });
     }
     const { username, firstname, lastname, email, password, countryId, role } = req.body;
+    const transaction = await sequelize.transaction();
+    let transactionCompleted = false;
 
     try {
-        const existingUserByUsername = await Account.findOne({ where: { username } });
+        const existingUserByUsername = await Account.findOne({ where: { username }, transaction });
         if (existingUserByUsername) {
+            await transaction.rollback();
+            transactionCompleted = true;
             return res.status(400).json({ error: 'Username is already taken' });
         }
 
-        const existingUserByEmail = await Account.findOne({ where: { email } });
+        const existingUserByEmail = await Account.findOne({ where: { email }, transaction });
         if (existingUserByEmail) {
+            await transaction.rollback();
+            transactionCompleted = true;
             return res.status(400).json({ error: 'Email is already taken' });
         }
 
@@ -79,46 +99,40 @@ router.post('/register', registerValidationRules, async (req, res) => {
             emailVerified: false
         };
 
-        const user = await Account.create(userObj);
+        const user = await Account.create(userObj, { transaction });
         const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.status };
         const token = generateToken(tokenPayload);
 
-        await createUser(userObj, res).then(apiResponse => {
-            res.json({ token, message: 'User created successfully', userDetails: apiResponse });
-        }).catch(error => {
-            res.status(500).json({ error: 'Failed to create user in API service', details: error.message });
-        });
+        const userCreationPayload = {
+            username: userObj.username,
+            firstname: userObj.firstname,
+            lastname: userObj.lastname,
+            email: userObj.email,
+            countryId: userObj.countryId,
+            roleId: userObj.role === 'Artist' ? 1 : 2
+        };
+
+        // Synchronous call to API service
+        await axios.post('http://localhost:8080/api/user', userCreationPayload)
+            .catch(async error => {
+                if (!transactionCompleted) {
+                    await transaction.rollback();
+                    transactionCompleted = true;
+                }
+                throw new Error('Failed to create user in API service');
+            });
+
+        // Commit
+        await transaction.commit();
+        transactionCompleted = true;
+        res.json({ token, message: 'User created successfully' });
     } catch (err) {
+        if (!transactionCompleted) {
+            await transaction.rollback();
+        }
         res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
 });
-
-function createUser(userObj, res) {
-    const userCreationPayload = {
-        username: userObj.username,
-        firstname: userObj.firstname,
-        lastname: userObj.lastname,
-        email: userObj.email,
-        countryId: userObj.countryId,
-        roleId: userObj.role === 'Artist' ? 1 : 2
-    };
-    // Synchronous call to API service
-    return axios.post('http://localhost:8080/api/user', userCreationPayload)
-        .then(async apiResponse => {
-            const userId = apiResponse.data.id;
-            const userSettingsPayload = {
-                userId: userId,
-                language: 'EN',
-                theme: 1
-            };
-            await axios.post('http://localhost:8080/api/usersettings/', userSettingsPayload);
-            return apiResponse.data;
-        })
-        .catch(error => {
-            console.error('API Error:', error.message);
-            throw error;
-        });
-}
 
 // Login
 router.post('/login', loginValidationRules, loginLimiter, async (req, res) => {
@@ -233,23 +247,33 @@ router.post('/password-reset', async (req, res) => {
     }
 });
 
-router.put('/edit-profile/:id', async (req, res) => {
+router.put('/edit-profile/:id', editProfileValidationRules, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorMessages = errors.array().map(error => error.msg).join(', ');
+        return res.status(400).json({ error: errorMessages });
+    }
+
     const { id } = req.params;
     const { username, firstname, lastname, email } = req.body;
+    const transaction = await sequelize.transaction();
 
     try {
-        const user = await Account.findByPk(id);
+        const user = await Account.findByPk(id, { transaction });
         if (!user) {
+            await transaction.rollback();
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const usernameConflict = await Account.findOne({ where: { username, id: { [Op.ne]: id } } });
+        const usernameConflict = await Account.findOne({ where: { username, id: { [Op.ne]: id } }, transaction });
         if (usernameConflict) {
+            await transaction.rollback();
             return res.status(400).json({ error: 'Username already exists' });
         }
 
-        const emailConflict = await Account.findOne({ where: { email, id: { [Op.ne]: id } } });
+        const emailConflict = await Account.findOne({ where: { email, id: { [Op.ne]: id } }, transaction });
         if (emailConflict) {
+            await transaction.rollback();
             return res.status(400).json({ error: 'Email already exists' });
         }
 
@@ -257,7 +281,7 @@ router.put('/edit-profile/:id', async (req, res) => {
         user.firstname = firstname;
         user.lastname = lastname;
         user.email = email;
-        await user.save();
+        await user.save({ transaction });
 
         const apiServicePayload = {
             username: username,
@@ -268,12 +292,16 @@ router.put('/edit-profile/:id', async (req, res) => {
 
         // Synchronous call to API service
         await axios.put(`http://localhost:8080/api/user/${id}`, apiServicePayload)
-            .catch(() => {
+            .catch(async () => {
+                await transaction.rollback();
                 throw new Error('Failed to update user in api-service');
             });
 
+        // Commit
+        await transaction.commit();
         res.json({ message: 'User updated successfully in both services' });
     } catch (err) {
+        await transaction.rollback();
         res.status(500).json({ error: 'Internal Server Error', details: err.message });
     }
 });

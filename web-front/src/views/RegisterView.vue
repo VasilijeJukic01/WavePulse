@@ -13,6 +13,18 @@
           <input type="hidden" name="remember" value="true">
           <div class="rounded-md shadow-sm -space-y-px">
             <div class="mb-4">
+              <label for="first-name" class="sr-only">First Name</label>
+              <input v-model="user.firstName" id="first-name" name="first-name" type="text" required
+                     class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mb-4"
+                     placeholder="First Name">
+            </div>
+            <div class="mb-4">
+              <label for="last-name" class="sr-only">Last Name</label>
+              <input v-model="user.lastName" id="last-name" name="last-name" type="text" required
+                     class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mb-4"
+                     placeholder="Last Name">
+            </div>
+            <div class="mb-4">
               <label for="email" class="sr-only">Email address</label>
               <input v-model="user.email" id="email" name="email" type="email" required
                      class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm mb-4"

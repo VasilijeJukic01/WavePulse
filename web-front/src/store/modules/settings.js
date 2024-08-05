@@ -17,7 +17,7 @@ const mutations = {
 
 const actions = {
   async fetchSettings({ commit }, id) {
-    const response = await makeApiRequest(`/api/usersettings/${id}`, null, 'GET');
+    const response = await makeApiRequest(`/api/user-settings/${id}`, null, 'GET');
     const settings = {
       userId: response.data.userId,
       language: response.data.language,
@@ -27,7 +27,7 @@ const actions = {
   },
   async updateSettings({ commit }, settings) {
     console.log(settings)
-    await makeApiRequest(`/api/usersettings/${settings.userId}`, settings, 'PUT');
+    await makeApiRequest(`/api/user-settings/${settings.userId}`, settings, 'PUT');
     commit('SET_SETTINGS', settings);
   }
 };

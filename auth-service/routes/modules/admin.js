@@ -1,4 +1,5 @@
 const express = require('express');
+const { sequelize } = require('../../models');
 const { Account } = require('../../models');
 const axios = require('axios');
 const bcrypt = require('bcrypt');
@@ -33,24 +34,30 @@ router.get('/account/:id', async (req, res) => {
 router.put('/account/:id', async (req, res) => {
     const { id } = req.params;
     const { username, firstname, lastname, email, role, countryId, accountStatus } = req.body;
+    const transaction = await sequelize.transaction();
+
     try {
-        const account = await Account.findByPk(id);
+        const account = await Account.findByPk(id, { transaction });
         if (!account) {
+            await transaction.rollback();
             return res.status(404).json({ error: 'Account not found' });
         }
 
-        const usernameConflict = await Account.findOne({ where: { username, id: { [Op.ne]: id } } });
+        const usernameConflict = await Account.findOne({ where: { username, id: { [Op.ne]: id } }, transaction });
         if (usernameConflict) {
+            await transaction.rollback();
             return res.status(400).json({ error: 'Username already exists' });
         }
 
-        const emailConflict = await Account.findOne({ where: { email, id: { [Op.ne]: id } } });
+        const emailConflict = await Account.findOne({ where: { email, id: { [Op.ne]: id } }, transaction });
         if (emailConflict) {
+            await transaction.rollback();
             return res.status(400).json({ error: 'Email already exists' });
         }
 
         const roleData = await axios.get(`http://localhost:8080/api/role/name/${role}`);
         if (!roleData.data) {
+            await transaction.rollback();
             return res.status(400).json({ error: 'Role not found' });
         }
 
@@ -61,7 +68,7 @@ router.put('/account/:id', async (req, res) => {
         account.role = role;
         account.countryId = countryId;
         account.accountStatus = accountStatus;
-        await account.save();
+        await account.save({ transaction });
 
         const apiServicePayload = {
             username: username,
@@ -74,12 +81,16 @@ router.put('/account/:id', async (req, res) => {
 
         // Synchronous call to API service
         await axios.put(`http://localhost:8080/api/user/${id}`, apiServicePayload)
-            .catch(() => {
+            .catch(async () => {
+                await transaction.rollback();
                 throw new Error('Failed to update user in api-service');
             });
 
+        // Commit
+        await transaction.commit();
         res.json({ message: 'User updated successfully in both services' });
     } catch (err) {
+        await transaction.rollback();
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
@@ -104,17 +115,29 @@ router.put('/account/password/:id', async (req, res) => {
 
 router.delete('/account/:id', async (req, res) => {
     const { id } = req.params;
+    const transaction = await sequelize.transaction();
+
     try {
-        const account = await Account.findByPk(id);
+        const account = await Account.findByPk(id, { transaction });
         if (!account) {
+            await transaction.rollback();
             return res.status(404).json({ error: 'Account not found' });
         }
-        await account.destroy();
 
-        await axios.delete(`http://localhost:8080/api/user/${id}`);
+        await account.destroy({ transaction });
 
-        res.json({ message: 'Account deleted' });
+        // Synchronous call to API service
+        await axios.delete(`http://localhost:8080/api/user/${id}`)
+            .catch(async () => {
+                await transaction.rollback();
+                throw new Error('Failed to delete user in api-service');
+            });
+
+        // Commit
+        await transaction.commit();
+        res.json({ message: 'Account deleted successfully in both services' });
     } catch (err) {
+        await transaction.rollback();
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
