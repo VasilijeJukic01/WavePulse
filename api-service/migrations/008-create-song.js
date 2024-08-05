@@ -18,6 +18,11 @@ module.exports = {
       },
       duration: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isInt: true,
+          min: 0
+        }
       },
       year: {
         type: Sequelize.INTEGER,

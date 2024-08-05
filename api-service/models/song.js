@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     duration: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
+      validate: {
+        isInt: true,
+        min: 0
+      }
     },
     year: {
       type: DataTypes.INTEGER,

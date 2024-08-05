@@ -11,7 +11,10 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       userId: {
         type: Sequelize.INTEGER,

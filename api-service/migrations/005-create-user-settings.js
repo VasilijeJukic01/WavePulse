@@ -19,7 +19,10 @@ module.exports = {
       },
       language: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       theme: {
         type: Sequelize.INTEGER,

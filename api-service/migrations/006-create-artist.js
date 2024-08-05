@@ -11,13 +11,23 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       establishmentYear: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        validate: {
+          isInt: true,
+          is: /^\d{4}$/
+        }
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        validate: {
+          len: [0, 1000]
+        }
       },
       countryId: {
         type: Sequelize.INTEGER,

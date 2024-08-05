@@ -17,9 +17,17 @@ module.exports = (sequelize, DataTypes) => {
   Concert.init({
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
     },
-    concertDate: DataTypes.DATE,
+    concertDate: {
+      type: DataTypes.DATE,
+      validate: {
+        isDate: true,
+      }
+    },
     countryId: {
       type: DataTypes.INTEGER,
       allowNull: false,

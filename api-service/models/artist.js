@@ -20,10 +20,24 @@ module.exports = (sequelize, DataTypes) => {
   Artist.init({
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
     },
-    establishmentYear: DataTypes.INTEGER,
-    description: DataTypes.STRING,
+    establishmentYear: {
+      type: DataTypes.INTEGER,
+      validate: {
+        isInt: true,
+        is: /^\d{4}$/
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      validate: {
+        len: [0, 1000]
+      }
+    },
     countryId: {
       type: DataTypes.INTEGER,
       allowNull: false,

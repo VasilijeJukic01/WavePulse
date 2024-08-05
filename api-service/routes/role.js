@@ -6,7 +6,6 @@ const route = express.Router();
 
 const roleSchema = Joi.object({
     role: Joi.string().required(),
-    description: Joi.string().required()
 });
 
 route.use(express.json());

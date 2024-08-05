@@ -11,7 +11,10 @@ module.exports = {
       },
       name: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       createdAt: {
         allowNull: false,

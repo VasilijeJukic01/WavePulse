@@ -17,10 +17,28 @@ module.exports = (sequelize, DataTypes) => {
   AlbumReview.init({
     review: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        len: [2, 500]
+      }
     },
-    likes: DataTypes.INTEGER,
-    dislikes: DataTypes.INTEGER,
+    likes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      validate: {
+        isInt: true,
+        min: 0
+      }
+    },
+    dislikes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      validate: {
+        isInt: true,
+        min: 0
+      }
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

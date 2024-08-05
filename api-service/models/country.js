@@ -18,7 +18,10 @@ module.exports = (sequelize, DataTypes) => {
   Country.init({
     name: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
     }
   }, {
     sequelize,
