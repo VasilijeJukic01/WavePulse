@@ -8,7 +8,6 @@ require('dotenv').config();
 
 const router = express.Router();
 
-// Admin routes
 router.get('/account', async (req, res) => {
     try {
         const accounts = await Account.findAll();
