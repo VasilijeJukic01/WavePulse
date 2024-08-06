@@ -1,5 +1,9 @@
 const axios = require('axios');
 const config = require('../config/config');
+const { generateToken } = require('./serviceToken');
+
+// Config
+axios.defaults.baseURL = config.serviceRegistryUrl
 
 let authInstances = [];
 let apiInstances = [];
@@ -7,7 +11,11 @@ let logInstances = [];
 
 const fetchServices = async () => {
     try {
-        const res = await axios.get(config.serviceRegistryUrl);
+        const token = generateToken('apiGateway');
+        const res = await axios.get('/services', {
+            headers: { 'Authorization': token }
+        });
+
         const services = res.data;
 
         authInstances = Object.keys(services)

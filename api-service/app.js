@@ -1,4 +1,5 @@
 const express = require('express');
+const { verifyToken } = require('./modules/serviceToken');
 const app = express();
 
 app.get('/', (req, res) => {
@@ -34,7 +35,7 @@ Object.entries(routes).forEach(([path, route]) => {
 });
 
 // Health Check
-app.get('/health', (req, res) => {
+app.get('/health', verifyToken('apiGateway'), (req, res) => {
     res.status(200).send('Service is healthy');
 });
 

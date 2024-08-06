@@ -5,6 +5,7 @@ const routes = require('./routes/account');
 const cors = require('cors');
 const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
+const { verifyToken } = require('./modules/serviceToken');
 require('dotenv').config();
 
 if (!process.env.ACCESS_TOKEN_SECRET) {
@@ -62,7 +63,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Health Check
-app.get('/health', (req, res) => {
+app.get('/health', verifyToken('apiGateway'), (req, res) => {
     res.status(200).send('Service is healthy');
 });
 

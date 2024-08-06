@@ -1,0 +1,9 @@
+{
+  "name": "common-utils",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^8.5.1"
+  }
+}
