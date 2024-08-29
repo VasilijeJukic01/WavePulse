@@ -1,5 +1,9 @@
 <template>
-  <div class="custom-bg min-h-screen flex justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="video-bg min-h-screen flex justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <video autoplay muted loop>
+      <source src="@/assets/background.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
     <div class="max-w-md w-full space-y-8">
       <div class="form-container shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div>
@@ -30,7 +34,7 @@
               Sign in
             </button>
           </div>
-          <div v-if="loginMessage" class="message">
+          <div v-if="loginMessage" class="message text-white">
             {{ loginMessage }}
           </div>
         </form>
@@ -60,7 +64,7 @@ export default {
       try {
         await this.login(this.user)
         this.loginMessage = 'Login successful!'
-        await this.$router.push('/home')
+        await this.$router.push('/')
       } catch (error) {
         this.loginMessage = 'Login failed: ' + error.message
       }
@@ -70,15 +74,39 @@ export default {
 </script>
 
 <style scoped>
-.custom-bg {
-  background: url('~@/assets/background.jpg') no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+.video-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
+
+.video-bg::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
 .form-container {
-  background-color: #202c34;
+  position: relative;
+  z-index: 2;
+  background-color: #151d22;
   border-radius: 20px;
 }
 input[type="text"], input[type="email"], input[type="password"], select {

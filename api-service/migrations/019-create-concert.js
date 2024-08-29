@@ -11,10 +11,16 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       concertDate: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        validate: {
+          isDate: true,
+        }
       },
       countryId: {
         type: Sequelize.INTEGER,

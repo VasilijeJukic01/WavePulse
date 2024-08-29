@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/home',
+    path: '/',
     name: 'Home',
     component: () => import('@/views/HomeView.vue')
   },
@@ -21,30 +21,57 @@ const routes = [
     component: () => import('@/views/RegisterView.vue')
   },
   {
-    path: '/admin',
+    path: '/edit-profile/:id',
+    name: 'EditProfile',
+    component: () => import('@/views/edit-profile/EditProfileView.vue')
+  },
+  {
+    path: '/edit-profile/change-password/:id',
+    name: 'EditProfileChangePassword',
+    component: () => import('@/views/edit-profile/EditProfileChangePasswordView.vue')
+  },
+  {
+    path: '/edit-profile/appearance/:id',
+    name: 'EditProfileAppearance',
+    component: () => import('@/views/edit-profile/EditProfileAppearanceView.vue')
+  },
+  {
+    path: '/terms-of-service',
+    name: 'TermsOfService',
+    component: () => import('@/views/policies/TermsOfServiceView.vue')
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/views/policies/PrivacyPolicyView.vue')
+  },
+  // Admin
+  {
+    path: '/admin/manage-users',
     name: 'Admin',
-    meta: { requiresAuth: true, requiresAdmin: true },
-    component: () => import('@/views/AdminPanelView.vue')
+    // meta: { requiresAuth: true, requiresAdmin: true },
+    component: () => import('@/views/admin/ManageUsersView.vue')
   },
   {
-    path: '/admin/register',
-    name: 'Register',
-    meta: { requiresAuth: true, requiresAdmin: true },
-    component: () => import('@/views/RegisterView.vue')
+  path: '/admin/modify-user/:id',
+  name: 'ModifyUser',
+  // meta: { requiresAuth: true, requiresAdmin: true },
+  component: () => import('@/views/admin/ModifyUserView.vue')
   },
-  {
-    path: '/admin/edit/:id',
-    name: 'EditUser',
-    meta: { requiresAuth: true, requiresAdmin: true },
-    component: () => import('@/views/EditUserView.vue')
-  },
-  { path: '*', redirect: '/home' },
+  { path: '*', redirect: '/' },
 ]
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { x: 0, y: 0 };
+    }
+  }
 })
 
 router.beforeEach((to, from, next) => {
@@ -55,9 +82,9 @@ router.beforeEach((to, from, next) => {
         query: { redirect: to.fullPath }
       })
     } else if (to.matched.some(record => record.meta.requiresAdmin)) {
-      if (store.getters.userRole !== 1) {
+      if (store.getters.userRole !== 'Admin') {
         next({
-          path: '/home',
+          path: '/',
         })
       } else {
         next()

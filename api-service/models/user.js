@@ -30,8 +30,18 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true
       }
     },
-    firstname: DataTypes.TEXT,
-    lastname: DataTypes.TEXT,
+    firstname: {
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true
+      }
+    },
+    lastname: {
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true
+      }
+    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,

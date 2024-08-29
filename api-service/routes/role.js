@@ -6,7 +6,6 @@ const route = express.Router();
 
 const roleSchema = Joi.object({
     role: Joi.string().required(),
-    description: Joi.string().required()
 });
 
 route.use(express.json());
@@ -20,6 +19,10 @@ const getAllRoles = async () => {
 
 const getRoleById = async (id) => {
     return await Role.findByPk(id);
+}
+
+const getRoleByName = async (role) => {
+    return await Role.findOne({ where: { role } });
 }
 
 const createRole = async (roleData) => {
@@ -45,6 +48,17 @@ route.get("/", async (req, res) => {
 
 route.get("/:id", async (req, res) => {
     await handleRoute(req, res, getRoleById);
+});
+
+route.get("/name/:role", async (req, res) => {
+    try {
+        const role = req.params.role;
+        const result = await getRoleByName(role);
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
 });
 
 route.post("/", async (req, res) => {

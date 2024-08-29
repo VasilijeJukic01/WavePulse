@@ -11,13 +11,27 @@ module.exports = {
       },
       review: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+          len: [2, 500]
+        }
       },
       likes: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isInt: true,
+          min: 0
+        }
       },
       dislikes: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isInt: true,
+          min: 0
+        }
       },
       userId: {
         type: Sequelize.INTEGER,

@@ -1,0 +1,44 @@
+import axios from 'axios';
+import { makeApiRequest } from '../utils/util';
+
+// Config
+axios.defaults.baseURL = process.env.VUE_APP_API_GATEWAY_URL
+
+const state = {
+  settings: {
+    language: '',
+    theme: '',
+  },
+};
+
+const mutations = {
+  SET_SETTINGS: (state, settings) => state.settings = settings,
+};
+
+const actions = {
+  async fetchSettings({ commit }, id) {
+    const response = await makeApiRequest(`/api/user-settings/${id}`, null, 'GET');
+    const settings = {
+      userId: response.data.userId,
+      language: response.data.language,
+      theme: response.data.theme
+    };
+    commit('SET_SETTINGS', settings);
+  },
+  async updateSettings({ commit }, settings) {
+    console.log(settings)
+    await makeApiRequest(`/api/user-settings/${settings.userId}`, settings, 'PUT');
+    commit('SET_SETTINGS', settings);
+  }
+};
+
+const getters = {
+  settings: state => state.settings,
+};
+
+export default {
+  state,
+  mutations,
+  actions,
+  getters,
+};

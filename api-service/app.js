@@ -1,4 +1,5 @@
 const express = require('express');
+const { verifyToken } = require('./modules/serviceToken');
 const app = express();
 
 app.get('/', (req, res) => {
@@ -7,25 +8,26 @@ app.get('/', (req, res) => {
 
 const routes = {
     '/album': require('./routes/album.js'),
-    '/albumrating': require('./routes/albumrating.js'),
-    '/albumreview': require('./routes/albumreview.js'),
+    '/album-rating': require('./routes/albumrating.js'),
+    '/album-review': require('./routes/albumreview.js'),
     '/artist': require('./routes/artist.js'),
     '/concert': require('./routes/concert.js'),
     '/country': require('./routes/country.js'),
     '/follow': require('./routes/follow.js'),
     '/genre': require('./routes/genre.js'),
     '/playlist': require('./routes/playlist.js'),
-    '/playlistsong': require('./routes/playlistsong.js'),
+    '/playlist-song': require('./routes/playlistsong.js'),
     '/role': require('./routes/role.js'),
     '/song': require('./routes/song.js'),
-    '/songgenre': require('./routes/songgenre.js'),
-    '/songrating': require('./routes/songrating.js'),
-    '/songreview': require('./routes/songreview.js'),
-    '/songtag': require('./routes/songtag.js'),
+    '/song-genre': require('./routes/songgenre.js'),
+    '/song-rating': require('./routes/songrating.js'),
+    '/song-review': require('./routes/songreview.js'),
+    '/song-tag': require('./routes/songtag.js'),
     '/tag': require('./routes/tag.js'),
     '/user': require('./routes/user.js'),
-    '/usersettings': require('./routes/usersettings.js'),
-    'concertartist': require('./routes/concertartist.js')
+    '/user-settings': require('./routes/usersettings.js'),
+    '/concert-artist': require('./routes/concertartist.js'),
+    "/song-artist": require("./routes/songartist.js"),
 };
 
 Object.entries(routes).forEach(([path, route]) => {
@@ -33,7 +35,7 @@ Object.entries(routes).forEach(([path, route]) => {
 });
 
 // Health Check
-app.get('/health', (req, res) => {
+app.get('/health', verifyToken('apiGateway'), (req, res) => {
     res.status(200).send('Service is healthy');
 });
 

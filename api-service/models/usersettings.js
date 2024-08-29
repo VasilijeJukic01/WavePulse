@@ -31,10 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     theme: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
+      allowNull: false
     }
   }, {
     sequelize,

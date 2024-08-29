@@ -18,6 +18,11 @@ module.exports = {
       },
       duration: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isInt: true,
+          min: 0
+        }
       },
       year: {
         type: Sequelize.INTEGER,
@@ -29,13 +34,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: {
           model: 'Albums',
-          key: 'id'
-        }
-      },
-      artistId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Artists',
           key: 'id'
         }
       },

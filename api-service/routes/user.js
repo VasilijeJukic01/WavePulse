@@ -1,16 +1,16 @@
 const express = require("express");
-const { User } = require("../models");
+const { User, UserSettings } = require("../models");
 const { handleRoute } = require("./handler");
 const Joi = require('joi');
 const route = express.Router();
 
 const userSchema = Joi.object({
     username: Joi.string().required(),
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
+    firstname: Joi.string().required(),
+    lastname: Joi.string().required(),
     email: Joi.string().email().required(),
     countryId: Joi.number().required(),
-    role: Joi.string().required()
+    roleId: Joi.number().required()
 });
 
 route.use(express.json());
@@ -27,26 +27,44 @@ const getUserById = async (id) => {
 }
 
 const createUser = async (userData) => {
-    return await User.create(userData);
-}
+    const user = await User.create(userData);
+    await createDefaultSettings(user.id);
+    return user;
+};
 
 const updateUser = async (id, userData) => {
     const user = await User.findByPk(id);
     user.username = userData.username;
-    user.firstName = userData.firstName;
-    user.lastName = userData.lastName;
+    user.firstname = userData.firstname;
+    user.lastname = userData.lastname;
     user.email = userData.email;
-    user.countryId = userData.countryId;
-    user.role = userData.role;
     await user.save();
     return user;
 }
 
 const deleteUser = async (id) => {
     const user = await User.findByPk(id);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    const userSettings = await UserSettings.findOne({ where: { userId: id } });
+    if (userSettings) {
+        await userSettings.destroy();
+    }
+
     await user.destroy();
     return user.id;
 }
+
+const createDefaultSettings = async (userId) => {
+    const defaultSettings = {
+        userId: userId,
+        language: 'EN',
+        theme: 1
+    };
+    await UserSettings.create(defaultSettings);
+};
 
 route.get("/", async (req, res) => {
     await handleRoute(req, res, getAllUsers);

@@ -15,7 +15,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   SongRating.init({
-    rate: DataTypes.INTEGER,
+    rate: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        isInt: true,
+        min: 1,
+        max: 5
+      }
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

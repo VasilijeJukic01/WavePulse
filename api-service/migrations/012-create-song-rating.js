@@ -10,7 +10,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       rate: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        validate: {
+          isInt: true,
+          min: 1,
+          max: 5
+        }
       },
       userId: {
         type: Sequelize.INTEGER,

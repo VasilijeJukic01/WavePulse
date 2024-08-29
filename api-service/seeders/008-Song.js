@@ -8,7 +8,6 @@ module.exports = {
       duration: 260,
       year: 1969,
       albumId: 1,
-      artistId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -16,10 +15,24 @@ module.exports = {
       duration: 243,
       year: 1970,
       albumId: 2,
-      artistId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
-    }], {});
+    }, {
+        name: 'A Horse with No Name',
+        duration: 252,
+        year: 1971,
+        albumId: 3,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }, {
+        name: 'Run to You',
+        duration: 226,
+        year: 1984,
+        albumId: 4,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ], {});
   },
 
   down: async (queryInterface, Sequelize) => {

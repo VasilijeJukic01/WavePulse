@@ -1,0 +1,45 @@
+const axios = require('axios');
+const config = require('../config/config');
+const { generateToken } = require('./serviceToken');
+
+// Config
+axios.defaults.baseURL = config.serviceRegistryUrl
+
+let authInstances = [];
+let apiInstances = [];
+let logInstances = [];
+
+const fetchServices = async () => {
+    try {
+        const token = generateToken('apiGateway');
+        const res = await axios.get('/services', {
+            headers: { 'Authorization': token }
+        });
+
+        const services = res.data;
+
+        authInstances = Object.keys(services)
+            .filter(name => name.includes('authService'))
+            .flatMap(name => services[name]);
+        apiInstances = Object.keys(services)
+            .filter(name => name.includes('apiService'))
+            .flatMap(name => services[name]);
+        logInstances = Object.keys(services)
+            .filter(name => name.includes('logService'))
+            .flatMap(name => services[name]);
+
+    } catch (error) {
+        console.error('Error fetching services:', error);
+    }
+};
+
+const getInstances = () => ({
+    authInstances,
+    apiInstances,
+    logInstances
+});
+
+module.exports = {
+    fetchServices,
+    getInstances
+};

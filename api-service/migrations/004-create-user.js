@@ -15,15 +15,25 @@ module.exports = {
         unique: true
       },
       firstname: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        validate: {
+          notEmpty: true
+        }
       },
       lastname: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        validate: {
+          notEmpty: true
+        }
       },
       email: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
+        validate: {
+          notEmpty: true,
+          isEmail: true
+        }
       },
       countryId: {
         type: Sequelize.INTEGER,

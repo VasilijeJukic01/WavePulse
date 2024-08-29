@@ -1,14 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const config = require('./config/config');
+const { verifyToken } = require('./modules/serviceToken');
+const setupSecurity = require('./modules/serviceSecurity');
 
 const app = express();
-
 app.use(bodyParser.json());
 
 const services = {};
 
 // Routes
-app.post('/register', (req, res) => {
+app.post('/register', verifyToken('serviceRegistry'), (req, res) => {
     try {
         const { name, url } = req.body;
 
@@ -22,7 +24,7 @@ app.post('/register', (req, res) => {
     }
 });
 
-app.delete('/register', (req, res) => {
+app.delete('/register', verifyToken('serviceRegistry'), (req, res) => {
     try {
         const { name, url } = req.body;
 
@@ -35,7 +37,7 @@ app.delete('/register', (req, res) => {
     }
 });
 
-app.get('/services', (req, res) => {
+app.get('/services', verifyToken('apiGateway'), (req, res) => {
     try {
         res.json(services);
     } catch (err) {
@@ -44,6 +46,11 @@ app.get('/services', (req, res) => {
 });
 
 // Core
-app.listen(8000, () => {
-    console.log('Service Registry is running on port 8000');
-});
+const initialize = () => {
+    setupSecurity(app);
+    app.listen(config.port, () => {
+        console.log(`Service Registry is running on port ${config.port}`);
+    });
+};
+
+initialize();

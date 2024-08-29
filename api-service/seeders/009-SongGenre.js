@@ -13,6 +13,21 @@ module.exports = {
       genreId: 2,
       createdAt: new Date(),
       updatedAt: new Date()
+    }, {
+      songId: 3,
+      genreId: 12,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      songId: 3,
+      genreId: 3,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }, {
+      songId: 4,
+      genreId: 1,
+      createdAt: new Date(),
+      updatedAt: new Date()
     }], {});
   },
 
