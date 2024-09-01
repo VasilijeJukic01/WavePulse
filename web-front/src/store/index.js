@@ -13,7 +13,10 @@ export default new Vuex.Store({
     user,
     admin,
     settings,
-    songs,
+    songs: {
+      namespaced: true,
+      ...songs
+    },
   },
   plugins: [createPersistedState({
     paths: [

@@ -10,6 +10,7 @@
         <router-link v-if="user.roleId === 1" to="/admin/manage-users" class="text-gray-300 text-lg hover:text-white transition duration-300">Admin Panel</router-link>
         <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">News</router-link>
         <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">Discover</router-link>
+        <router-link v-if="user.roleId === 3" to="/artist/manage-songs" class="text-gray-300 text-lg hover:text-white transition duration-300">Artist Panel</router-link>
         <div v-if="user.roleId !== -1" class="relative">
           <button @click="toggleDropdown" class="text-gray-300 text-lg hover:text-white transition duration-300 flex items-center">
             Profile

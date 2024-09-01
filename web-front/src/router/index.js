@@ -53,10 +53,15 @@ const routes = [
     component: () => import('@/views/admin/ManageUsersView.vue')
   },
   {
-  path: '/admin/modify-user/:id',
-  name: 'ModifyUser',
-  // meta: { requiresAuth: true, requiresAdmin: true },
-  component: () => import('@/views/admin/ModifyUserView.vue')
+    path: '/admin/modify-user/:id',
+    name: 'ModifyUser',
+    // meta: { requiresAuth: true, requiresAdmin: true },
+    component: () => import('@/views/admin/ModifyUserView.vue')
+  },
+  {
+    path: '/artist/manage-songs',
+    name: 'ManageSongs',
+    component: () => import('@/views/artist/ManageSongsView.vue')
   },
   { path: '*', redirect: '/' },
 ]
