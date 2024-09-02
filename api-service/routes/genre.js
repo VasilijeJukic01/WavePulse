@@ -1,6 +1,7 @@
 const express = require("express");
 const { Genre } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
+const { verifyTokenAdmin, verifyTokenUser } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -38,24 +39,24 @@ const deleteGenre = async (id) => {
     return genre.id;
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllGenres);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getGenreById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyTokenAdmin(), async (req, res) => {
     const { error } = genreSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createGenre);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, updateGenre);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, deleteGenre);
 });

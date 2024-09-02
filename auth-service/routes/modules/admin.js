@@ -4,11 +4,12 @@ const { Account } = require('../../models');
 const axios = require('axios');
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
+const { verifyTokenAdmin } = require('../../../common-utils/modules/accessToken');
 require('dotenv').config();
 
 const router = express.Router();
 
-router.get('/account', async (req, res) => {
+router.get('/account', verifyTokenAdmin(), async (req, res) => {
     try {
         const accounts = await Account.findAll();
         res.json(accounts);
@@ -17,7 +18,7 @@ router.get('/account', async (req, res) => {
     }
 });
 
-router.get('/account/:id', async (req, res) => {
+router.get('/account/:id', verifyTokenAdmin(), async (req, res) => {
     const { id } = req.params;
     try {
         const account = await Account.findByPk(id);
@@ -30,7 +31,7 @@ router.get('/account/:id', async (req, res) => {
     }
 });
 
-router.put('/account/:id', async (req, res) => {
+router.put('/account/:id', verifyTokenAdmin(), async (req, res) => {
     const { id } = req.params;
     const { username, firstname, lastname, email, role, countryId, accountStatus } = req.body;
     const transaction = await sequelize.transaction();
@@ -94,7 +95,7 @@ router.put('/account/:id', async (req, res) => {
     }
 });
 
-router.put('/account/password/:id', async (req, res) => {
+router.put('/account/password/:id', verifyTokenAdmin(), async (req, res) => {
     const { id } = req.params;
     const { password } = req.body;
     try {
@@ -112,7 +113,7 @@ router.put('/account/password/:id', async (req, res) => {
     }
 });
 
-router.delete('/account/:id', async (req, res) => {
+router.delete('/account/:id', verifyTokenAdmin(), async (req, res) => {
     const { id } = req.params;
     const transaction = await sequelize.transaction();
 

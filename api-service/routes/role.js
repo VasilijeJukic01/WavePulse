@@ -1,6 +1,7 @@
 const express = require("express");
 const { Role } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
+const { verifyTokenAdmin, verifyTokenUser } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -42,15 +43,15 @@ const deleteRole = async (id) => {
     return role.id;
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllRoles);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getRoleById);
 });
 
-route.get("/name/:role", async (req, res) => {
+route.get("/name/:role", verifyTokenUser(), async (req, res) => {
     try {
         const role = req.params.role;
         const result = await getRoleByName(role);
@@ -61,16 +62,16 @@ route.get("/name/:role", async (req, res) => {
     }
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyTokenAdmin(), async (req, res) => {
     const { error } = roleSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createRole);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, updateRole);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, deleteRole);
 });

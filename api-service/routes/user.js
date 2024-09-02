@@ -1,7 +1,8 @@
 const express = require("express");
 const { User, UserSettings } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
+const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const userSchema = Joi.object({
@@ -66,24 +67,24 @@ const createDefaultSettings = async (userId) => {
     await UserSettings.create(defaultSettings);
 };
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllUsers);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getUserById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyTokenAdmin(), async (req, res) => {
     const { error } = userSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createUser);
 });
-
-route.put("/:id", async (req, res) => {
+//TODO: Change to verifyService
+route.put("/:id",  async (req, res) => {
     await handleRoute(req, res, updateUser);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenAdmin(),  async (req, res) => {
     await handleRoute(req, res, deleteUser);
 });

@@ -6,6 +6,7 @@ const { Account, sequelize } = require('../../models');
 const rateLimit = require('express-rate-limit');
 const axios = require('axios');
 const { Op } = require('sequelize');
+const { verifyTokenUser } = require('../../../common-utils/modules/accessToken');
 require('dotenv').config();
 
 const router = express.Router();
@@ -181,7 +182,7 @@ router.post('/login', loginValidationRules, loginLimiter, async (req, res) => {
 });
 
 // Change password
-router.put('/change-password/:id', changePasswordValidationRules, async (req, res) => {
+router.put('/change-password/:id', verifyTokenUser(), changePasswordValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: 'Minimum password length is 8 characters' });
@@ -211,7 +212,7 @@ router.put('/change-password/:id', changePasswordValidationRules, async (req, re
 });
 
 // Password reset
-router.post('/password-reset-request', async (req, res) => {
+router.post('/password-reset-request', verifyTokenUser(), async (req, res) => {
     const { email } = req.body;
     try {
         const user = await Account.findOne({ where: { email } });
@@ -229,7 +230,7 @@ router.post('/password-reset-request', async (req, res) => {
     }
 });
 
-router.post('/password-reset', async (req, res) => {
+router.post('/password-reset', verifyTokenUser(), async (req, res) => {
     const { token, newPassword } = req.body;
     try {
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
@@ -247,7 +248,7 @@ router.post('/password-reset', async (req, res) => {
     }
 });
 
-router.put('/edit-profile/:id', editProfileValidationRules, async (req, res) => {
+router.put('/edit-profile/:id', verifyTokenUser(), editProfileValidationRules, async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         const errorMessages = errors.array().map(error => error.msg).join(', ');

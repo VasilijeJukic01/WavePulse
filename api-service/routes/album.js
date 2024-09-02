@@ -1,7 +1,8 @@
 const express = require("express");
 const { Album } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
+const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const albumSchema = Joi.object({
@@ -14,6 +15,28 @@ const albumSchema = Joi.object({
 
 route.use(express.json());
 route.use(express.urlencoded({ extended: true }));
+
+route.get("/", verifyTokenUser(), async (req, res) => {
+    await handleRoute(req, res, getAllAlbums);
+});
+
+route.get("/:id", verifyTokenUser(), async (req, res) => {
+    await handleRoute(req, res, getAlbumById);
+});
+
+route.post("/", verifyTokenAdmin(), async (req, res) => {
+    const { error } = albumSchema.validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+    await handleRoute(req, res, createAlbum);
+});
+
+route.put("/:id", verifyTokenAdmin(), async (req, res) => {
+    await handleRoute(req, res, updateAlbum);
+});
+
+route.delete("/:id", verifyTokenAdmin(), async (req, res) => {
+    await handleRoute(req, res, deleteAlbum);
+});
 
 module.exports = route;
 
@@ -45,25 +68,3 @@ const deleteAlbum = async (id) => {
     await album.destroy();
     return album.id;
 }
-
-route.get("/", async (req, res) => {
-    await handleRoute(req, res, getAllAlbums);
-});
-
-route.get("/:id", async (req, res) => {
-    await handleRoute(req, res, getAlbumById);
-});
-
-route.post("/", async (req, res) => {
-    const { error } = albumSchema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-    await handleRoute(req, res, createAlbum);
-});
-
-route.put("/:id", async (req, res) => {
-    await handleRoute(req, res, updateAlbum);
-});
-
-route.delete("/:id", async (req, res) => {
-    await handleRoute(req, res, deleteAlbum);
-});
