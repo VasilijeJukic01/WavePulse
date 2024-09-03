@@ -5,7 +5,7 @@
       <div class="w-full max-w-7xl space-y-8 mx-auto mt-12">
         <h1 class="mb-6 text-center text-4xl font-extrabold text-white">Account Management</h1>
         <div class="actions flex justify-end space-x-4">
-          <button class="btn btn-primary flex items-center space-x-2">
+          <button class="btn btn-primary flex items-center space-x-2" @click="navigateToAddUser">
             <span>Add User</span>
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
           </button>
@@ -151,6 +151,9 @@ export default {
     showDeleteConfirmation(id) {
       this.userIdToDelete = id;
       this.showConfirmationDialog = true;
+    },
+    navigateToAddUser() {
+      this.$router.push('/admin/add-user');
     }
   },
   created() {

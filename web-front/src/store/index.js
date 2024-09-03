@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import user from './modules/user';
 import admin from './modules/admin';
+import artist from './modules/artist';
 import settings from './modules/settings';
 import songs from './modules/songs';
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   modules: {
     user,
     admin,
+    artist,
     settings,
     songs: {
       namespaced: true,

@@ -59,9 +59,20 @@ const routes = [
     component: () => import('@/views/admin/ModifyUserView.vue')
   },
   {
+    path: '/admin/add-user',
+    name: 'AddUser',
+    component: () => import('@/views/admin/AddUserView.vue')
+  },
+  // Artist
+  {
     path: '/artist/manage-songs',
     name: 'ManageSongs',
     component: () => import('@/views/artist/ManageSongsView.vue')
+  },
+  {
+    path: '/artist/analytics',
+    name: 'ArtistAnalytics',
+    component: () => import('@/views/artist/ArtistAnalytics.vue')
   },
   { path: '*', redirect: '/' },
 ]

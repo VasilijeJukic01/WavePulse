@@ -74,8 +74,7 @@ route.get("/", verifyTokenUser(), async (req, res) => {
 route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getUserById);
 });
-
-route.post("/", verifyTokenAdmin(), async (req, res) => {
+route.post("/", async (req, res) => {
     const { error } = userSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createUser);

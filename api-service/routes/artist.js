@@ -1,5 +1,5 @@
 const express = require("express");
-const { Artist } = require("../models");
+const { Artist, SongRating, Song, SongArtist } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const { verifyTokenAdmin, verifyTokenUser } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
@@ -69,3 +69,23 @@ route.delete("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, deleteArtist);
 });
 
+// routes/artist.js
+route.get('/ratings/:id', async (req, res) => {
+    const { id: artistId } = req.params;
+    try {
+        const ratings = await SongRating.findAll({
+            include: {
+                model: Song,
+                include: {
+                    model: SongArtist,
+                    as: 'songArtists',
+                    where: { artistId },
+                },
+            },
+        });
+        res.json(ratings);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.message);
+    }
+});
