@@ -69,23 +69,30 @@ route.delete("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, deleteArtist);
 });
 
-// routes/artist.js
 route.get('/ratings/:id', async (req, res) => {
     const { id: artistId } = req.params;
+
     try {
-        const ratings = await SongRating.findAll({
-            include: {
-                model: Song,
-                include: {
-                    model: SongArtist,
-                    as: 'songArtists',
-                    where: { artistId },
-                },
-            },
+        const songArtists = await SongArtist.findAll({
+            where: { artistId }
         });
-        res.json(ratings);
+
+        const songIds = songArtists.map(songArtist => songArtist.songId);
+        const songs = await Song.findAll({
+            where: {
+                id: songIds
+            }
+        });
+
+        const response = await Promise.all(songs.map(async (song) => {
+            const ratings = await SongRating.findAll({
+                where: { songId: song.id }
+            });
+            return { song, ratings };
+        }));
+
+        res.json(response);
     } catch (error) {
-        console.log(error);
         res.status(500).send(error.message);
     }
 });

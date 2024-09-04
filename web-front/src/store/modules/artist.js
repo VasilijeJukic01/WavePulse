@@ -17,8 +17,13 @@ const mutations = {
 const actions = {
   async fetchArtistRatings({ commit }, artistId) {
     try {
-      const response = await axios.get(`/api/artist/ratings/${artistId}`);
-      commit('SET_ARTIST_RATINGS', response.data);
+      // TODO: Set artistId to 1 for now, as we only have one artist in the database
+      const response = await makeApiRequest(`/api/artist/ratings/${1}`, null, 'GET');
+      const formattedData = response.data.map(item => ({
+        song: item.song,
+        ratings: item.ratings
+      }));
+      commit('SET_ARTIST_RATINGS', formattedData);
     } catch (error) {
       console.error("Error fetching artist ratings:", error);
     }
@@ -29,29 +34,34 @@ const getters = {
   averageRatingsBySong: (state) => {
     const songRatings = {};
 
-    state.artistRatings.forEach((rating) => {
-      const songId = rating.songId;
+    state.artistRatings.forEach((item) => {
+      const songId = item.song.id;
       if (!songRatings[songId]) {
-        songRatings[songId] = { total: 0, count: 0 };
+        songRatings[songId] = { total: 0, count: 0, name: item.song.name };
       }
-      songRatings[songId].total += rating.rate;
-      songRatings[songId].count += 1;
+      item.ratings.forEach(rating => {
+        songRatings[songId].total += rating.rate;
+        songRatings[songId].count += 1;
+      });
     });
 
-    return Object.entries(songRatings).map(([songId, { total, count }]) => ({
+    return Object.entries(songRatings).map(([songId, { total, count, name }]) => ({
       songId,
       averageRating: total / count,
+      name
     }));
   },
   ratingsOverTime: (state) => {
     const ratingsByDate = {};
 
-    state.artistRatings.forEach((rating) => {
-      const date = new Date(rating.updatedAt).toLocaleDateString();
-      if (!ratingsByDate[date]) {
-        ratingsByDate[date] = [];
-      }
-      ratingsByDate[date].push(rating.rate);
+    state.artistRatings.forEach((item) => {
+      item.ratings.forEach(rating => {
+        const date = new Date(rating.updatedAt).toLocaleDateString();
+        if (!ratingsByDate[date]) {
+          ratingsByDate[date] = [];
+        }
+        ratingsByDate[date].push(rating.rate);
+      });
     });
 
     return Object.entries(ratingsByDate).map(([date, ratings]) => ({
