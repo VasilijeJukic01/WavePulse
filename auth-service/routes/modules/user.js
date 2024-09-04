@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit');
 const axios = require('axios');
 const { Op } = require('sequelize');
 const { verifyTokenUser } = require('../../../common-utils/modules/accessToken');
+const { generateToken } = require('../../../common-utils/modules/serviceToken');
 require('dotenv').config();
 
 const router = express.Router();
@@ -57,7 +58,7 @@ const editProfileValidationRules = [
         .isEmail().withMessage('Email must be valid')
 ];
 
-const generateToken = (user) => {
+const generateUserToken = (user) => {
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 };
 
@@ -102,7 +103,7 @@ router.post('/register', registerValidationRules, async (req, res) => {
 
         const user = await Account.create(userObj, { transaction });
         const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.status };
-        const token = generateToken(tokenPayload);
+        const token = generateUserToken(tokenPayload);
 
         const userCreationPayload = {
             username: userObj.username,
@@ -114,8 +115,11 @@ router.post('/register', registerValidationRules, async (req, res) => {
         };
 
         // Synchronous call to API service
-        await axios.post('http://localhost:8080/api/user', userCreationPayload)
-            .catch(async error => {
+        const globalToken = generateToken('authService');
+        await axios.post('http://localhost:8080/api/user', userCreationPayload, {
+            headers: { 'Authorization': globalToken }
+        }).catch(async error => {
+            console.log("11")
                 if (!transactionCompleted) {
                     await transaction.rollback();
                     transactionCompleted = true;
@@ -166,7 +170,7 @@ router.post('/login', loginValidationRules, loginLimiter, async (req, res) => {
             user.loginAttempts = 0;
             await user.save();
             const tokenPayload = { userId: user.id, username: user.username, role: user.role, status: user.accountStatus };
-            const token = generateToken(tokenPayload);
+            const token = generateUserToken(tokenPayload);
             res.json({ token });
         } else {
             user.loginAttempts += 1;
@@ -219,7 +223,7 @@ router.post('/password-reset-request', verifyTokenUser(), async (req, res) => {
         if (!user) {
             return res.status(400).json({ error: 'Email not found' });
         }
-        const token = generateToken({ userId: user.id });
+        const token = generateUserToken({ userId: user.id });
         user.passwordResetToken = token;
         user.passwordResetExpires = new Date(Date.now() + 3600000); // 1 hour
         await user.save();

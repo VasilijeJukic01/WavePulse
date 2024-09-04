@@ -3,6 +3,7 @@ const { User, UserSettings } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
 const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
+const { verifyToken } = require('../../common-utils/modules/serviceToken');
 const route = express.Router();
 
 const userSchema = Joi.object({
@@ -74,13 +75,14 @@ route.get("/", verifyTokenUser(), async (req, res) => {
 route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getUserById);
 });
-route.post("/", async (req, res) => {
+
+route.post("/", verifyToken('authService'), async (req, res) => {
     const { error } = userSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createUser);
 });
-//TODO: Change to verifyService
-route.put("/:id",  async (req, res) => {
+
+route.put("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, updateUser);
 });
 
