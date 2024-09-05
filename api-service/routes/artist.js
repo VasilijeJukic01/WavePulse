@@ -34,6 +34,7 @@ const updateArtist = async (id, artistData) => {
     artist.name = artistData.name;
     artist.establishmentYear = artistData.establishmentYear;
     artist.description = artistData.description;
+    artist.userId = artistData.userId;
     artist.countryId = artistData.countryId;
     await artist.save();
     return artist;
@@ -51,6 +52,12 @@ route.get("/", verifyTokenUser(), async (req, res) => {
 
 route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getArtistById);
+});
+
+route.get("/user/:userId", verifyTokenUser(), async (req, res) => {
+    const { userId } = req.params;
+    const artist = await Artist.findOne({ where: { userId } });
+    res.json(artist);
 });
 
 route.post("/", verifyTokenAdmin(), async (req, res) => {

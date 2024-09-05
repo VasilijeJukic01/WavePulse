@@ -6,39 +6,55 @@ axios.defaults.baseURL = process.env.VUE_APP_API_GATEWAY_URL
 
 const state = {
   songs: [],
+  artistSongs: [],
 };
 
 const mutations = {
-  SET_SONGS: (state, songs) => state.songs = songs
+  SET_SONGS: (state, songs) => state.songs = songs,
+  SET_ARTIST_SONGS: (state, songs) => state.artistSongs = songs,
 };
+
+async function processSongs(songs, dispatch) {
+  const promises = songs.map(song => {
+    const artistNames = song.songArtists.map(artist => artist.Artist.name).join(' & ');
+    return dispatch('fetchReleaseId', { title: song.name, artist: artistNames })
+      .then(releaseId => {
+        return dispatch('fetchCoverImage', releaseId)
+          .then(coverImageUrl => {
+            song.cover = coverImageUrl;
+            return song;
+          });
+      });
+  });
+  return Promise.all(promises);
+}
 
 const actions = {
   // Fetch all songs
-  fetchSongs({ commit, dispatch }) {
+  fetchAllSongs({ commit, dispatch }) {
     return makeApiRequest(`/api/song/full`, null, 'GET')
-      .then(resp => {
-        const songs = resp.data;
-        const promises = songs.map(song => {
-          const artistNames = song.songArtists.map(artist => artist.Artist.name).join(' & ');
-          return dispatch('fetchReleaseId', { title: song.name, artist: artistNames })
-            .then(releaseId => {
-              return dispatch('fetchCoverImage', releaseId)
-                .then(coverImageUrl => {
-                  song.cover = coverImageUrl;
-                  return song;
-                });
-            });
-        });
-        return Promise.all(promises).then(updatedSongs => {
-          commit('SET_SONGS', updatedSongs);
-          return resp;
-        });
+      .then(resp => processSongs(resp.data, dispatch))
+      .then(updatedSongs => {
+        commit('SET_SONGS', updatedSongs);
+        return updatedSongs;
       })
       .catch(err => {
         throw err;
       });
   },
-// Fetch release ID
+  // Fetch all songs by ArtistId
+  fetchSongsByArtistId({ commit, dispatch }, artistId) {
+    return makeApiRequest(`/api/song/full-artist/${artistId}`, null, 'GET')
+      .then(resp => processSongs(resp.data, dispatch))
+      .then(updatedSongs => {
+        commit('SET_ARTIST_SONGS', updatedSongs);
+        return updatedSongs;
+      })
+      .catch(err => {
+        throw err;
+      });
+  },
+  // Fetch release ID
   async fetchReleaseId({ commit }, { title, artist }) {
     try {
       const resp = await axios({
@@ -72,9 +88,11 @@ const actions = {
 
 const getters = {
   songs: state => state.songs,
+  artistSongs: state => state.artistSongs,
 };
 
 export default {
+  namespaced: true,
   state,
   mutations,
   actions,

@@ -30,6 +30,14 @@ module.exports = {
           is: /^\d{4}$/
         }
       },
+      playCount: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        validate: {
+          isInt: true,
+          min: 0
+        }
+      },
       albumId: {
         type: Sequelize.INTEGER,
         references: {

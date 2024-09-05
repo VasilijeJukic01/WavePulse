@@ -29,11 +29,11 @@ export default {
     MusicCard
   },
   computed: {
-    ...mapActions('songs', ['fetchSongs']),
+    ...mapActions('songs', ['fetchAllSongs']),
     ...mapGetters('songs', ['songs']),
   },
   async created() {
-    await this.fetchSongs;
+    await this.fetchAllSongs;
   }
 }
 </script>

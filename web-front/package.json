@@ -17,6 +17,7 @@
     "node-polyfill-webpack-plugin": "^3.0.0",
     "vue": "^2.7.15",
     "vue-router": "^3.5.1",
+    "vue-select": "^3.20.3",
     "vuex": "^3.6.2",
     "vuex-persistedstate": "^4.1.0"
   },

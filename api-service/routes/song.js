@@ -1,5 +1,5 @@
 const express = require("express");
-const { Song, Artist, Genre, SongArtist, SongGenre } = require("../models");
+const { Song, Artist, Genre, SongArtist, SongGenre, SongRating} = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
 const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
@@ -9,6 +9,7 @@ const songSchema = Joi.object({
     name: Joi.string().required(),
     duration: Joi.number().required(),
     year: Joi.number().required(),
+    playCount: Joi.number().required(),
     albumId: Joi.number().required(),
 });
 
@@ -88,6 +89,7 @@ const updateSong = async (id, songData) => {
     song.name = songData.name;
     song.duration = songData.duration;
     song.year = songData.year;
+    song.playCount = songData.playCount;
     song.albumId = songData.albumId;
     await song.save();
     return song;
@@ -105,6 +107,44 @@ route.get("/", verifyTokenUser(),  async (req, res) => {
 
 route.get("/full", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getFullSongs);
+});
+
+// TODO: Change to Artist Token
+route.get('/full-artist/:id', verifyTokenUser(), async (req, res) => {
+    const {id: artistId} = req.params;
+
+    try {
+        const songs = await Song.findAll({
+            include: [
+                {
+                    model: SongArtist,
+                    as: 'songArtists',
+                    where: { artistId },
+                    include: [
+                        {
+                            model: Artist,
+                            attributes: ['name'],
+                        },
+                    ],
+                },
+                {
+                    model: SongGenre,
+                    as: 'songGenres',
+                    include: [
+                        {
+                            model: Genre,
+                            attributes: ['name'],
+                        },
+                    ],
+                },
+            ],
+        });
+        res.send(songs);
+    }
+    catch (error) {
+        res.status(500).send
+    }
+
 });
 
 route.get("/normal/:id", verifyTokenUser(),  async (req, res) => {

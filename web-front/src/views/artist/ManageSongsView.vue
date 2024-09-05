@@ -70,7 +70,6 @@
     />
   </div>
 </template>
-
 <script>
 import ConfirmationDialog from '../../components/dialogs/ConfirmationDialog.vue';
 import { mapState, mapActions } from 'vuex';
@@ -91,7 +90,8 @@ export default {
   },
   computed: {
     ...mapState({
-      songs: state => state.songs.songs
+      songs: state => state.songs.artistSongs,
+      user: state => state.user.user
     }),
     sortedSongs() {
       return this.songs.slice().sort((a, b) => {
@@ -106,7 +106,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('songs', ['fetchSongs']),
+    ...mapActions('songs', ['fetchSongsByArtistId']),
     editSong(id) {
       this.$router.push(`/artist/modify-song/${id}`);
     },
@@ -119,6 +119,7 @@ export default {
       }
     },
     confirmDeleteAccount() {
+      // TODO: deleteSong
       this.deleteSong(this.songIdToDelete);
       this.showConfirmationDialog = false;
       this.songIdToDelete = null;
@@ -133,7 +134,8 @@ export default {
     }
   },
   created() {
-    this.fetchSongs();
+    const artistId = this.user.id;
+    this.fetchSongsByArtistId(artistId);
   }
 }
 </script>
