@@ -49,14 +49,42 @@ const routes = [
   {
     path: '/admin/manage-users',
     name: 'Admin',
-    // meta: { requiresAuth: true, requiresAdmin: true },
+    meta: { requiresAuth: true, requiresRole: 1 },
     component: () => import('@/views/admin/ManageUsersView.vue')
   },
   {
-  path: '/admin/modify-user/:id',
-  name: 'ModifyUser',
-  // meta: { requiresAuth: true, requiresAdmin: true },
-  component: () => import('@/views/admin/ModifyUserView.vue')
+    path: '/admin/pending-users',
+    name: 'PendingUsers',
+    meta: { requiresAuth: true, requiresRole: 1 },
+    component: () => import('@/views/admin/PendingUsersView.vue')
+  },
+  {
+    path: '/admin/modify-user/:id',
+    name: 'ModifyUser',
+    meta: { requiresAuth: true, requiresRole: 1 },
+    component: () => import('@/views/admin/ModifyUserView.vue')
+  },
+  {
+    path: '/admin/add-user',
+    name: 'AddUser',
+    meta: { requiresAuth: true, requiresRole: 1 },
+    component: () => import('@/views/admin/AddUserView.vue')
+  },
+  // Artist
+  {
+    path: '/artist/edit-public-profile',
+    name: 'EditPublicProfile',
+    component: () => import('@/views/artist/EditPublicProfileView.vue')
+  },
+  {
+    path: '/artist/manage-songs',
+    name: 'ManageSongs',
+    component: () => import('@/views/artist/ManageSongsView.vue')
+  },
+  {
+    path: '/artist/analytics',
+    name: 'ArtistAnalytics',
+    component: () => import('@/views/artist/ArtistAnalytics.vue')
   },
   { path: '*', redirect: '/' },
 ]
@@ -81,8 +109,10 @@ router.beforeEach((to, from, next) => {
         path: '/login',
         query: { redirect: to.fullPath }
       })
-    } else if (to.matched.some(record => record.meta.requiresAdmin)) {
-      if (store.getters.userRole !== 'Admin') {
+    } else if (to.matched.some(record => record.meta.requiresRole)) {
+      const requiredRole = to.meta.requiresRole;
+      const userRole = store.getters.user.roleId;
+      if (userRole !== requiredRole) {
         next({
           path: '/',
         })

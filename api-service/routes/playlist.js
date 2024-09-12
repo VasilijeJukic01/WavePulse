@@ -1,7 +1,8 @@
 const express = require("express");
 const { Playlist } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
+const { verifyTokenUser } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const playlistSchema = Joi.object({
@@ -40,24 +41,24 @@ const deletePlaylist = async (id) => {
     return playlist.id;
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllPlaylists);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getPlaylistById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyTokenUser(), async (req, res) => {
     const { error } = playlistSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createPlaylist);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, updatePlaylist);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, deletePlaylist);
 });

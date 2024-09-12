@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Country, Album, Song, Concert, User }) {
       Artist.belongsTo(Country, { foreignKey: 'countryId' });
+      Artist.belongsTo(User, { foreignKey: 'userId' });
+
       Artist.hasMany(Album, { foreignKey: 'artistId' });
+
       Artist.belongsToMany(Concert, { through: "ConcertArtists", foreignKey: 'artistId' });
       Artist.belongsToMany(Song, { through: 'SongArtist', foreignKey: 'artistId' })
       Artist.belongsToMany(User, { through: 'Follow', foreignKey: 'artistId' });
@@ -36,6 +39,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         len: [0, 1000]
+      }
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: 'User',
+        key: 'id'
       }
     },
     countryId: {

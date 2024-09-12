@@ -1,7 +1,8 @@
 const express = require("express");
 const { SongRating } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
+const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const songRatingSchema = Joi.object({
@@ -42,25 +43,25 @@ const deleteSongRating = async (id) => {
     return songRating.id;
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllSongRatings);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getSongRatingById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyTokenUser(), async (req, res) => {
     const { error } = songRatingSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createSongRating);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, updateSongRating);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, deleteSongRating);
 });
 

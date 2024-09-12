@@ -8,6 +8,7 @@ module.exports = {
       establishmentYear: 1960,
       description: 'English rock band',
       countryId: 230,
+      userId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -15,6 +16,7 @@ module.exports = {
       establishmentYear: 1962,
       description: 'English rock band',
       countryId: 230,
+      userId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -22,6 +24,7 @@ module.exports = {
       establishmentYear: 1970,
       description: 'American rock band',
       countryId: 231,
+      userId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }, {
@@ -29,6 +32,7 @@ module.exports = {
       establishmentYear: 1975,
       description: 'Canadian singer-songwriter',
       countryId: 39,
+      userId: 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});

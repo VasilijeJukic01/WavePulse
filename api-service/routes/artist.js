@@ -1,14 +1,16 @@
 const express = require("express");
-const { Artist } = require("../models");
-const { handleRoute } = require("./handler");
+const { Artist, SongRating, Song, SongArtist } = require("../models");
+const { handleRoute } = require("./handler/handler");
+const { verifyTokenAdmin, verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
 const artistSchema = Joi.object({
     name: Joi.string().required(),
-    establishmentYear: Joi.date().required(),
+    establishmentYear: Joi.number().required(),
     description: Joi.string().required(),
-    countryId: Joi.number().required()
+    countryId: Joi.number().required(),
+    userId: Joi.number().required()
 });
 
 route.use(express.json());
@@ -24,6 +26,28 @@ const getArtistById = async (id) => {
     return await Artist.findByPk(id);
 }
 
+const getArtistRatings = async (artistId) => {
+    const songArtists = await SongArtist.findAll({
+        where: { artistId }
+    });
+
+    const songIds = songArtists.map(songArtist => songArtist.songId);
+    const songs = await Song.findAll({
+        where: {
+            id: songIds
+        }
+    });
+
+    const response = await Promise.all(songs.map(async (song) => {
+        const ratings = await SongRating.findAll({
+            where: { songId: song.id }
+        });
+        return { song, ratings };
+    }));
+
+    return response;
+}
+
 const createArtist = async (artistData) => {
     return await Artist.create(artistData);
 }
@@ -33,6 +57,7 @@ const updateArtist = async (id, artistData) => {
     artist.name = artistData.name;
     artist.establishmentYear = artistData.establishmentYear;
     artist.description = artistData.description;
+    artist.userId = artistData.userId;
     artist.countryId = artistData.countryId;
     await artist.save();
     return artist;
@@ -44,25 +69,37 @@ const deleteArtist = async (id) => {
     return artist.id;
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllArtists);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getArtistById);
 });
 
-route.post("/", async (req, res) => {
+route.get("/user/:userId", verifyTokenUser(), async (req, res) => {
+    const { userId } = req.params;
+    const artist = await Artist.findOne({ where: { userId } });
+    res.json(artist);
+});
+
+route.post("/", verifyTokenAdmin(), async (req, res) => {
     const { error } = artistSchema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) {
+        console.log(error)
+        return res.status(400).send(error.details[0].message);
+    }
     await handleRoute(req, res, createArtist);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, updateArtist);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, deleteArtist);
 });
 
+route.get('/ratings/:id', async (req, res) => {
+    await handleRoute(req, res, () => getArtistRatings(req.params.id));
+});

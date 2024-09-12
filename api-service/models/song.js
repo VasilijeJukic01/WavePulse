@@ -44,6 +44,14 @@ module.exports = (sequelize, DataTypes) => {
         is: /^\d{4}$/
       }
     },
+    playCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        validate: {
+            isInt: true,
+            min: 0
+        }
+    },
     albumId: {
       type: DataTypes.INTEGER,
       references: {

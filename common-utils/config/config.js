@@ -6,5 +6,6 @@ module.exports = {
     tokenSecretApiGateway: process.env.TOKEN_SECRET_API_GATEWAY || 'SECRET_TOKEN',
     tokenSecretAuthService: process.env.TOKEN_SECRET_AUTH_SERVICE || 'SECRET_TOKEN',
     tokenSecretApiService: process.env.TOKEN_SECRET_API_SERVICE || 'SECRET_TOKEN',
-    tokenSecretLogService: process.env.TOKEN_SECRET_LOG_SERVICE || 'SECRET_TOKEN'
+    tokenSecretLogService: process.env.TOKEN_SECRET_LOG_SERVICE || 'SECRET_TOKEN',
+    tokenSecret: process.env.ACCESS_TOKEN_SECRET || 'SECRET_TOKEN'
 };

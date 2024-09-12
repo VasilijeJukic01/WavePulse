@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 import MusicCard from '@/components/MusicCard.vue';
 
 export default {
@@ -29,10 +29,11 @@ export default {
     MusicCard
   },
   computed: {
-    ...mapGetters(['songs'])
+    ...mapActions('songs', ['fetchAllSongs']),
+    ...mapGetters('songs', ['songs']),
   },
-  created() {
-    this.$store.dispatch('fetchSongs');
+  async created() {
+    await this.fetchAllSongs;
   }
 }
 </script>

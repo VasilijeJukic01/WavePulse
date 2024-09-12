@@ -1,6 +1,7 @@
 const express = require("express");
 const { AlbumReview } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
+const { verifyTokenUser } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -46,24 +47,24 @@ const deleteReview = async (id) => {
     return review.id;
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllReviews);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getReviewById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyTokenUser(), async (req, res) => {
     const { error } = reviewSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createReview);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, updateReview);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, deleteReview);
 });

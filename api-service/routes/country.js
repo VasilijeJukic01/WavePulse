@@ -1,6 +1,7 @@
 const express = require("express");
 const { Country } = require("../models");
-const { handleRoute } = require("./handler");
+const { handleRoute } = require("./handler/handler");
+const { verifyTokenAdmin, verifyTokenUser } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -38,24 +39,24 @@ const deleteCountry = async (id) => {
     return country.id;
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getAllCountries);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getCountryById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyTokenAdmin(), async (req, res) => {
     const { error } = countrySchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createCountry);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, updateCountry);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, deleteCountry);
 });
