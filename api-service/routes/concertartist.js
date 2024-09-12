@@ -1,7 +1,7 @@
 const express = require("express");
 const { ConcertArtist } = require("../models");
 const { handleRoute } = require("./handler/handler");
-const { verifyTokenUser } = require('../../common-utils/modules/accessToken');
+const { verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -49,20 +49,17 @@ route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getConcertArtistById);
 });
 
-// TODO: Change to verifyArtistToken
-route.post("/", verifyTokenUser(), async (req, res) => {
+route.post("/", verifyTokenArtist(), async (req, res) => {
     const { error } = concertArtistSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, crateConcertArtist);
 });
 
-// TODO: Change to verifyArtistToken
-route.put("/:id", verifyTokenUser(), async (req, res) => {
+route.put("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, updateConcertArtist);
 });
 
-// TODO: Change to verifyArtistToken
-route.delete("/:id", verifyTokenUser(), async (req, res) => {
+route.delete("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, deleteConcertArtist);
 });
 

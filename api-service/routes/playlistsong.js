@@ -2,7 +2,8 @@ const express = require("express");
 const { PlaylistSong } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
-const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
+const { verifyTokenUser } = require('../../common-utils/modules/accessToken');
+const {verifyTokenArtist} = require("common-utils/modules/accessToken");
 const route = express.Router();
 
 const playlistSongSchema = Joi.object({
@@ -57,4 +58,8 @@ route.post("/", verifyTokenUser(), async (req, res) => {
 
 route.put("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, updatePlaylistSong);
+});
+
+route.delete("/:id", verifyTokenArtist(), async (req, res) => {
+    await handleRoute(req, res, deletePlaylistSong);
 });

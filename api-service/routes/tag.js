@@ -2,7 +2,7 @@ const express = require("express");
 const { Tag } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
-const { verifyTokenUser } = require('../../common-utils/modules/accessToken');
+const { verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const tagSchema = Joi.object({
@@ -47,16 +47,16 @@ route.get("/:id", verifyTokenUser(),  async (req, res) => {
     await handleRoute(req, res, getTagById);
 });
 
-route.post("/", verifyTokenUser(), async (req, res) => {
+route.post("/", verifyTokenArtist(), async (req, res) => {
     const { error } = tagSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createTag);
 });
 
-route.put("/:id", verifyTokenUser(), async (req, res) => {
+route.put("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, updateTag);
 });
-//TODO: Change to verifyArtistToken when Artist is implemented
-route.delete("/:id", verifyTokenUser(), async (req, res) => {
+
+route.delete("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, deleteTag);
 });

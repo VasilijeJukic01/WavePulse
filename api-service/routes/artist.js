@@ -1,7 +1,7 @@
 const express = require("express");
 const { Artist, SongRating, Song, SongArtist } = require("../models");
 const { handleRoute } = require("./handler/handler");
-const { verifyTokenAdmin, verifyTokenUser } = require('../../common-utils/modules/accessToken');
+const { verifyTokenAdmin, verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -66,13 +66,11 @@ route.post("/", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, createArtist);
 });
 
-// TODO: Change to verifyTokenArtist
-route.put("/:id", verifyTokenUser(), async (req, res) => {
+route.put("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, updateArtist);
 });
 
-// TODO: Change to verifyTokenArtist
-route.delete("/:id", verifyTokenUser(), async (req, res) => {
+route.delete("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, deleteArtist);
 });
 

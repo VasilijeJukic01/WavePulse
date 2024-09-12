@@ -2,7 +2,7 @@ const express = require("express");
 const { SongArtist } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
-const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
+const { verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const songArtistSchema = Joi.object({
@@ -48,18 +48,18 @@ route.get("/",  verifyTokenUser(), async (req, res) => {
 route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getSongArtistById);
 });
-//TODO: Change to verifyArtistToken(POST, PUT, DELETE) when Artist is implemented
-route.post("/", verifyTokenUser(), async (req, res) => {
+
+route.post("/", verifyTokenArtist(), async (req, res) => {
     const { error } = songArtistSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, crateSongArtist);
 });
 
-route.put("/:id", verifyTokenUser(), async (req, res) => {
+route.put("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, updateSongArtist);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenArtist, async (req, res) => {
     await handleRoute(req, res, deleteSongArtist);
 });
 

@@ -2,7 +2,7 @@ const express = require("express");
 const { User, UserSettings } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
-const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
+const { verifyTokenUser } = require('../../common-utils/modules/accessToken');
 const { verifyToken } = require('../../common-utils/modules/serviceToken');
 const route = express.Router();
 
@@ -86,6 +86,6 @@ route.put("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, updateUser);
 });
 
-route.delete("/:id", verifyTokenAdmin(),  async (req, res) => {
+route.delete("/:id", verifyToken('authService'),  async (req, res) => {
     await handleRoute(req, res, deleteUser);
 });

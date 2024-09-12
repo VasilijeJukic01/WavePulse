@@ -2,7 +2,7 @@ const express = require("express");
 const { Song, Artist, Genre, SongArtist, SongGenre, SongRating} = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
-const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
+const { verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const songSchema = Joi.object({
@@ -80,6 +80,34 @@ const getFullSongById = async (id) => {
     });
 }
 
+const getFullSongsByArtistId = async (artistId) => {
+    return await Song.findAll({
+        include: [
+            {
+                model: SongArtist,
+                as: 'songArtists',
+                where: { artistId },
+                include: [
+                    {
+                        model: Artist,
+                        attributes: ['name'],
+                    },
+                ],
+            },
+            {
+                model: SongGenre,
+                as: 'songGenres',
+                include: [
+                    {
+                        model: Genre,
+                        attributes: ['name'],
+                    },
+                ],
+            },
+        ],
+    });
+}
+
 const createSong = async (songData) => {
     return await Song.create(songData);
 }
@@ -109,42 +137,8 @@ route.get("/full", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getFullSongs);
 });
 
-// TODO: Change to Artist Token
-route.get('/full-artist/:id', verifyTokenUser(), async (req, res) => {
-    const {id: artistId} = req.params;
-
-    try {
-        const songs = await Song.findAll({
-            include: [
-                {
-                    model: SongArtist,
-                    as: 'songArtists',
-                    where: { artistId },
-                    include: [
-                        {
-                            model: Artist,
-                            attributes: ['name'],
-                        },
-                    ],
-                },
-                {
-                    model: SongGenre,
-                    as: 'songGenres',
-                    include: [
-                        {
-                            model: Genre,
-                            attributes: ['name'],
-                        },
-                    ],
-                },
-            ],
-        });
-        res.send(songs);
-    }
-    catch (error) {
-        res.status(500).send
-    }
-
+route.get('/full-artist/:id', verifyTokenArtist(), async (req, res) => {
+    await handleRoute(req, res, () => getFullSongsByArtistId(req.params.id));
 });
 
 route.get("/normal/:id", verifyTokenUser(),  async (req, res) => {
@@ -155,17 +149,16 @@ route.get("/full/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getFullSongById);
 });
 
-//TODO: Change (POST, PUT, DELETE) to verifyArtistToken when Artist is implemented
-route.post("/", verifyTokenUser(), async (req, res) => {
+route.post("/", verifyTokenArtist(), async (req, res) => {
     const { error } = songSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createSong);
 });
 
-route.put("/:id", verifyTokenUser(), async (req, res) => {
+route.put("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, updateSong);
 });
 
-route.delete("/:id", verifyTokenUser(), async (req, res) => {
+route.delete("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, deleteSong);
 });

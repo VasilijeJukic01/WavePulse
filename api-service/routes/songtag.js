@@ -2,7 +2,7 @@ const express = require("express");
 const { SongTag } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
-const { verifyTokenUser, verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
+const { verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
 const route = express.Router();
 
 const songTagSchema = Joi.object({
@@ -49,16 +49,16 @@ route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getSongTagById);
 });
 
-route.post("/", verifyTokenUser(), async (req, res) => {
+route.post("/", verifyTokenArtist(), async (req, res) => {
     const { error } = songTagSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createSongTag);
 });
 
-route.put("/:id", verifyTokenUser(), async (req, res) => {
+route.put("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, updateSongTag);
 });
 
-route.delete("/:id", verifyTokenUser(), async (req, res) => {
+route.delete("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, deleteSongTag);
 });
