@@ -53,6 +53,12 @@ const routes = [
     component: () => import('@/views/admin/ManageUsersView.vue')
   },
   {
+    path: '/admin/pending-users',
+    name: 'PendingUsers',
+    meta: { requiresAuth: true, requiresRole: 1 },
+    component: () => import('@/views/admin/PendingUsersView.vue')
+  },
+  {
     path: '/admin/modify-user/:id',
     name: 'ModifyUser',
     meta: { requiresAuth: true, requiresRole: 1 },

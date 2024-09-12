@@ -22,9 +22,9 @@ const verifyToken = (checkFn) => (req, res, next) => {
     });
 };
 
-const verifyTokenUser = () => verifyToken(decoded => decoded.status === 'ACTIVE');
 const verifyTokenAdmin = () => verifyToken(decoded => decoded.role === 'Admin');
-const verifyTokenArtist= () => verifyToken(decoded => decoded.role === 'Admin' || decoded.role === 'Artist');
+const verifyTokenArtist = () => verifyToken(decoded => decoded.role === 'Artist' || decoded.role === 'Admin');
+const verifyTokenUser = () => verifyToken(decoded => decoded.role === 'User' || decoded.role === 'Artist' || decoded.role === 'Admin');
 
 module.exports = {
     verifyTokenUser,

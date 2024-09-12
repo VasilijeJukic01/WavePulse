@@ -31,6 +31,47 @@ router.get('/account/:id', verifyTokenAdmin(), async (req, res) => {
     }
 });
 
+router.put('/account/status/:id', verifyTokenAdmin(), async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const transaction = await sequelize.transaction();
+
+    try {
+        const account = await Account.findByPk(id, { transaction });
+        if (!account) {
+            await transaction.rollback();
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        if (account.role === 'Artist') {
+            const apiServicePayload = {
+                name: account.username,
+                establishmentYear: new Date().getFullYear(),
+                description: ' ',
+                userId: account.id,
+                countryId: account.countryId
+            }
+
+            axios.defaults.headers.common['Authorization'] = req.headers['authorization'];
+            await axios.post(`http://localhost:8080/api/artist/`, apiServicePayload)
+                .catch(async () => {
+                    await transaction.rollback();
+                    throw new Error('Failed to add artist in api-service');
+                });
+        }
+
+        account.accountStatus = status;
+        await account.save({ transaction });
+
+        await transaction.commit();
+        res.json({ message: 'Account status updated successfully' });
+    } catch (err) {
+        await transaction.rollback();
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 router.put('/account/:id', verifyTokenAdmin(), async (req, res) => {
     const { id } = req.params;
     const { username, firstname, lastname, email, role, countryId, accountStatus } = req.body;
@@ -55,6 +96,7 @@ router.put('/account/:id', verifyTokenAdmin(), async (req, res) => {
             return res.status(400).json({ error: 'Email already exists' });
         }
 
+        axios.defaults.headers.common['Authorization'] = req.headers['authorization'];
         const roleData = await axios.get(`http://localhost:8080/api/role/name/${role}`);
         if (!roleData.data) {
             await transaction.rollback();

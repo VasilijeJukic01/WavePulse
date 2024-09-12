@@ -7,9 +7,10 @@ const route = express.Router();
 
 const artistSchema = Joi.object({
     name: Joi.string().required(),
-    establishmentYear: Joi.date().required(),
+    establishmentYear: Joi.number().required(),
     description: Joi.string().required(),
-    countryId: Joi.number().required()
+    countryId: Joi.number().required(),
+    userId: Joi.number().required()
 });
 
 route.use(express.json());
@@ -23,6 +24,28 @@ const getAllArtists = async () => {
 
 const getArtistById = async (id) => {
     return await Artist.findByPk(id);
+}
+
+const getArtistRatings = async (artistId) => {
+    const songArtists = await SongArtist.findAll({
+        where: { artistId }
+    });
+
+    const songIds = songArtists.map(songArtist => songArtist.songId);
+    const songs = await Song.findAll({
+        where: {
+            id: songIds
+        }
+    });
+
+    const response = await Promise.all(songs.map(async (song) => {
+        const ratings = await SongRating.findAll({
+            where: { songId: song.id }
+        });
+        return { song, ratings };
+    }));
+
+    return response;
 }
 
 const createArtist = async (artistData) => {
@@ -62,7 +85,10 @@ route.get("/user/:userId", verifyTokenUser(), async (req, res) => {
 
 route.post("/", verifyTokenAdmin(), async (req, res) => {
     const { error } = artistSchema.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) {
+        console.log(error)
+        return res.status(400).send(error.details[0].message);
+    }
     await handleRoute(req, res, createArtist);
 });
 
@@ -75,29 +101,5 @@ route.delete("/:id", verifyTokenArtist(), async (req, res) => {
 });
 
 route.get('/ratings/:id', async (req, res) => {
-    const { id: artistId } = req.params;
-
-    try {
-        const songArtists = await SongArtist.findAll({
-            where: { artistId }
-        });
-
-        const songIds = songArtists.map(songArtist => songArtist.songId);
-        const songs = await Song.findAll({
-            where: {
-                id: songIds
-            }
-        });
-
-        const response = await Promise.all(songs.map(async (song) => {
-            const ratings = await SongRating.findAll({
-                where: { songId: song.id }
-            });
-            return { song, ratings };
-        }));
-
-        res.json(response);
-    } catch (error) {
-        res.status(500).send(error.message);
-    }
+    await handleRoute(req, res, () => getArtistRatings(req.params.id));
 });
