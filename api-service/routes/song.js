@@ -22,8 +22,8 @@ const getAllSongs = async () => {
     return await Song.findAll();
 }
 
-const getFullSongs = async () => {
-    return await Song.findAll({
+const getFullSongs = async (limit, offset) => {
+    const { count, rows } = await Song.findAndCountAll({
         include: [
             {
                 model: SongArtist,
@@ -46,7 +46,10 @@ const getFullSongs = async () => {
                 ],
             },
         ],
+        limit,
+        offset,
     });
+    return { total: count, songs: rows };
 }
 
 const getSongById = async (id) => {
@@ -134,7 +137,9 @@ route.get("/", verifyTokenUser(),  async (req, res) => {
 });
 
 route.get("/full", verifyTokenUser(), async (req, res) => {
-    await handleRoute(req, res, getFullSongs);
+    const limit = parseInt(req.query.limit) || 6;
+    const offset = parseInt(req.query.offset) || 0;
+    await handleRoute(req, res, () => getFullSongs(limit, offset));
 });
 
 route.get('/full-artist/:id', verifyTokenArtist(), async (req, res) => {

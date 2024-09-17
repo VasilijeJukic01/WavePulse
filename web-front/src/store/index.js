@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
+import customStorage from './customStorage';
 import user from './modules/user';
 import admin from './modules/admin';
 import artist from './modules/artist';
@@ -9,7 +10,7 @@ import songs from './modules/songs';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   modules: {
     user,
     admin,
@@ -23,5 +24,15 @@ export default new Vuex.Store({
       'user.user',
       'songs.currentPage',
     ],
+    storage: customStorage
   })],
 });
+
+// Storage Listener
+store.subscribe((mutation) => {
+  if (mutation.type === 'user/LOGOUT') {
+    customStorage.clear();
+  }
+});
+
+export default store;

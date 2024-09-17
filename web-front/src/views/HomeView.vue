@@ -1,7 +1,7 @@
 <template>
   <div class="home-view">
     <div class="container">
-      <h1 class="main-title">Recommended</h1>
+      <h1 class="main-title">Discover</h1>
       <div class="music-grid">
         <MusicCard
           v-for="song in songs"
@@ -16,24 +16,29 @@
           }"
         />
       </div>
+      <Pagination />
     </div>
   </div>
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import MusicCard from '@/components/MusicCard.vue';
+import Pagination from '@/components/Pagination.vue';
 
 export default {
   components: {
-    MusicCard
+    MusicCard,
+    Pagination
   },
   computed: {
-    ...mapActions('songs', ['fetchAllSongs']),
     ...mapGetters('songs', ['songs']),
   },
   async created() {
-    await this.fetchAllSongs;
+    await this.fetchAllSongs();
+  },
+  methods: {
+    ...mapActions('songs', ['fetchAllSongs']),
   }
 }
 </script>
