@@ -49,6 +49,11 @@ const routes = [
     name: 'Privacy',
     component: () => import('@/views/policies/PrivacyPolicyView.vue')
   },
+  {
+    path: '/song/:id',
+    name: 'SongDetails',
+    component: () => import('@/views/song/SongDetailsView.vue')
+  },
   // Admin
   {
     path: '/admin/manage-users',

@@ -7,6 +7,7 @@
           v-for="song in songs"
           :key="song.id"
           :music="{
+            id: song.id,
             cover: song.cover,
             name: song.name,
             songArtists: song.songArtists,

@@ -4,8 +4,11 @@ import { makeApiRequest } from '../utils/util';
 // Config
 axios.defaults.baseURL = process.env.VUE_APP_API_GATEWAY_URL
 
+// TODO: Implement Caching Mechanism
+
 const state = {
   songs: [],
+  song: {},
   artistSongs: [],
   currentPage: 1,
   totalPages: 1,
@@ -14,6 +17,7 @@ const state = {
 
 const mutations = {
   SET_SONGS: (state, songs) => state.songs = songs,
+  SET_SONG: (state, song) => state.song = song,
   SET_ARTIST_SONGS: (state, songs) => state.artistSongs = songs,
   SET_CURRENT_PAGE: (state, page) => state.currentPage = page,
   SET_TOTAL_PAGES: (state, totalPages) => state.totalPages = totalPages,
@@ -30,7 +34,11 @@ async function processSongs(songs, dispatch) {
         return dispatch('fetchCoverImage', releaseId)
           .then(coverImageUrl => {
             song.cover = coverImageUrl;
-            return song;
+            return dispatch('fetchAverageRating', song.id)
+              .then(averageRating => {
+                song.averageRating = averageRating;
+                return song;
+              });
           });
       });
   });
@@ -62,6 +70,16 @@ const actions = {
           });
       })
       .catch(() => {});
+  },
+  async fetchSongById({ commit, dispatch }, songId) {
+    try {
+      const resp = await makeApiRequest(`/api/song/full/${songId}`, null, 'GET');
+      const song = await processSongs([resp.data], dispatch);
+      commit('SET_SONG', song[0]);
+      return song[0];
+    } catch (err) {
+      console.error(err);
+    }
   },
   // Fetch all songs by ArtistId
   fetchSongsByArtistId({ commit, dispatch }, artistId) {
@@ -104,13 +122,24 @@ const actions = {
     }
     return defaultImageUrl;
   },
+
+  async fetchAverageRating({ commit }, songId) {
+    try {
+      const response = await makeApiRequest(`/api/song-rating/average/${songId}`, null, 'GET');
+      console.log(response.data)
+      return response.data;
+    } catch (err) {}
+  }
+
 };
 
 const getters = {
   songs: state => state.songs,
+  song: state => state.song,
   artistSongs: state => state.artistSongs,
   currentPage: state => state.currentPage,
   totalPages: state => state.totalPages,
+  getSongById: state => id => state.songs.find(song => song.id === id),
 };
 
 export default {

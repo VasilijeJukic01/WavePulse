@@ -7,6 +7,7 @@ import admin from './modules/admin';
 import artist from './modules/artist';
 import settings from './modules/settings';
 import songs from './modules/songs';
+import reviews from './modules/reviews';
 
 Vue.use(Vuex);
 
@@ -16,7 +17,8 @@ const store = new Vuex.Store({
     admin,
     artist,
     settings,
-    songs
+    songs,
+    reviews
   },
   plugins: [createPersistedState({
     paths: [

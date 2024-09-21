@@ -26,17 +26,20 @@ const getSongReviewById = async (id) => {
     return await SongReview.findByPk(id);
 }
 
+const getSongReviewsBySongId = async (songId) => {
+    return await SongReview.findAll({
+        where: { songId }
+    });
+};
+
 const createSongReview = async (songReviewData) => {
     return await SongReview.create(songReviewData);
 }
 
-const updateSongReview = async (id, songReviewData) => {
+const updateSongReview = async (id, { likes, dislikes }) => {
     const songReview = await SongReview.findByPk(id);
-    songReview.review = songReviewData.review;
-    songReview.likes = songReviewData.likes;
-    songReview.dislikes = songReviewData.dislikes;
-    songReview.userId = songReviewData.userId;
-    songReview.songId = songReviewData.songId;
+    if (likes !== undefined) songReview.likes = likes;
+    if (dislikes !== undefined) songReview.dislikes = dislikes;
     await songReview.save();
     return songReview;
 }
@@ -55,6 +58,10 @@ route.get("/:id", verifyTokenUser(), async (req, res) => {
     await handleRoute(req, res, getSongReviewById);
 });
 
+route.get("/song/:songId", verifyTokenUser(), async (req, res) => {
+    await handleRoute(req, res, () => getSongReviewsBySongId(req.params.songId));
+});
+
 route.post("/", verifyTokenUser(), async (req, res) => {
     const { error } = songReviewSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -62,6 +69,11 @@ route.post("/", verifyTokenUser(), async (req, res) => {
 });
 
 route.put("/:id", verifyTokenUser(), async (req, res) => {
+    const { error } = Joi.object({
+        likes: Joi.number(),
+        dislikes: Joi.number()
+    }).validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, updateSongReview);
 });
 
