@@ -3,7 +3,7 @@ const { PlaylistSong } = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
 const { verifyTokenUser } = require('../../common-utils/modules/accessToken');
-const {verifyTokenArtist} = require("common-utils/modules/accessToken");
+const { verifyTokenArtist } = require("../../common-utils/modules/accessToken");
 const route = express.Router();
 
 const playlistSongSchema = Joi.object({
