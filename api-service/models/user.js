@@ -13,15 +13,15 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsTo(Country, { foreignKey: 'countryId' });
       User.belongsTo(Role, { foreignKey: 'roleId' });
 
-      User.hasMany(Playlist, { foreignKey: 'userId' });
-      User.hasMany(SongReview, { foreignKey: 'userId' });
-      User.hasMany(AlbumReview, { foreignKey: 'userId' });
-      User.hasMany(UserSettings, { foreignKey: 'userId' });
-      User.hasMany(SongRating, { foreignKey: 'userId' });
-      User.hasMany(AlbumRating, { foreignKey: 'userId' });
-      User.hasMany(Artist, { foreignKey: 'userId' });
+      User.hasMany(Playlist, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      User.hasMany(SongReview, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      User.hasMany(AlbumReview, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      User.hasMany(UserSettings, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      User.hasMany(SongRating, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      User.hasMany(AlbumRating, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      User.hasMany(Artist, { foreignKey: 'userId', onDelete: 'CASCADE' });
 
-      User.belongsToMany(Artist, { through: 'Follow', foreignKey: 'userId' });
+      User.belongsToMany(Artist, { through: 'Follow', foreignKey: 'userId', onDelete: 'CASCADE' });
     }
   }
   User.init({

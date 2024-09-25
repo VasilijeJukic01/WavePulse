@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Country, Artist }) {
       Concert.belongsTo(Country, { foreignKey: 'countryId' });
-      Concert.belongsToMany(Artist, { through: 'ConcertArtists', foreignKey: 'concertId' });
+      Concert.belongsToMany(Artist, { through: 'ConcertArtists', foreignKey: 'concertId', onDelete: 'CASCADE' });
     }
   }
   Concert.init({
