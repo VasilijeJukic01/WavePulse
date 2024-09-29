@@ -40,14 +40,18 @@ module.exports = {
         references: {
           model: 'Countries',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       roleId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'Roles',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,
@@ -59,6 +63,7 @@ module.exports = {
       }
     });
   },
+
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Users');
   }

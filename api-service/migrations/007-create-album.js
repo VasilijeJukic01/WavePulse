@@ -30,7 +30,9 @@ module.exports = {
         references: {
           model: 'Artists',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,
