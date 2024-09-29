@@ -24,7 +24,7 @@ app.post('/register', verifyToken('serviceRegistry'), (req, res) => {
     }
 });
 
-app.delete('/register', verifyToken('serviceRegistry'), (req, res) => {
+app.delete('/', verifyToken('serviceRegistry'), (req, res) => {
     try {
         const { name, url } = req.body;
 
