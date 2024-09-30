@@ -26,7 +26,6 @@ const actions = {
     commit('SET_SETTINGS', settings);
   },
   async updateSettings({ commit }, settings) {
-    console.log(settings)
     await makeApiRequest(`/api/user-settings/${settings.userId}`, settings, 'PUT');
     commit('SET_SETTINGS', settings);
   }

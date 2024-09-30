@@ -65,7 +65,6 @@ const actions = {
             commit('SET_SONGS', updatedSongs);
             commit('SET_CURRENT_PAGE', page);
             commit('SET_TOTAL_PAGES', Math.ceil(totalSongs / limit) - 1);
-            console.log(updatedSongs);
             return updatedSongs;
           });
       })
@@ -126,7 +125,6 @@ const actions = {
   async fetchAverageRating({ commit }, songId) {
     try {
       const response = await makeApiRequest(`/api/song-rating/average/${songId}`, null, 'GET');
-      console.log(response.data)
       return response.data;
     } catch (err) {}
   }

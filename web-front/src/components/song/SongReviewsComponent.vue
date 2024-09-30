@@ -1,13 +1,22 @@
 <template>
   <div class="reviews">
     <h3><strong>Reviews</strong></h3>
+
+    <div class="add-review">
+      <form @submit.prevent="addReview">
+        <textarea v-model="newReview" placeholder="Add a review..." required></textarea>
+        <button type="submit">REVIEW</button>
+      </form>
+    </div>
+
     <div v-for="review in reviews" :key="review.id" class="review">
+      <p class="review-text">{{ review.User.username }}</p>
       <p class="review-text">{{ review.review }}</p>
       <div class="review-likes">
-        <button @click="likeReview(review.id)">
+        <button @click="handleLikeReview(review.id)">
           <i class="fas fa-thumbs-up"></i> {{ review.likes }}
         </button>
-        <button @click="dislikeReview(review.id)">
+        <button @click="handleDislikeReview(review.id)">
           <i class="fas fa-thumbs-down"></i> {{ review.dislikes }}
         </button>
       </div>
@@ -16,14 +25,43 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   props: {
     reviews: Array
   },
+  data() {
+    return {
+      newReview: ''
+    }
+  },
+  computed: {
+    ...mapGetters({
+      user: 'user'
+    })
+  },
   methods: {
-    ...mapActions('reviews', ['likeReview', 'dislikeReview'])
+    ...mapActions('reviews', ['createSongReview', 'likeReview', 'dislikeReview']),
+    async addReview() {
+      if (this.newReview.trim()) {
+        const reviewData = {
+          review: this.newReview,
+          likes: 0,
+          dislikes: 0,
+          userId: this.user.id,
+          songId: this.$route.params.id
+        };
+        await this.createSongReview(reviewData);
+        this.newReview = '';
+      }
+    },
+    async handleLikeReview(reviewId) {
+      await this.likeReview(reviewId);
+    },
+    async handleDislikeReview(reviewId) {
+      await this.dislikeReview(reviewId);
+    }
   }
 }
 </script>
@@ -39,6 +77,46 @@ export default {
   font-size: 24px;
   color: #ffffff;
   margin-bottom: 20px;
+}
+
+.add-review {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.add-review form {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.add-review textarea {
+  flex-grow: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #3a3a3a;
+  color: #ffffff;
+  font-size: 16px;
+  min-height: 80px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.add-review button {
+  align-self: flex-end;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007acc;
+  color: #ffffff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.add-review button:hover {
+  background-color: #005fa3;
 }
 
 .review {

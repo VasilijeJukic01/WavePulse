@@ -43,6 +43,22 @@ const actions = {
       console.error("Error creating song review:", error);
     }
   },
+  async likeReview({ commit }, reviewId) {
+    try {
+      const response = await makeApiRequest(`/api/song-review/${reviewId}`, { likes: 1 }, 'PUT');
+      commit('UPDATE_SONG_REVIEW', response.data);
+    } catch (error) {
+      console.error("Error liking song review:", error);
+    }
+  },
+  async dislikeReview({ commit }, reviewId) {
+    try {
+      const response = await makeApiRequest(`/api/song-review/${reviewId}`, { dislikes: 1 }, 'PUT');
+      commit('UPDATE_SONG_REVIEW', response.data);
+    } catch (error) {
+      console.error("Error disliking song review:", error);
+    }
+  },
   async updateSongReview({ commit }, { id, likes, dislikes }) {
     try {
       const response = await makeApiRequest(`/api/song-review/${id}`, { likes, dislikes }, 'PUT');
