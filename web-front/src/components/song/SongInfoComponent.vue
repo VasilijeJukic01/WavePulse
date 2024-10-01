@@ -14,7 +14,7 @@
         {{ n <= song.averageRating ? '★' : '☆' }}
       </span>
     </div>
-    <p class="play-count">Total Plays: {{ song.playCount }}</p>
+    <p class="play-count">{{ $t('song_details.song_info.total_plays') }}: {{ song.playCount }}</p>
   </div>
 </template>
 

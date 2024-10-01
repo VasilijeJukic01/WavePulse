@@ -3,10 +3,10 @@
     <AdminPanelSidebar />
     <div class="flex-1 form-bg py-8 px-4 sm:px-6 lg:px-8">
       <div class="w-full max-w-7xl space-y-8 mx-auto mt-12">
-        <h1 class="mb-6 text-center text-4xl font-extrabold text-white">Account Management</h1>
+        <h1 class="mb-6 text-center text-4xl font-extrabold text-white">{{ $t('admin_panel.manage_users_view.account_management') }}</h1>
         <div class="actions flex justify-end space-x-4">
           <button class="btn btn-primary flex items-center space-x-2" @click="navigateToAddUser">
-            <span>Add User</span>
+            <span>{{ $t('admin_panel.manage_users_view.add_user') }}</span>
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/></svg>
           </button>
         </div>
@@ -16,48 +16,28 @@
             <thead>
             <tr class="bg-gray-700 text-left">
               <th class="px-6 py-3 cursor-pointer" @click="sort('username')">
-                Username
+                {{ $t('admin_panel.manage_users_view.username') }}
                 <span class="sort-icon" v-if="sortKey === 'username'">
                   <svg v-if="sortOrder === 'asc'" class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M5.05 8.636a.75.75 0 01-.053-1.06l3-3.25a.75.75 0 011.106 0l3 3.25a.75.75 0 01-1.106 1.06L10 6.081V13.25a.75.75 0 01-1.5 0V6.081L5.103 8.577a.75.75 0 01-1.053.059z"/></svg>
                   <svg v-else class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 11.081V3.25a.75.75 0 011.5 0v7.831l2.897-2.496a.75.75 0 011.106 1.06l-3 3.25a.75.75 0 01-1.106 0l-3-3.25a.75.75 0 011.106-1.06L10 11.081z"/></svg>
                 </span>
               </th>
               <th class="px-6 py-3 cursor-pointer" @click="sort('firstname')">
-                First Name
-                <span class="sort-icon" v-if="sortKey === 'firstname'">
-                  <svg v-if="sortOrder === 'asc'" class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M5.05 8.636a.75.75 0 01-.053-1.06l3-3.25a.75.75 0 011.106 0l3 3.25a.75.75 0 01-1.106 1.06L10 6.081V13.25a.75.75 0 01-1.5 0V6.081L5.103 8.577a.75.75 0 01-1.053.059z"/></svg>
-                  <svg v-else class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 11.081V3.25a.75.75 0 011.5 0v7.831l2.897-2.496a.75.75 0 011.106 1.06l-3 3.25a.75.75 0 01-1.106 0l-3-3.25a.75.75 0 011.106-1.06L10 11.081z"/></svg>
-                </span>
+                {{ $t('admin_panel.manage_users_view.first_name') }}
               </th>
               <th class="px-6 py-3 cursor-pointer" @click="sort('lastname')">
-                Last Name
-                <span class="sort-icon" v-if="sortKey === 'lastname'">
-                  <svg v-if="sortOrder === 'asc'" class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M5.05 8.636a.75.75 0 01-.053-1.06l3-3.25a.75.75 0 011.106 0l3 3.25a.75.75 0 01-1.106 1.06L10 6.081V13.25a.75.75 0 01-1.5 0V6.081L5.103 8.577a.75.75 0 01-1.053.059z"/></svg>
-                  <svg v-else class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 11.081V3.25a.75.75 0 011.5 0v7.831l2.897-2.496a.75.75 0 011.106 1.06l-3 3.25a.75.75 0 01-1.106 0l-3-3.25a.75.75 0 011.106-1.06L10 11.081z"/></svg>
-                </span>
+                {{ $t('admin_panel.manage_users_view.last_name') }}
               </th>
               <th class="px-6 py-3 cursor-pointer" @click="sort('email')">
-                Email
-                <span class="sort-icon" v-if="sortKey === 'email'">
-                  <svg v-if="sortOrder === 'asc'" class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M5.05 8.636a.75.75 0 01-.053-1.06l3-3.25a.75.75 0 011.106 0l3 3.25a.75.75 0 01-1.106 1.06L10 6.081V13.25a.75.75 0 01-1.5 0V6.081L5.103 8.577a.75.75 0 01-1.053.059z"/></svg>
-                  <svg v-else class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 11.081V3.25a.75.75 0 011.5 0v7.831l2.897-2.496a.75.75 0 011.106 1.06l-3 3.25a.75.75 0 01-1.106 0l-3-3.25a.75.75 0 011.106-1.06L10 11.081z"/></svg>
-                </span>
+                {{ $t('admin_panel.manage_users_view.email') }}
               </th>
               <th class="px-6 py-3 cursor-pointer" @click="sort('status')">
-                Status
-                <span class="sort-icon" v-if="sortKey === 'status'">
-                  <svg v-if="sortOrder === 'asc'" class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M5.05 8.636a.75.75 0 01-.053-1.06l3-3.25a.75.75 0 011.106 0l3 3.25a.75.75 0 01-1.106 1.06L10 6.081V13.25a.75.75 0 01-1.5 0V6.081L5.103 8.577a.75.75 0 01-1.053.059z"/></svg>
-                  <svg v-else class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 11.081V3.25a.75.75 0 011.5 0v7.831l2.897-2.496a.75.75 0 011.106 1.06l-3 3.25a.75.75 0 01-1.106 0l-3-3.25a.75.75 0 011.106-1.06L10 11.081z"/></svg>
-                </span>
+                {{ $t('admin_panel.manage_users_view.status') }}
               </th>
               <th class="px-6 py-3 cursor-pointer" @click="sort('role')">
-                Role
-                <span class="sort-icon" v-if="sortKey === 'role'">
-                  <svg v-if="sortOrder === 'asc'" class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M5.05 8.636a.75.75 0 01-.053-1.06l3-3.25a.75.75 0 011.106 0l3 3.25a.75.75 0 01-1.106 1.06L10 6.081V13.25a.75.75 0 01-1.5 0V6.081L5.103 8.577a.75.75 0 01-1.053.059z"/></svg>
-                  <svg v-else class="w-4 h-4 inline-block" fill="currentColor" viewBox="0 0 20 20"><path d="M10 11.081V3.25a.75.75 0 011.5 0v7.831l2.897-2.496a.75.75 0 011.106 1.06l-3 3.25a.75.75 0 01-1.106 0l-3-3.25a.75.75 0 011.106-1.06L10 11.081z"/></svg>
-                </span>
+                {{ $t('admin_panel.manage_users_view.role') }}
               </th>
-              <th class="px-6 py-3">Actions</th>
+              <th class="px-6 py-3">{{ $t('admin_panel.manage_users_view.actions') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -71,11 +51,11 @@
               <td class="px-6 py-4 flex space-x-2">
                 <button class="btn btn-secondary flex items-center space-x-2" @click="editAccount(account.id)">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M17.414 2.586a2 2 0 010 2.828l-9.586 9.586-4.293 1.707 1.707-4.293 9.586-9.586a2 2 0 012.828 0zm-1.414 1.414L6.828 13.172 5 15l1.828-.828 9.172-9.172z"/></svg>
-                  <span>Edit</span>
+                  <span>{{ $t('admin_panel.manage_users_view.edit') }}</span>
                 </button>
                 <button class="btn btn-danger flex items-center space-x-2" @click="showDeleteConfirmation(account.id)">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-1 1v1H4a1 1 0 100 2h12a1 1 0 100-2h-4V3a1 1 0 00-1-1H9zm-3 6a1 1 0 011 1v7a1 1 0 102 0v-7a1 1 0 112 0v7a1 1 0 102 0v-7a1 1 0 112 0v7a1 1 0 102 0v-7a1 1 0 011-1h2a1 1 0 100-2h-1a2 2 0 00-2-2H5a2 2 0 00-2 2H2a1 1 0 100 2h1z" clip-rule="evenodd"/></svg>
-                  <span>Delete</span>
+                  <span>{{ $t('admin_panel.manage_users_view.delete') }}</span>
                 </button>
               </td>
             </tr>

@@ -5,24 +5,24 @@
         <img src="../assets/logo.png" alt="WavePulse" class="h-16 w-56">
       </router-link>
       <div class="flex items-center space-x-4">
-        <router-link v-if="user.roleId === -1" to="/login" class="text-gray-300 text-lg hover:text-white transition duration-300">Login</router-link>
-        <router-link v-if="user.roleId === -1" to="/register" class="text-gray-300 text-lg hover:text-white transition duration-300">Register</router-link>
-        <router-link v-if="user.roleId === 1" to="/admin/manage-users" class="text-gray-300 text-lg hover:text-white transition duration-300">Admin Panel</router-link>
-        <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">News</router-link>
-        <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">Discover</router-link>
-        <router-link v-if="user.roleId === 3" to="/artist/manage-songs" class="text-gray-300 text-lg hover:text-white transition duration-300">Artist Panel</router-link>
+        <router-link v-if="user.roleId === -1" to="/login" class="text-gray-300 text-lg hover:text-white transition duration-300">{{ $t('header.login') }}</router-link>
+        <router-link v-if="user.roleId === -1" to="/register" class="text-gray-300 text-lg hover:text-white transition duration-300">{{ $t('header.register') }}</router-link>
+        <router-link v-if="user.roleId === 1" to="/admin/manage-users" class="text-gray-300 text-lg hover:text-white transition duration-300">{{ $t('header.admin_panel') }}</router-link>
+        <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">{{ $t('header.news') }}</router-link>
+        <router-link v-if="user.roleId !== -1" to="/admin" class="text-gray-300 text-lg hover:text-white transition duration-300">{{ $t('header.discover') }}</router-link>
+        <router-link v-if="user.roleId === 3" to="/artist/manage-songs" class="text-gray-300 text-lg hover:text-white transition duration-300">{{ $t('header.artist_panel') }}</router-link>
         <div v-if="user.roleId !== -1" class="relative">
           <button @click="toggleDropdown" class="text-gray-300 text-lg hover:text-white transition duration-300 flex items-center">
-            Profile
+            {{ $t('header.profile') }}
             <i class="fas fa-caret-down ml-2"></i>
           </button>
           <div v-if="showDropdown" class="profile-dropdown absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
-            <router-link :to="`/edit-profile/${user.id}`" @click.native="toggleDropdown" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</router-link>
-            <button @click="logoutUser" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+            <router-link :to="`/edit-profile/${user.id}`" @click.native="toggleDropdown" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ $t('header.settings') }}</router-link>
+            <button @click="logoutUser" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ $t('header.logout') }}</button>
           </div>
         </div>
         <div class="relative">
-          <input type="text" placeholder="Search" class="bg-gray-800 text-gray-300 py-2 pl-4 pr-10 rounded-full focus:outline-none focus:bg-gray-700 search-text">
+          <input type="text" :placeholder="$t('header.search_placeholder')" class="bg-gray-800 text-gray-300 py-2 pl-4 pr-10 rounded-full focus:outline-none focus:bg-gray-700 search-text">
           <button class="absolute top-1/2 right-0 transform -translate-y-1/2 mr-4 text-gray-400 hover:text-white">
             <i class="fas fa-search"></i>
           </button>

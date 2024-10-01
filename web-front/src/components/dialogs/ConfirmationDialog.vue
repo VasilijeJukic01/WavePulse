@@ -1,11 +1,11 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75" v-if="visible">
     <div class="bg-white rounded-lg p-6 max-w-sm w-full">
-      <h2 class="text-xl font-semibold mb-4">Confirm Deletion</h2>
-      <p class="mb-4">Are you sure you want to delete this account?</p>
+      <h2 class="text-xl font-semibold mb-4">{{ $t('confirmation_dialog.title') }}</h2>
+      <p class="mb-4">{{ $t('confirmation_dialog.message') }}</p>
       <div class="flex justify-end space-x-4">
-        <button @click="confirm" class="btn btn-danger">Delete</button>
-        <button @click="cancel" class="btn btn-secondary">Cancel</button>
+        <button @click="confirm" class="btn btn-danger">{{ $t('confirmation_dialog.confirm') }}</button>
+        <button @click="cancel" class="btn btn-secondary">{{ $t('confirmation_dialog.cancel') }}</button>
       </div>
     </div>
   </div>

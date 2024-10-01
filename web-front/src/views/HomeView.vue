@@ -1,7 +1,7 @@
 <template>
   <div class="home-view">
     <div class="container">
-      <h1 class="main-title">Discover</h1>
+      <h1 class="main-title">{{ $t('home_view.discover') }}</h1>
       <div class="music-grid">
         <MusicCard
           v-for="song in songs"
@@ -36,11 +36,10 @@ export default {
     ...mapGetters('songs', ['songs']),
   },
   async created() {
-    await this.fetchTotalSongs();
     await this.fetchAllSongs();
   },
   methods: {
-    ...mapActions('songs', ['fetchTotalSongs', 'fetchAllSongs']),
+    ...mapActions('songs', ['fetchAllSongs']),
   }
 }
 </script>

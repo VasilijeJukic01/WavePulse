@@ -1,0 +1,241 @@
+{
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "username": "Username",
+      "password": "Password",
+      "login_button": "Sign in",
+      "login_success": "Login successful!",
+      "login_failed": "Login failed:"
+    },
+    "register": {
+      "title": "Register",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email address",
+      "username": "Username",
+      "password": "Password",
+      "confirm_password": "Confirm Password",
+      "user_type": "User Type",
+      "user": "User",
+      "artist": "Artist",
+      "register_button": "Register",
+      "registration_successful": "Registration successful!",
+      "registration_failed": "Registration failed:"
+    }
+  },
+  "header": {
+    "login": "Login",
+    "register": "Register",
+    "admin_panel": "Admin Panel",
+    "artist_panel": "Artist Panel",
+    "news": "News",
+    "discover": "Discover",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "search_placeholder": "Search"
+  },
+  "footer": {
+    "navigation": "Navigation",
+    "home": "Home",
+    "explore": "Explore",
+    "about_us": "About Us",
+    "contact": "Contact",
+    "legal": "Legal",
+    "terms_of_service": {
+      "title": "Terms of Service",
+      "welcome": "Welcome to Wave Pulse!",
+      "intro": "These Terms of Service (\"Terms\") govern your use of our website located at <a href=\"{url}\">{linkText}</a> (the \"Service\") operated by WavePulse (\"us\", \"we\", or \"our\"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree with any part of the terms, then you may not access the Service.",
+      "accounts": "1. Accounts",
+      "accounts_text": "To use certain features of the Service, you may be required to create an account. You agree to provide accurate, complete, and current information during the registration process and to update such information to keep it accurate, complete, and current. You are responsible for safeguarding the password you use to access the Service and for any activities or actions under your password.",
+      "intellectual_property": "2. Intellectual Property",
+      "intellectual_property_text": "The Service and its original content, features, and functionality are and will remain the exclusive property of WavePulse and its licensors. The Service is protected by copyright, trademark, and other laws of both Serbia and foreign countries.",
+      "user_content": "3. User Content",
+      "user_content_text": "By submitting content to the Service, you grant WavePulse a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and distribute your content in connection with operating and improving the Service. You are solely responsible for your content and the consequences of posting or publishing it.",
+      "prohibited_uses": "4. Prohibited Uses",
+      "prohibited_uses_text": "You may use the Service only for lawful purposes and in accordance with these Terms. You agree not to use the Service:",
+      "prohibited_uses_list": [
+        "In any way that violates any applicable national or international law or regulation.",
+        "To exploit, harm, or attempt to exploit or harm minors in any way.",
+        "To transmit, or procure the sending of, any advertising or promotional material without our prior written consent.",
+        "To impersonate or attempt to impersonate WavePulse, a WavePulse employee, another user, or any other person or entity."
+      ],
+      "termination": "5. Termination",
+      "termination_text": "We may terminate or suspend your account immediately, without prior notice or liability, if you breach any of the Terms or if we believe that you are using the Service in a manner that is not permitted under these Terms.",
+      "limitation_of_liability": "6. Limitation of Liability",
+      "limitation_of_liability_text": "In no event shall WavePulse, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:",
+      "limitation_of_liability_list": [
+        "Your use or inability to use the Service;",
+        "Any unauthorized access to or use of our servers and/or any personal information stored therein;",
+        "Any interruption or cessation of transmission to or from the Service;",
+        "Any bugs, viruses, trojan horses, or the like that may be transmitted to or through the Service by any third party."
+      ],
+      "changes": "7. Changes",
+      "changes_text": "We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any changes by posting the new Terms on this page. You are advised to review these Terms periodically for any changes. Your continued use of the Service after any changes to these Terms constitutes acceptance of those changes.",
+      "contact_us": "8. Contact Us",
+      "contact_us_text": "If you have any questions about these Terms, please contact us at:",
+      "contact_email": "Email: wavepulse@gmail.com"
+    },
+    "privacy_policy": {
+      "title": "Privacy Policy",
+      "welcome": "Welcome to Wave Pulse!",
+      "intro": "This Privacy Policy (\"Policy\") describes how WavePulse (\"we\", \"us\", or \"our\") collects, uses, and shares information about you when you use our website located at <a href=\"{url}\">{linkText}</a> (the \"Service\"). By accessing or using the Service, you consent to the collection, use, and sharing of your information as described in this Policy.",
+      "information_we_collect": "1. Information We Collect",
+      "personal_information": "Personal Information: Information that you provide directly, such as your name, email address, and other contact details.",
+      "usage_data": "Usage Data: Information about how you use the Service, such as your IP address, browser type, operating system, pages visited, and time spent on the Service.",
+      "cookies": "Cookies and Tracking Technologies: We use cookies and similar technologies to enhance your experience on our Service and to collect information about your interactions with our website.",
+      "how_we_use_information": "2. How We Use Your Information",
+      "use_purposes": "We use the information we collect for the following purposes:",
+      "provide_service": "To provide, operate, and maintain the Service.",
+      "improve_service": "To improve, personalize, and expand the Service.",
+      "analyze_usage": "To understand and analyze how you use the Service."
+    },
+    "follow_us": "Follow Us",
+    "newsletter": "Newsletter",
+    "subscribe_placeholder": "Your email",
+    "subscribe_button": "Subscribe",
+    "copyright": "© 2024 WavePulse - All rights reserved.",
+    "description": "Explore your dream songs with WavePulse, your personalized music companion."
+  },
+  "home_view": {
+    "discover": "Discover"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "song_details": {
+    "song_info": {
+      "total_plays": "Total Plays"
+    },
+    "reviews": {
+      "reviews": "Reviews",
+      "add_review": "Add a review...",
+      "review": "REVIEW",
+      "likes": "Likes",
+      "dislikes": "Dislikes"
+    }
+  },
+  "admin_panel": {
+    "title": "Admin Panel",
+    "manage_users": "Manage Users",
+    "pending_users": "Pending Users",
+    "security_logs": "Security Logs",
+    "add_user_view": {
+      "add_new_user": "Add New User",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email_address": "Email address",
+      "username": "Username",
+      "password": "Password",
+      "confirm_password": "Confirm Password",
+      "user_type": "User Type",
+      "user": "User",
+      "artist": "Artist",
+      "admin": "Admin",
+      "register": "Register",
+      "registration_successful": "Registration successful!",
+      "registration_failed": "Registration failed:"
+    },
+    "manage_users_view": {
+      "account_management": "Account Management",
+      "add_user": "Add User",
+      "username": "Username",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "status": "Status",
+      "role": "Role",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "modify_user_view": {
+      "modify_user": "Modify User",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "username": "Username",
+      "email": "Email",
+      "country_id": "Country ID",
+      "account_status": "Account Status",
+      "role": "Role",
+      "password": "Password",
+      "save_changes": "Save Changes",
+      "update_password": "Update Password"
+    },
+    "pending_users_view": {
+      "pending_users": "Pending Users",
+      "username": "Username",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "actions": "Actions",
+      "approve": "Approve",
+      "reject": "Reject"
+    }
+  },
+  "artist_panel": {
+    "sidebar": {
+      "title": "Artist Panel",
+      "edit_public_profile": "Edit Public Profile",
+      "manage_songs": "Manage Songs",
+      "analytics": "Analytics"
+    },
+    "artist_analytics": {
+      "title": "Artist Analytics"
+    },
+    "manage_songs_view": {
+      "song_management": "Song Management",
+      "publish_song": "Publish Song",
+      "title": "Title",
+      "genre": "Genre",
+      "album": "Album",
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
+  "confirmation_dialog": {
+    "title": "Confirm Deletion",
+    "message": "Are you sure you want to delete this account?",
+    "confirm": "Delete",
+    "cancel": "Cancel"
+  },
+  "settings": {
+    "sidebar": {
+      "edit_profile": "Edit Profile",
+      "change_password": "Change Password",
+      "appearance": "Appearance"
+    },
+    "edit_profile": {
+      "title": "Edit Profile",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "username": "Username",
+      "email": "Email",
+      "save_changes": "Save Changes"
+    },
+    "change_password": {
+      "title": "Change Password",
+      "old_password": "Old Password",
+      "new_password": "New Password",
+      "repeat_new_password": "Repeat New Password",
+      "update_password": "Update Password",
+      "error_message": "Error Message",
+      "validation_errors": "Validation Errors"
+    },
+    "appearance": {
+      "edit_appearance": "Edit Appearance",
+      "theme": "Theme",
+      "language": "Language",
+      "light": "Light",
+      "dark": "Dark",
+      "english": "English",
+      "serbian": "Serbian",
+      "save_changes": "Save Changes"
+    }
+  }
+}

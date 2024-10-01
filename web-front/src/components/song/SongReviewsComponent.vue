@@ -1,11 +1,11 @@
 <template>
   <div class="reviews">
-    <h3><strong>Reviews</strong></h3>
+    <h3><strong>{{ $t('song_details.reviews.reviews') }}</strong></h3>
 
     <div class="add-review">
       <form @submit.prevent="addReview">
-        <textarea v-model="newReview" placeholder="Add a review..." required></textarea>
-        <button type="submit">REVIEW</button>
+        <textarea v-model="newReview" :placeholder="$t('song_details.reviews.add_review')" required></textarea>
+        <button type="submit">{{ $t('song_details.reviews.review') }}</button>
       </form>
     </div>
 
@@ -14,10 +14,10 @@
       <p class="review-text">{{ review.review }}</p>
       <div class="review-likes">
         <button @click="handleLikeReview(review.id)">
-          <i class="fas fa-thumbs-up"></i> {{ review.likes }}
+          <i class="fas fa-thumbs-up"></i> {{ review.likes }} {{ $t('song_details.reviews.likes') }}
         </button>
         <button @click="handleDislikeReview(review.id)">
-          <i class="fas fa-thumbs-down"></i> {{ review.dislikes }}
+          <i class="fas fa-thumbs-down"></i> {{ review.dislikes }} {{ $t('song_details.reviews.dislikes') }}
         </button>
       </div>
     </div>

@@ -1,0 +1,241 @@
+{
+  "auth": {
+    "login": {
+      "title": "Prijava",
+      "username": "Korisničko ime",
+      "password": "Lozinka",
+      "login_button": "Prijavi se",
+      "login_success": "Prijava uspešna!",
+      "login_failed": "Prijava neuspešna:"
+    },
+    "register": {
+      "title": "Registracija",
+      "first_name": "Ime",
+      "last_name": "Prezime",
+      "email": "Email adresa",
+      "username": "Korisničko ime",
+      "password": "Lozinka",
+      "confirm_password": "Potvrdi Lozinku",
+      "user_type": "Tip Korisnika",
+      "user": "Korisnik",
+      "artist": "Umetnik",
+      "register_button": "Registruj korisnika",
+      "registration_successful": "Registracija uspešna!",
+      "registration_failed": "Registracija neuspešna:"
+    }
+  },
+  "header": {
+    "login": "Prijava",
+    "register": "Registracija",
+    "admin_panel": "Panel Administratora",
+    "artist_panel": "Panel Umetnika",
+    "news": "Vesti",
+    "discover": "Otkrijte",
+    "profile": "Profil",
+    "settings": "Podešavanja",
+    "logout": "Odjava",
+    "search_placeholder": "Pretraga"
+  },
+  "footer": {
+    "navigation": "Navigacija",
+    "home": "Početna",
+    "explore": "Istraži",
+    "about_us": "O nama",
+    "contact": "Kontakt",
+    "legal": "Pravno",
+    "terms_of_service": {
+      "title": "Uslovi korišćenja",
+      "welcome": "Dobrodošli u Wave Pulse!",
+      "intro": "Ovi Uslovi korišćenja (\"Uslovi\") uređuju vašu upotrebu naše veb stranice koja se nalazi na <a href=\"{url}\">{linkText}</a> (\"Usluga\") koju upravlja WavePulse (\"mi\", \"nas\" ili \"naš\"). Pristupanjem ili korišćenjem Usluge, slažete se da budete obavezani ovim Uslovima. Ako se ne slažete sa bilo kojim delom uslova, ne možete pristupiti Usluzi.",
+      "accounts": "1. Računi",
+      "accounts_text": "Da biste koristili određene funkcije Usluge, može biti potrebno da kreirate račun. Saglašavate se da ćete pružiti tačne, potpune i ažurirane informacije tokom procesa registracije i da ćete ažurirati te informacije kako bi ostale tačne, potpune i ažurirane. Odgovorni ste za čuvanje lozinke koju koristite za pristup Usluzi i za sve aktivnosti ili radnje pod vašom lozinkom.",
+      "intellectual_property": "2. Intelektualna svojina",
+      "intellectual_property_text": "Usluga i njen originalni sadržaj, karakteristike i funkcionalnosti su i ostaju isključivo vlasništvo WavePulse-a i njegovih licencodavaca. Usluga je zaštićena autorskim pravom, zaštitnim znakom i drugim zakonima kako Srbije, tako i stranih zemalja.",
+      "user_content": "3. Korisnički sadržaj",
+      "user_content_text": "Podnošenjem sadržaja Usluzi, dodeljujete WavePulse-u svetsku, neekskluzivnu, bezautorsku licencu za korišćenje, reprodukciju, modifikaciju i distribuciju vašeg sadržaja u vezi sa upravljanjem i unapređenjem Usluge. Isključivo ste odgovorni za svoj sadržaj i posledice njegovog objavljivanja.",
+      "prohibited_uses": "4. Zabranjena korišćenja",
+      "prohibited_uses_text": "Uslugu možete koristiti samo u zakonite svrhe i u skladu sa ovim Uslovima. Saglašavate se da nećete koristiti Uslugu:",
+      "prohibited_uses_list": [
+        "Na bilo koji način koji krši važeće nacionalne ili međunarodne zakone ili propise.",
+        "Da iskorišćavate, štetite ili pokušavate da iskorišćavate ili štetite maloletnike na bilo koji način.",
+        "Da prenosite ili nabavljate slanje bilo kog reklamnog ili promotivnog materijala bez našeg prethodnog pismenog pristanka.",
+        "Da se predstavljate ili pokušavate da se predstavljate kao WavePulse, zaposlenik WavePulse-a, drugi korisnik ili bilo koja druga osoba ili entitet."
+      ],
+      "termination": "5. Prestanak",
+      "termination_text": "Možemo odmah, bez prethodne najave ili odgovornosti, prekinuti ili obustaviti vaš račun ako prekršite bilo koji od Uslova ili ako verujemo da koristite Uslugu na način koji nije dozvoljen prema ovim Uslovima.",
+      "limitation_of_liability": "6. Ograničenje odgovornosti",
+      "limitation_of_liability_text": "U nijednom slučaju WavePulse, niti njegovi direktori, zaposleni, partneri, agenti, dobavljači ili povezane kompanije, neće biti odgovorni za bilo kakvu indirektnu, slučajnu, posebnu, posledičnu ili kaznenu štetu, uključujući, bez ograničenja, gubitak profita, podataka, korišćenja, dobrog imena ili drugih nematerijalnih gubitaka, koji proističu iz:",
+      "limitation_of_liability_list": [
+        "Vaše korišćenje ili nemogućnost korišćenja Usluge;",
+        "Bilo kakvog neovlašćenog pristupa ili korišćenja naših servera i/ili bilo kojih ličnih informacija koje su u njima pohranjene;",
+        "Bilo kakvog prekida ili obustave prenosa ka ili sa Usluge;",
+        "Bilo kakvih grešaka, virusa, trojanskih konja ili sličnih koje može preneti ili kroz Uslugu preneti bilo koja treća strana."
+      ],
+      "changes": "7. Izmene",
+      "changes_text": "Zadržavamo pravo, prema sopstvenom nahođenju, da modifikujemo ili zamenimo ove Uslove u bilo kojem trenutku. O svakoj izmeni ćemo vas obavestiti postavljanjem novih Uslova na ovoj stranici. Savetujemo vas da periodično pregledate ove Uslove radi eventualnih izmena. Vaša dalja upotreba Usluge nakon bilo kakvih izmena ovih Uslova predstavlja prihvatanje tih izmena.",
+      "contact_us": "8. Kontaktirajte nas",
+      "contact_us_text": "Ako imate bilo kakvih pitanja u vezi sa ovim Uslovima, molimo vas da nas kontaktirate na:",
+      "contact_email": "Email: wavepulse@gmail.com"
+    },
+    "privacy_policy": {
+      "title": "Politika Privatnosti",
+      "welcome": "Dobrodošli u Wave Pulse!",
+      "intro": "Ova Politika privatnosti (\"Politika\") opisuje kako WavePulse (\"mi\", \"nas\" ili \"naš\") prikuplja, koristi i deli informacije o vama kada koristite našu veb stranicu koja se nalazi na <a href=\"{url}\">{linkText}</a> (\"Usluga\"). Pristupanjem ili korišćenjem Usluge, pristajete na prikupljanje, korišćenje i deljenje vaših informacija kako je opisano u ovoj Politici.",
+      "information_we_collect": "1. Informacije koje prikupljamo",
+      "personal_information": "Lične informacije: Informacije koje pružate direktno, kao što su vaše ime, email adresa i drugi kontakt podaci.",
+      "usage_data": "Podaci o korišćenju: Informacije o tome kako koristite Uslugu, kao što su vaša IP adresa, tip pregledača, operativni sistem, posećene stranice i vreme provedeno na Usluzi.",
+      "cookies": "Kolačići i tehnologije praćenja: Koristimo kolačiće i slične tehnologije kako bismo poboljšali vaše iskustvo na našoj Usluzi i prikupili informacije o vašim interakcijama sa našom veb stranicom.",
+      "how_we_use_information": "2. Kako koristimo vaše informacije",
+      "use_purposes": "Informacije koje prikupljamo koristimo u sledeće svrhe:",
+      "provide_service": "Da bismo pružili, upravljali i održavali Uslugu.",
+      "improve_service": "Da bismo poboljšali, personalizovali i proširili Uslugu.",
+      "analyze_usage": "Da bismo razumeli i analizirali kako koristite Uslugu."
+    },
+    "follow_us": "Pratite nas",
+    "newsletter": "Bilten",
+    "subscribe_placeholder": "Vaš email",
+    "subscribe_button": "Pretplati se",
+    "copyright": "© 2024 WavePulse - Sva prava zadržana.",
+    "description": "Istražite svoje omiljene pesme sa WavePulse, vašim personalizovanim muzičkim saputnikom."
+  },
+  "home_view": {
+    "discover": "Otkrijte"
+  },
+  "pagination": {
+    "previous": "Prethodna",
+    "next": "Sledeća"
+  },
+  "song_details": {
+    "song_info": {
+      "total_plays": "Ukupno Slušanja"
+    },
+    "reviews": {
+      "reviews": "Recenzije",
+      "add_review": "Dodajte recenziju...",
+      "review": "RECENZIJA",
+      "likes": "Sviđa mi se",
+      "dislikes": "Ne sviđa mi se"
+    }
+  },
+  "admin_panel": {
+    "title": "Administratorski Panel",
+    "manage_users": "Upravljanje Korisnicima",
+    "pending_users": "Korisnici na Čekanju",
+    "security_logs": "Sigurnosni Zapisnici",
+    "add_user_view": {
+      "add_new_user": "Dodaj Novog Korisnika",
+      "first_name": "Ime",
+      "last_name": "Prezime",
+      "email_address": "Email adresa",
+      "username": "Korisničko ime",
+      "password": "Lozinka",
+      "confirm_password": "Potvrdi Lozinku",
+      "user_type": "Tip Korisnika",
+      "user": "Korisnik",
+      "artist": "Umetnik",
+      "admin": "Administrator",
+      "register": "Registruj korisnika",
+      "registration_successful": "Registracija uspešna!",
+      "registration_failed": "Registracija neuspešna:"
+    },
+    "manage_users_view": {
+      "account_management": "Upravljanje Nalozima",
+      "add_user": "Dodaj Korisnika",
+      "username": "Korisničko ime",
+      "first_name": "Ime",
+      "last_name": "Prezime",
+      "email": "Email",
+      "status": "Status",
+      "role": "Uloga",
+      "actions": "Akcije",
+      "edit": "Izmeni",
+      "delete": "Obriši"
+    },
+    "modify_user_view": {
+      "modify_user": "Izmeni Korisnika",
+      "first_name": "Ime",
+      "last_name": "Prezime",
+      "username": "Korisničko ime",
+      "email": "Email",
+      "country_id": "ID Države",
+      "account_status": "Status Naloga",
+      "role": "Uloga",
+      "password": "Lozinka",
+      "save_changes": "Sačuvaj Promene",
+      "update_password": "Ažuriraj Lozinku"
+    },
+    "pending_users_view": {
+      "pending_users": "Korisnici na Čekanju",
+      "username": "Korisničko ime",
+      "first_name": "Ime",
+      "last_name": "Prezime",
+      "email": "Email",
+      "role": "Uloga",
+      "status": "Status",
+      "actions": "Akcije",
+      "approve": "Odobri",
+      "reject": "Odbij"
+    }
+  },
+  "artist_panel": {
+    "sidebar": {
+      "title": "Panel Umetnika",
+      "edit_public_profile": "Izmeni Javni Profil",
+      "manage_songs": "Upravljanje Pesmama",
+      "analytics": "Analitika"
+    },
+    "artist_analytics": {
+      "title": "Analitika Umetnika"
+    },
+    "manage_songs_view": {
+      "song_management": "Upravljanje Pesmama",
+      "publish_song": "Objavi Pesmu",
+      "title": "Naslov",
+      "genre": "Žanr",
+      "album": "Album",
+      "actions": "Akcije",
+      "edit": "Izmeni",
+      "delete": "Obriši"
+    }
+  },
+  "confirmation_dialog": {
+    "title": "Potvrda Brisanja",
+    "message": "Da li ste sigurni da želite da obrišete ovaj nalog?",
+    "confirm": "Obriši",
+    "cancel": "Otkaži"
+  },
+  "settings": {
+    "sidebar": {
+      "edit_profile": "Izmeni Profil",
+      "change_password": "Promeni Lozinku",
+      "appearance": "Izgled"
+    },
+    "edit_profile": {
+      "title": "Izmeni Profil",
+      "first_name": "Ime",
+      "last_name": "Prezime",
+      "username": "Korisničko ime",
+      "email": "Email",
+      "save_changes": "Sačuvaj Promene"
+    },
+    "change_password": {
+      "title": "Promeni Lozinku",
+      "old_password": "Stara Lozinka",
+      "new_password": "Nova Lozinka",
+      "repeat_new_password": "Ponovi Novu Lozinku",
+      "update_password": "Ažuriraj Lozinku",
+      "error_message": "Poruka o Grešci",
+      "validation_errors": "Greške u Validaciji"
+    },
+    "appearance": {
+      "edit_appearance": "Izmeni Izgled",
+      "theme": "Tema",
+      "language": "Jezik",
+      "light": "Svetlo",
+      "dark": "Tamno",
+      "english": "Engleski",
+      "serbian": "Srpski",
+      "save_changes": "Sačuvaj Promene"
+    }
+  }
+}

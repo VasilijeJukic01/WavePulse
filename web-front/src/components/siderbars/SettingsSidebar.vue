@@ -9,17 +9,17 @@
         <ul>
           <li class="mb-4">
             <router-link :to="`/edit-profile/${user.id}`" class="flex items-center py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 rounded transition duration-200">
-              <i class="fas fa-user-edit mr-3"></i> Edit Profile
+              <i class="fas fa-user-edit mr-3"></i> {{ $t('settings.sidebar.edit_profile') }}
             </router-link>
           </li>
           <li class="mb-4">
             <router-link :to="`/edit-profile/change-password/${user.id}`" class="flex items-center py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 rounded transition duration-200">
-              <i class="fas fa-key mr-3"></i> Change Password
+              <i class="fas fa-key mr-3"></i> {{ $t('settings.sidebar.change_password') }}
             </router-link>
           </li>
           <li class="mb-4">
             <router-link :to="`/edit-profile/appearance/${user.id}`" class="flex items-center py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 rounded transition duration-200">
-              <i class="fas fa-paint-brush mr-3"></i> Appearance
+              <i class="fas fa-paint-brush mr-3"></i> {{ $t('settings.sidebar.appearance') }}
             </router-link>
           </li>
         </ul>
@@ -30,7 +30,6 @@
     </main>
   </div>
 </template>
-
 <script>
 import { mapGetters } from 'vuex';
 
