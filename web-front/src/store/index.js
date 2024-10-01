@@ -25,6 +25,7 @@ const store = new Vuex.Store({
       'user.token',
       'user.user',
       'songs.currentPage',
+      'songs.cachedSongsByPage',
     ],
     storage: customStorage
   })],

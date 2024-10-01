@@ -36,10 +36,11 @@ export default {
     ...mapGetters('songs', ['songs']),
   },
   async created() {
+    await this.fetchTotalSongs();
     await this.fetchAllSongs();
   },
   methods: {
-    ...mapActions('songs', ['fetchAllSongs']),
+    ...mapActions('songs', ['fetchTotalSongs', 'fetchAllSongs']),
   }
 }
 </script>

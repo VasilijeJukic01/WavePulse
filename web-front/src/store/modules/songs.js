@@ -4,8 +4,6 @@ import { makeApiRequest } from '../utils/util';
 // Config
 axios.defaults.baseURL = process.env.VUE_APP_API_GATEWAY_URL
 
-// TODO: Implement Caching Mechanism
-
 const state = {
   songs: [],
   song: {},
@@ -46,8 +44,23 @@ async function processSongs(songs, dispatch) {
 }
 
 const actions = {
+  async fetchTotalSongs({ dispatch }) {
+    try {
+      const response = await makeApiRequest('/api/song/count', null, 'GET');
+      const totalSongs = response.data.total;
+      dispatch('setTotalPages', totalSongs);
+    } catch (err) {
+      console.error('Error fetching total songs:', err);
+    }
+  },
+  setTotalPages({ commit }, totalSongs) {
+    const limit = 6;
+    const totalPages = Math.ceil(totalSongs / limit);
+    commit('SET_TOTAL_PAGES', totalPages);
+  },
+
   // Fetch all songs
-  fetchAllSongs({ commit, dispatch }, { page = 1 } = {}) {
+  fetchAllSongs({ commit, dispatch, state }, { page = 1 } = {}) {
     if (state.cachedSongsByPage[page]) {
       commit('SET_SONGS', state.cachedSongsByPage[page]);
       commit('SET_CURRENT_PAGE', page);
@@ -58,17 +71,15 @@ const actions = {
     const offset = (page - 1) * limit;
     return makeApiRequest(`/api/song/full?limit=${limit}&offset=${offset}`, null, 'GET')
       .then(resp => {
-        const totalSongs = resp.data.total;
         return processSongs(resp.data.songs, dispatch)
           .then(updatedSongs => {
             commit('SET_CACHED_SONGS_BY_PAGE', { page, songs: updatedSongs });
             commit('SET_SONGS', updatedSongs);
             commit('SET_CURRENT_PAGE', page);
-            commit('SET_TOTAL_PAGES', Math.ceil(totalSongs / limit) - 1);
             return updatedSongs;
           });
       })
-      .catch(() => {});
+      .catch(err => console.error(err));
   },
   async fetchSongById({ commit, dispatch }, songId) {
     try {
@@ -105,19 +116,50 @@ const actions = {
         .map(release => release.id);
     } catch (err) {}
   },
-
+  // Fetch cover image
   async fetchCoverImage({ commit }, releaseIds) {
-    const defaultImageUrl = 'path/to/default/image.jpg';
+    const defaultImageUrl = '../../assets/default_cover.jpg';
+
+    function convertBlobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
     for (const releaseId of releaseIds) {
+      try {
+        const cachedImageResponse = await axios.get(`/api/redis/images/${releaseId}`);
+        if (cachedImageResponse.data) {
+          // Base64 payload from Redis
+          return cachedImageResponse.data;
+        }
+      } catch (err) {
+        console.warn(`Image not found in cache for releaseId: ${releaseId}. Fetching from external source.`);
+      }
+
       try {
         const resp = await axios({
           url: `https://cors-anywhere.herokuapp.com/https://coverartarchive.org/release/${releaseId}/front`,
           method: 'GET',
           responseType: 'blob',
         });
+
         const blob = new Blob([resp.data], { type: resp.headers['content-type'] });
-        return URL.createObjectURL(blob);
-      } catch (err) {}
+        const base64Image = await convertBlobToBase64(blob);
+
+        try {
+          await axios.post(`/api/redis/images/${releaseId}`, { base64: base64Image });
+        } catch (cacheErr) {
+          console.error('Error saving image to cache:', cacheErr);
+        }
+
+        return base64Image;
+      } catch (err) {
+        console.error('Error fetching cover image from external source:', err);
+      }
     }
     return defaultImageUrl;
   },
@@ -128,7 +170,6 @@ const actions = {
       return response.data;
     } catch (err) {}
   }
-
 };
 
 const getters = {

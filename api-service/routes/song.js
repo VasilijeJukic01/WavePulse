@@ -167,3 +167,13 @@ route.put("/:id", verifyTokenArtist(), async (req, res) => {
 route.delete("/:id", verifyTokenArtist(), async (req, res) => {
     await handleRoute(req, res, deleteSong);
 });
+
+route.get("/count", verifyTokenUser(), async (req, res) => {
+    try {
+        const totalSongs = await Song.count();
+        res.json({ total: totalSongs });
+    } catch (err) {
+        console.error('Error counting songs:', err);
+        res.status(500).json({ error: 'Error counting songs' });
+    }
+});

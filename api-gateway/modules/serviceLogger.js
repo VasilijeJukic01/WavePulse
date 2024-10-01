@@ -13,7 +13,11 @@ const setupLogger = (app) => {
                         const { statusCode } = meta.res;
                         const responseTime = meta.responseTime;
                         const targetInstance = headers['x-target-instance'] || 'API_GATEWAY';
-                        const serviceName = headers['x-service-name'] || 'API_GATEWAY';
+                        let serviceName = headers['x-service-name'] || 'API_GATEWAY';
+
+                        if (url.includes('redis')) {
+                            serviceName = `REDIS_${serviceName}`;
+                        }
 
                         let statusColor;
                         if (statusCode >= 500) {
@@ -27,7 +31,11 @@ const setupLogger = (app) => {
                         }
                         const resetColor = '\x1b[0m';
 
-                        const serviceColor = serviceName === 'AUTH_SERVICE' ? '\x1b[35m' : serviceName === 'API_SERVICE' ? '\x1b[34m' : serviceName === 'LOG_SERVICE' ? '\x1b[32m' : '\x1b[36m';
+                        const serviceColor = serviceName.startsWith('REDIS_') ? '\x1b[31m' :
+                            serviceName === 'AUTH_SERVICE' ? '\x1b[35m' :
+                                serviceName === 'API_SERVICE' ? '\x1b[34m' :
+                                    serviceName === 'LOG_SERVICE' ? '\x1b[32m' :
+                                        '\x1b[36m';
 
                         return `[${serviceColor}${serviceName}${resetColor}] ${timestamp} [${level}] ${method} ${url} ${statusColor}${statusCode}${resetColor} ${responseTime}ms - Target: ${targetInstance}`;
                     })
