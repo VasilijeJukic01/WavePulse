@@ -9,8 +9,9 @@ router.post('/images/:releaseId', async (req, res) => {
     const releaseId = req.params.releaseId;
     const { base64 } = req.body;
     try {
-        await client.set(releaseId, base64);
-        return res.status(200).json({ message: 'Image cached successfully' });
+        const ttl = 3600;
+        await client.setEx(releaseId, ttl, base64);
+        return res.status(200).json({ message: 'Image cached successfully with TTL' });
     } catch (err) {
         return res.status(500).json({ error: 'Failed to cache image' });
     }

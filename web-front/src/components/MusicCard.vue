@@ -1,7 +1,7 @@
 <template>
   <div class="music-card">
     <div class="image-container">
-      <img :src="music.cover" alt="Album Cover" class="album-cover" />
+      <img :src="music.cover || require('@/assets/default_cover.jpg')" alt="Album Cover" class="album-cover" />
       <button @click="playMusic" class="play-button">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
           <path d="M8 5v14l11-7z" />

@@ -1,4 +1,4 @@
-export default {
+const customStorage = {
   getItem: (key) => {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) return null;
@@ -19,15 +19,13 @@ export default {
     };
 
     try {
+      localStorage.setItem(key, JSON.stringify(item));
     } catch (e) {
       if (e.name === 'QuotaExceededError') {
-        console.warn('LocalStorage quota exceeded. Clearing expired items and retrying.');
-        this.clearExpiredItems();
+        customStorage.clearExpiredItems();
         try {
           localStorage.setItem(key, JSON.stringify(item));
-        } catch (retryError) {
-          console.error('Retrying to set item failed:', retryError);
-        }
+        } catch (e) { }
       } else {
         throw e;
       }
@@ -46,14 +44,18 @@ export default {
     const now = new Date().getTime();
     for (const key in localStorage) {
       if (localStorage.hasOwnProperty(key)) {
-        const itemStr = localStorage.getItem(key);
-        if (itemStr) {
-          const item = JSON.parse(itemStr);
-          if (item.expiry && now > item.expiry) {
-            localStorage.removeItem(key);
+        try {
+          const itemStr = localStorage.getItem(key);
+          if (itemStr) {
+            const item = JSON.parse(itemStr);
+            if (item.expiry && now > item.expiry) {
+              localStorage.removeItem(key);
+            }
           }
-        }
+        } catch (e) { }
       }
     }
   }
 };
+
+export default customStorage;

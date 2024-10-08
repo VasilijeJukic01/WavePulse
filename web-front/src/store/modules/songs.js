@@ -114,12 +114,10 @@ const actions = {
       }
       return releases.slice(0, 5)
         .map(release => release.id);
-    } catch (err) {}
+    } catch (err) { }
   },
   // Fetch cover image
   async fetchCoverImage({ commit }, releaseIds) {
-    const defaultImageUrl = '../../assets/default_cover.jpg';
-
     function convertBlobToBase64(blob) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -136,9 +134,7 @@ const actions = {
           // Base64 payload from Redis
           return cachedImageResponse.data;
         }
-      } catch (err) {
-        console.warn(`Image not found in cache for releaseId: ${releaseId}. Fetching from external source.`);
-      }
+      } catch (err) { }
 
       try {
         const resp = await axios({
@@ -152,16 +148,12 @@ const actions = {
 
         try {
           await axios.post(`/api/redis/images/${releaseId}`, { base64: base64Image });
-        } catch (cacheErr) {
-          console.error('Error saving image to cache:', cacheErr);
-        }
+        } catch (err) { }
 
         return base64Image;
-      } catch (err) {
-        console.error('Error fetching cover image from external source:', err);
-      }
+      } catch (err) { }
     }
-    return defaultImageUrl;
+    return null;
   },
 
   async fetchAverageRating({ commit }, songId) {
