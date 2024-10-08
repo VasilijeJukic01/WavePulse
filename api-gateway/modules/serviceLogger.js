@@ -1,12 +1,15 @@
 const expressWinston = require('express-winston');
 const winston = require('winston');
+const loggerConfig = require('../config/loggerConfig.json');
 
 const setupLogger = (app) => {
+    const consoleTransportConfig = loggerConfig.transports.find(t => t.type === 'Console');
+
     app.use(expressWinston.logger({
         transports: [
             new winston.transports.Console({
                 format: winston.format.combine(
-                    winston.format.colorize({ all: true }),
+                    consoleTransportConfig.format.colorize.all ? winston.format.colorize({ all: true }) : winston.format.uncolorize(),
                     winston.format.timestamp(),
                     winston.format.printf(({ timestamp, level, message, meta }) => {
                         const { method, url, headers } = meta.req;
@@ -19,34 +22,33 @@ const setupLogger = (app) => {
                             serviceName = `REDIS_${serviceName}`;
                         }
 
-                        let statusColor;
-                        if (statusCode >= 500) {
-                            statusColor = '\x1b[31m';
-                        } else if (statusCode >= 400) {
-                            statusColor = '\x1b[33m';
-                        } else if (statusCode >= 300) {
-                            statusColor = '\x1b[36m';
-                        } else {
-                            statusColor = '\x1b[32m';
-                        }
-                        const resetColor = '\x1b[0m';
+                        const statusColors = consoleTransportConfig.format.statusColors;
+                        let statusColor = statusColors['200'];
 
-                        const serviceColor = serviceName.startsWith('REDIS_') ? '\x1b[31m' :
-                            serviceName === 'AUTH_SERVICE' ? '\x1b[35m' :
-                                serviceName === 'API_SERVICE' ? '\x1b[34m' :
-                                    serviceName === 'LOG_SERVICE' ? '\x1b[32m' :
-                                        '\x1b[36m';
+                        if (statusCode >= 500) {
+                            statusColor = statusColors['500'];
+                        } else if (statusCode >= 400) {
+                            statusColor = statusColors['400'];
+                        } else if (statusCode >= 300) {
+                            statusColor = statusColors['300'];
+                        }
+
+                        const serviceColors = consoleTransportConfig.format.serviceColors;
+                        const serviceColor = serviceName.startsWith('REDIS_')
+                            ? serviceColors['REDIS_']
+                            : serviceColors[serviceName] || serviceColors['DEFAULT'];
+                        const resetColor = consoleTransportConfig.format.resetColor;
 
                         return `[${serviceColor}${serviceName}${resetColor}] ${timestamp} [${level}] ${method} ${url} ${statusColor}${statusCode}${resetColor} ${responseTime}ms - Target: ${targetInstance}`;
                     })
                 )
             })
         ],
-        meta: true,
-        msg: "HTTP {{req.method}} {{req.url}}",
-        expressFormat: true,
-        colorize: false,
-        ignoreRoute: function (req, res) { return false; }
+        meta: loggerConfig.meta,
+        msg: loggerConfig.msg,
+        expressFormat: loggerConfig.expressFormat,
+        colorize: loggerConfig.colorize,
+        ignoreRoute: new Function('req', 'res', loggerConfig.ignoreRoute)
     }));
 };
 
