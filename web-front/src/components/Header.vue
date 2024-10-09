@@ -21,29 +21,26 @@
             <button @click="logoutUser" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ $t('header.logout') }}</button>
           </div>
         </div>
-        <div class="relative">
-          <input type="text" :placeholder="$t('header.search_placeholder')" class="bg-gray-800 text-gray-300 py-2 pl-4 pr-10 rounded-full focus:outline-none focus:bg-gray-700 search-text">
-          <button class="absolute top-1/2 right-0 transform -translate-y-1/2 mr-4 text-gray-400 hover:text-white">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
+        <SearchBar @search="handleSearch" />
       </div>
     </nav>
   </header>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex';
+import SearchBar from './bars/SearchBar.vue';
 
 export default {
   name: 'Header',
+  components: { SearchBar },
   data() {
     return {
-      showDropdown: false
-    }
+      showDropdown: false,
+    };
   },
   computed: {
-    ...mapGetters(['user'])
+    ...mapGetters(['user']),
   },
   methods: {
     ...mapActions(['logout']),
@@ -66,17 +63,17 @@ export default {
       } catch (error) {
         console.error('Logout failed: ' + error.message);
       }
-    }
-  }
-}
+    },
+    handleSearch(query) {
+      console.log('Search query:', query);
+    },
+  },
+};
 </script>
 
 <style scoped>
 input::placeholder {
   color: #9ca3af;
-}
-.search-text:hover {
-  color: white;
 }
 header {
   height: 12vh;
@@ -98,12 +95,6 @@ input[type="text"] {
 }
 .text-gray-300:hover {
   color: #ffffff;
-}
-.search-text {
-  background-color: #202020;
-}
-.search-text:focus {
-  background-color: #333333;
 }
 .shadow-lg {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);

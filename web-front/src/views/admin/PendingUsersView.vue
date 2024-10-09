@@ -56,11 +56,11 @@
               <td class="px-6 py-4 flex space-x-2">
                 <button class="btn btn-success flex items-center space-x-2" @click="accept(account.id)">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 00-1.414 0L9 11.586 6.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l7-7a1 1 0 000-1.414z"/></svg>
-                  <span>{{ $t('admin_panel.pending_users_view.accept') }}</span>
+                  <span>{{ $t('admin_panel.pending_users_view.approve') }}</span>
                 </button>
                 <button class="btn btn-danger flex items-center space-x-2" @click="decline(account.id)">
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-1 1v1H4a1 1 0 100 2h12a1 1 0 100-2h-4V3a1 1 0 00-1-1H9zm-3 6a1 1 0 011 1v7a1 1 0 102 0v-7a1 1 0 112 0v7a1 1 0 102 0v-7a1 1 0 112 0v7a1 1 0 102 0v-7a1 1 0 011-1h2a1 1 0 100-2h-1a2 2 0 00-2-2H5a2 2 0 00-2 2H2a1 1 0 100 2h1z" clip-rule="evenodd"/></svg>
-                  <span>{{ $t('admin_panel.pending_users_view.decline') }}</span>
+                  <span>{{ $t('admin_panel.pending_users_view.reject') }}</span>
                 </button>
               </td>
             </tr>

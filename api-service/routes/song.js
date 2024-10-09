@@ -1,8 +1,10 @@
 const express = require("express");
-const { Song, Artist, Genre, SongArtist, SongGenre, SongRating} = require("../models");
+const { Song, Artist, Genre, SongArtist, SongGenre} = require("../models");
 const { handleRoute } = require("./handler/handler");
 const Joi = require('joi');
 const { verifyTokenUser, verifyTokenArtist } = require('../../common-utils/modules/accessToken');
+const Sequelize = require('sequelize');
+const { Op } = Sequelize;
 const route = express.Router();
 
 const songSchema = Joi.object({
@@ -177,3 +179,51 @@ route.get("/count", verifyTokenUser(), async (req, res) => {
         res.status(500).json({ error: 'Error counting songs' });
     }
 });
+
+route.get("/search", verifyTokenUser(), async (req, res) => {
+    const { query } = req.query;
+    if (!query || query.trim() === '') {
+        return res.status(400).json({ error: 'Search query is required.' });
+    }
+
+    try {
+        const searchQuery = query.toLowerCase();
+        const songs = await Song.findAll({
+            include: [
+                {
+                    model: SongArtist,
+                    as: 'songArtists',
+                    include: [
+                        {
+                            model: Artist,
+                            attributes: ['name'],
+                        },
+                    ],
+                },
+                {
+                    model: SongGenre,
+                    as: 'songGenres',
+                    include: [
+                        {
+                            model: Genre,
+                            attributes: ['name'],
+                        },
+                    ],
+                },
+            ],
+            where: {
+                [Op.or]: [
+                    Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('Song.name')), 'LIKE', `%${searchQuery}%`),
+                    Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('songArtists.Artist.name')), 'LIKE', `%${searchQuery}%`),
+                    Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('songGenres.Genre.name')), 'LIKE', `%${searchQuery}%`),
+                ],
+            },
+        });
+
+        res.json(songs);
+    } catch (err) {
+        console.error('Error searching songs:', err);
+        res.status(500).json({ error: 'An error occurred while searching for songs.' });
+    }
+});
+

@@ -6,6 +6,7 @@ axios.defaults.baseURL = process.env.VUE_APP_API_GATEWAY_URL
 
 const state = {
   songs: [],
+  filteredSongs: [],
   song: {},
   artistSongs: [],
   currentPage: 1,
@@ -15,6 +16,7 @@ const state = {
 
 const mutations = {
   SET_SONGS: (state, songs) => state.songs = songs,
+  SET_FILTERED_SONGS: (state, songs) => state.filteredSongs = songs,
   SET_SONG: (state, song) => state.song = song,
   SET_ARTIST_SONGS: (state, songs) => state.artistSongs = songs,
   SET_CURRENT_PAGE: (state, page) => state.currentPage = page,
@@ -161,11 +163,38 @@ const actions = {
       const response = await makeApiRequest(`/api/song-rating/average/${songId}`, null, 'GET');
       return response.data;
     } catch (err) {}
+  },
+
+  async searchSongs({ commit, dispatch }, query) {
+    if (!query.trim()) {
+      commit('SET_FILTERED_SONGS', []);
+      return;
+    }
+
+    try {
+      const response = await makeApiRequest(`/api/song/search?query=${encodeURIComponent(query)}`, null, 'GET');
+
+      const songs = await Promise.all(response.data.map(async song => {
+        const averageRating = await dispatch('fetchAverageRating', song.id);
+        return {
+          ...song,
+          joinedGenres: song.songGenres.map(genre => genre.Genre.name).join(', '),
+          joinedArtists: song.songArtists.map(artist => artist.Artist.name).join(', '),
+          averageRating: averageRating,
+          cover: song.cover
+        };
+      }));
+
+      commit('SET_FILTERED_SONGS', songs);
+    } catch (error) {
+      console.error('Error searching songs:', error);
+    }
   }
 };
 
 const getters = {
   songs: state => state.songs,
+  filteredSongs: state => state.filteredSongs,
   song: state => state.song,
   artistSongs: state => state.artistSongs,
   currentPage: state => state.currentPage,
