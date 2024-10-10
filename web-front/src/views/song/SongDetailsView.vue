@@ -2,11 +2,12 @@
   <div class="song-details">
     <div class="content-wrapper" v-if="!isLoading">
       <div class="left-section">
-        <SongInfoComponent :song="song" />
+        <SongInfoComponent :song="song" @open-rating-dialog="isRateDialogVisible = true" />
       </div>
       <div class="right-section">
         <RelatedSongsComponent />
       </div>
+      <RateSongDialog :visible="isRateDialogVisible" :songId="song.id" :songTitle="song.name" :existingRating="userRating"  @submit="handleRatingSubmit" @cancel="isRateDialogVisible = false" />
     </div>
     <div class="reviews-section" v-if="!isLoading">
       <SongReviewsComponent :reviews="reviews" />
@@ -22,24 +23,25 @@ import { mapGetters, mapActions } from 'vuex';
 import SongInfoComponent from '@/components/song/SongInfoComponent.vue';
 import SongReviewsComponent from '@/components/song/SongReviewsComponent.vue';
 import RelatedSongsComponent from '@/components/song/RelatedSongsComponent.vue';
+import RateSongDialog from "@/components/dialogs/RateSongDialog.vue";
 
 export default {
   components: {
+    RateSongDialog,
     SongInfoComponent,
     SongReviewsComponent,
     RelatedSongsComponent
   },
   data() {
     return {
-      isLoading: true
+      isLoading: true,
+      isRateDialogVisible: false,
+      userRating: 0
     };
   },
   computed: {
-    ...mapGetters('songs', ['getSongById', 'song']),
+    ...mapGetters('songs', ['song']),
     ...mapGetters('reviews', ['songReviews']),
-    song() {
-      return this.getSongById(this.$route.params.id);
-    },
     reviews() {
       return this.songReviews;
     }
@@ -49,18 +51,41 @@ export default {
   },
   async mounted() {
     await this.fetchSongDetails();
-    this.fetchSongReviews(this.$route.params.id);
     this.isLoading = false;
   },
   methods: {
-    ...mapActions('songs', ['fetchSongById']),
+    ...mapActions('songs', ['fetchSongById', 'fetchUserRating']),
     ...mapActions('reviews', ['fetchSongReviews']),
     async fetchSongDetails() {
-      console.log('Fetching song details...');
-      await this.fetchSongById(this.$route.params.id);
+      try {
+        console.log('Fetching song details...');
+        const userId = this.$store.state.user.user.id;
+
+        await this.fetchSongById(this.$route.params.id);
+
+        const response = await this.fetchUserRating({ songId: this.$route.params.id, userId });
+
+        this.userRating = response ? response.rate : 0;
+      } catch (error) {
+        console.error('Error fetching song details or user rating:', error);
+      }
+    },
+    async handleRatingSubmit({ songId, rating }) {
+      try {
+        console.log(`Submitting rating of ${rating} for song ${songId}`);
+        this.isRateDialogVisible = false;
+
+        await this.$store.dispatch('songs/rateSong', { songId, rating });
+
+        await this.fetchSongDetails();
+      } catch (error) {
+        console.error('Failed to submit rating:', error);
+      }
     }
   }
-}
+};
+
+
 </script>
 
 <style scoped>

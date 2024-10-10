@@ -106,8 +106,15 @@
     "next": "Sledeća"
   },
   "song_details": {
+    "details": "Detalji",
     "song_info": {
       "total_plays": "Ukupno Slušanja"
+    },
+    "rating": {
+      "already_rated_1": "Već ste ocenili ovu pesmu ocenom {rating}.",
+      "already_rated_2": "Da li želite da je promenite?",
+      "rate_song": "Oceni Pesmu",
+      "cancel": "Otkaži"
     },
     "reviews": {
       "reviews": "Recenzije",

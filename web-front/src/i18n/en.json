@@ -106,8 +106,15 @@
     "next": "Next"
   },
   "song_details": {
+    "details": "Details",
     "song_info": {
       "total_plays": "Total Plays"
+    },
+    "rating": {
+      "already_rated_1": "You've given this song {rating} stars.",
+      "already_rated_2": "Want to update your rating?",
+      "rate_song": "Rate Song",
+      "cancel": "Cancel"
     },
     "reviews": {
       "reviews": "Reviews",

@@ -156,6 +156,38 @@ const actions = {
     } catch (err) {}
   },
 
+  async fetchUserRating({ rootState }, { songId, userId }) {
+    try {
+      const response = await makeApiRequest(`/api/song-rating/rating?userId=${userId}&songId=${songId}`, null, 'GET');
+      return response.data;
+    } catch (err) {
+      console.error('Failed to fetch user rating:', err);
+      return null;
+    }
+  },
+
+  async rateSong({ dispatch, rootState, commit }, { songId, rating }) {
+    try {
+      const userId = rootState.user.user.id;
+
+      const existingRatingResponse = await makeApiRequest(`/api/song-rating/rating?userId=${userId}&songId=${songId}`, null, 'GET');
+      const existingRating = existingRatingResponse.data;
+
+      if (existingRating) {
+        await makeApiRequest(`/api/song-rating/${existingRating.id}`, { rate: rating }, 'PUT');
+      } else {
+        await makeApiRequest('/api/song-rating', { songId, rate: rating, userId }, 'POST');
+      }
+
+      const updatedSong = await dispatch('fetchSongById', songId);
+      const newAverageRating = await dispatch('fetchAverageRating', songId);
+
+      commit('SET_SONG', { ...updatedSong, averageRating: newAverageRating });
+    } catch (err) {
+      console.error('Failed to submit rating:', err);
+    }
+  },
+
   async searchSongs({ commit, dispatch }, query) {
     if (!query.trim()) {
       commit('SET_FILTERED_SONGS', []);

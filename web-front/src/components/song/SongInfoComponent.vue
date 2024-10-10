@@ -9,9 +9,9 @@
     <div class="genres">
       <span v-for="genre in song.songGenres" :key="genre.Genre.id" class="genre-chip">{{ genre.Genre.name }}</span>
     </div>
-    <div class="rating">
+    <div class="rating" @click="openRatingDialog">
       <span v-for="n in 5" :key="n" class="star">
-        {{ n <= song.averageRating ? '★' : '☆' }}
+        {{ n <= Math.round(song.averageRating) ? '★' : '☆' }}
       </span>
     </div>
     <p class="play-count">{{ $t('song_details.song_info.total_plays') }}: {{ song.playCount }}</p>
@@ -19,13 +19,20 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
-  computed: {
-    ...mapGetters('songs', ['song'])
+  props: {
+    song: {
+      type: Object,
+      required: true
+    }
+  },
+  methods: {
+    openRatingDialog() {
+      this.$emit('open-rating-dialog');
+    }
   }
-}
+};
+
 </script>
 
 <style scoped>

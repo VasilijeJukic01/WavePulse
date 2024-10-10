@@ -7,7 +7,7 @@
           <path d="M8 5v14l11-7z" />
         </svg>
       </button>
-      <button @click="viewDetails" class="details-button">Details</button>
+      <button @click="viewDetails" class="details-button">{{ $t('song_details.details')}}</button>
     </div>
     <div class="music-details">
       <h3 class="name">{{ music.name }}</h3>
