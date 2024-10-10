@@ -28,7 +28,7 @@ const mutations = {
 
 async function processSongs(songs, dispatch) {
   const promises = songs.map(song => {
-    return dispatch('fetchCoverImage', song.id)
+    return dispatch('fetchCoverImage', song.imageUUID)
       .then(coverImageUrl => {
         song.cover = coverImageUrl;
         return dispatch('fetchAverageRating', song.id)
@@ -100,7 +100,7 @@ const actions = {
       .catch(() => {});
   },
   // Fetch cover image
-  async fetchCoverImage({ commit }, songId) {
+  async fetchCoverImage({ commit }, songImageUUID) {
     function convertBlobToBase64(blob) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -112,7 +112,7 @@ const actions = {
 
     try {
       // Cache Hit
-      const cachedImageResponse = await axios.get(`/api/redis/images/${songId}`);
+      const cachedImageResponse = await axios.get(`/api/redis/images/${songImageUUID}`);
       if (cachedImageResponse.data) {
         return cachedImageResponse.data;
       }
@@ -122,7 +122,7 @@ const actions = {
       // Cache Miss
       const bucketName = process.env.VUE_APP_AWS_S3_BUCKET_NAME;
       const region = process.env.VUE_APP_AWS_REGION;
-      const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/covers/${songId}.jpg`;
+      const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/covers/${songImageUUID}.jpg`;
 
       const response = await fetch(imageUrl, {
         headers: {
@@ -140,7 +140,7 @@ const actions = {
 
       // Cache the image in Redis
       try {
-        await axios.post(`/api/redis/images/${songId}`, { base64: base64Image });
+        await axios.post(`/api/redis/images/${songImageUUID}`, { base64: base64Image });
       } catch (err) { }
 
       return base64Image;
@@ -199,7 +199,7 @@ const actions = {
 
       const songs = await Promise.all(response.data.map(async song => {
         const averageRating = await dispatch('fetchAverageRating', song.id);
-        const coverImage = await dispatch('fetchCoverImage', song.id);
+        const coverImage = await dispatch('fetchCoverImage', song.imageUUID);
         return {
           ...song,
           joinedGenres: song.songGenres.map(genre => genre.Genre.name).join(', '),

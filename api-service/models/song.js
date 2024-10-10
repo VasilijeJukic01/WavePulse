@@ -44,6 +44,12 @@ module.exports = (sequelize, DataTypes) => {
         is: /^\d{4}$/
       }
     },
+    imageUUID: {
+        type: DataTypes.STRING,
+        validate: {
+          isUUID: 4
+        }
+    },
     playCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0,

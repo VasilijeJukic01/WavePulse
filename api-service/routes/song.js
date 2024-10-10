@@ -123,6 +123,7 @@ const updateSong = async (id, songData) => {
     song.duration = songData.duration;
     song.year = songData.year;
     song.playCount = songData.playCount;
+    song.imageUUID = songData.imageUUID;
     song.albumId = songData.albumId;
     await song.save();
     return song;

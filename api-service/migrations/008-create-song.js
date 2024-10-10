@@ -38,6 +38,12 @@ module.exports = {
           min: 0
         }
       },
+      imageUUID: {
+        type: Sequelize.STRING,
+        validate: {
+          isUUID: 4
+        }
+        },
       albumId: {
         type: Sequelize.INTEGER,
         references: {

@@ -21,7 +21,7 @@
             <button @click="logoutUser" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ $t('header.logout') }}</button>
           </div>
         </div>
-        <SearchBar @search="handleSearch" />
+        <SearchBar v-if="user.roleId !== -1" @search="handleSearch" />
       </div>
     </nav>
   </header>
