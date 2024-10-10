@@ -28,17 +28,13 @@ const mutations = {
 
 async function processSongs(songs, dispatch) {
   const promises = songs.map(song => {
-    const artistNames = song.songArtists.map(artist => artist.Artist.name).join(' & ');
-    return dispatch('fetchReleaseId', { title: song.name, artist: artistNames })
-      .then(releaseId => {
-        return dispatch('fetchCoverImage', releaseId)
-          .then(coverImageUrl => {
-            song.cover = coverImageUrl;
-            return dispatch('fetchAverageRating', song.id)
-              .then(averageRating => {
-                song.averageRating = averageRating;
-                return song;
-              });
+    return dispatch('fetchCoverImage', song.id)
+      .then(coverImageUrl => {
+        song.cover = coverImageUrl;
+        return dispatch('fetchAverageRating', song.id)
+          .then(averageRating => {
+            song.averageRating = averageRating;
+            return song;
           });
       });
   });
@@ -103,23 +99,8 @@ const actions = {
       })
       .catch(() => {});
   },
-  // Fetch release ID
-  async fetchReleaseId({ commit }, { title, artist }) {
-    try {
-      const resp = await axios({
-        url: `https://cors-anywhere.herokuapp.com/https://musicbrainz.org/ws/2/release/?query=release:"${title}" AND artist:"${artist}"`,
-        method: 'GET'
-      });
-      const releases = resp.data.releases;
-      if (releases.length === 0) {
-        return Promise.reject(new Error('No release found'));
-      }
-      return releases.slice(0, 5)
-        .map(release => release.id);
-    } catch (err) { }
-  },
   // Fetch cover image
-  async fetchCoverImage({ commit }, releaseIds) {
+  async fetchCoverImage({ commit }, songId) {
     function convertBlobToBase64(blob) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -129,33 +110,43 @@ const actions = {
       });
     }
 
-    for (const releaseId of releaseIds) {
-      try {
-        const cachedImageResponse = await axios.get(`/api/redis/images/${releaseId}`);
-        if (cachedImageResponse.data) {
-          // Base64 payload from Redis
-          return cachedImageResponse.data;
+    try {
+      // Cache Hit
+      const cachedImageResponse = await axios.get(`/api/redis/images/${songId}`);
+      if (cachedImageResponse.data) {
+        return cachedImageResponse.data;
+      }
+    } catch (err) { }
+
+    try {
+      // Cache Miss
+      const bucketName = process.env.VUE_APP_AWS_S3_BUCKET_NAME;
+      const region = process.env.VUE_APP_AWS_REGION;
+      const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/covers/${songId}.jpg`;
+
+      const response = await fetch(imageUrl, {
+        headers: {
+          'Content-Type': 'image/jpeg',
+          'Accept': 'image/jpeg'
         }
-      } catch (err) { }
+      });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const base64Image = await convertBlobToBase64(blob);
+
+      // Cache the image in Redis
       try {
-        const resp = await axios({
-          url: `https://cors-anywhere.herokuapp.com/https://coverartarchive.org/release/${releaseId}/front`,
-          method: 'GET',
-          responseType: 'blob',
-        });
-
-        const blob = new Blob([resp.data], { type: resp.headers['content-type'] });
-        const base64Image = await convertBlobToBase64(blob);
-
-        try {
-          await axios.post(`/api/redis/images/${releaseId}`, { base64: base64Image });
-        } catch (err) { }
-
-        return base64Image;
+        await axios.post(`/api/redis/images/${songId}`, { base64: base64Image });
       } catch (err) { }
+
+      return base64Image;
+    } catch (err) {
+      return null;
     }
-    return null;
   },
 
   async fetchAverageRating({ commit }, songId) {
@@ -176,12 +167,13 @@ const actions = {
 
       const songs = await Promise.all(response.data.map(async song => {
         const averageRating = await dispatch('fetchAverageRating', song.id);
+        const coverImage = await dispatch('fetchCoverImage', song.id);
         return {
           ...song,
           joinedGenres: song.songGenres.map(genre => genre.Genre.name).join(', '),
           joinedArtists: song.songArtists.map(artist => artist.Artist.name).join(', '),
           averageRating: averageRating,
-          cover: song.cover
+          cover: coverImage
         };
       }));
 
