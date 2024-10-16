@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { makeApiRequest } from '../utils/util';
+import { getPreSignedUrl } from '@/aws/s3-helper';
 
 // Config
 axios.defaults.baseURL = process.env.VUE_APP_API_GATEWAY_URL
@@ -120,11 +121,8 @@ const actions = {
 
     try {
       // Cache Miss
-      const bucketName = process.env.VUE_APP_AWS_S3_BUCKET_NAME;
-      const region = process.env.VUE_APP_AWS_REGION;
-      const imageUrl = `https://${bucketName}.s3.${region}.amazonaws.com/covers/${songImageUUID}.jpg`;
-
-      const response = await fetch(imageUrl, {
+      const presignedUrl = await getPreSignedUrl(songImageUUID);
+      const response = await fetch(presignedUrl, {
         headers: {
           'Content-Type': 'image/jpeg',
           'Accept': 'image/jpeg'
@@ -145,6 +143,7 @@ const actions = {
 
       return base64Image;
     } catch (err) {
+      console.error('Failed to fetch cover image:', err);
       return null;
     }
   },
