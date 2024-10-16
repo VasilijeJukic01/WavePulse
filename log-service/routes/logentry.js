@@ -1,6 +1,8 @@
 const express = require("express");
-const { LogEntry } = require("../models");
+const LogEntry = require("../models/logentry");
 const { handleRoute } = require("./handler/handler");
+const { verifyToken } = require('../modules/serviceToken');
+const { verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -10,7 +12,7 @@ const logEntrySchema = Joi.object({
     service: Joi.string().required(),
     component: Joi.string().required(),
     context: Joi.object().optional(),
-    categoryId: Joi.number().required()
+    categoryId: Joi.string().required()
 });
 
 route.use(express.json());
@@ -19,53 +21,43 @@ route.use(express.urlencoded({ extended: true }));
 module.exports = route;
 
 const getAllLogEntries = async () => {
-    return await LogEntry.findAll();
+    return LogEntry.find();
 }
 
 const getLogEntryById = async (id) => {
-    return await LogEntry.findByPk(id);
+    return LogEntry.findById(id);
 }
 
 const createLogEntry = async (logEntryData) => {
-    return await LogEntry.create(logEntryData);
+    return LogEntry.create(logEntryData);
 }
 
 const updateLogEntry = async (id, logEntryData) => {
-    const logEntry = await LogEntry.findByPk(id);
-    logEntry.message = logEntryData.message;
-    logEntry.timestamp = logEntryData.timestamp;
-    logEntry.service = logEntryData.service;
-    logEntry.component = logEntryData.component;
-    logEntry.context = logEntryData.context;
-    logEntry.categoryId = logEntryData.categoryId;
-    await logEntry.save();
-    return logEntry;
+    return LogEntry.findByIdAndUpdate(id, logEntryData, { new: true });
 }
 
 const deleteLogEntry = async (id) => {
-    const logEntry = await LogEntry.findByPk(id);
-    await logEntry.destroy();
-    return logEntry.id;
+    return LogEntry.findByIdAndDelete(id);
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, getAllLogEntries);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, getLogEntryById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyToken("logService"), async (req, res) => {
     const { error } = logEntrySchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createLogEntry);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, updateLogEntry);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, deleteLogEntry);
 });
