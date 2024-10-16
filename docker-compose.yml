@@ -41,6 +41,7 @@ services:
       - "8102:8102"
     depends_on:
       - service-registry
+      - redis
     environment:
       - DATABASE_URL=postgres://postgres:1234@wp-api-db:5432/wp-api
     volumes:
@@ -98,3 +99,9 @@ services:
       POSTGRES_PASSWORD: 1234
     ports:
       - "5433:5432"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
