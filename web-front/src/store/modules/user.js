@@ -1,15 +1,20 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { makeApiRequest } from '../utils/util';
+import customStorage from '../customStorage';
 
 // Config
 axios.defaults.baseURL = process.env.VUE_APP_API_GATEWAY_URL
 
-const state = {
-  user: {},
-  token: localStorage.getItem('token') || '',
+const initialState = () => ({
+  user: {
+    roleId: -1,
+  },
+  token: '',
   status: '',
-};
+});
+
+const state = initialState();
 
 const mutations = {
   AUTH_SUCCESS (state, token) {
@@ -19,10 +24,7 @@ const mutations = {
   SET_USER: (state, user) => state.user = user,
   SET_USER_ID: (state, userId) => state.userId = userId,
   LOGOUT (state) {
-    state.status = '';
-    state.token = '';
-    state.user = {};
-    state.user.roleId = -1;
+    Object.assign(state, initialState());
   },
 };
 
@@ -124,7 +126,8 @@ const actions = {
   logout ({ commit }) {
     return new Promise(resolve => {
       commit('LOGOUT');
-      localStorage.removeItem('token');
+      customStorage.clear();
+      localStorage.clear();
       delete axios.defaults.headers.common.Authorization;
       resolve();
     });

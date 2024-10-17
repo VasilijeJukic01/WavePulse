@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   computed: {
@@ -40,9 +40,18 @@ export default {
     ...mapActions('songs', ['fetchAllSongs']),
     changePage(page) {
       if (page >= 1 && page <= this.totalPages) {
-        this.fetchAllSongs({page});
+        this.fetchAllSongs({ page });
+        localStorage.setItem('currentPage', page);
       }
     },
+  },
+  created() {
+    const savedPage = localStorage.getItem('currentPage');
+    if (savedPage) {
+      this.fetchAllSongs({ page: parseInt(savedPage, 10) });
+    } else {
+      this.fetchAllSongs({ page: 1 });
+    }
   },
 };
 </script>

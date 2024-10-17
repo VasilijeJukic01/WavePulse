@@ -17,13 +17,13 @@
           }"
         />
       </div>
-      <Pagination />
+      <Pagination/>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import {mapActions, mapGetters} from 'vuex';
 import MusicCard from '@/components/MusicCard.vue';
 import Pagination from '@/components/Pagination.vue';
 
@@ -37,10 +37,9 @@ export default {
   },
   async created() {
     await this.fetchTotalSongs();
-    await this.fetchAllSongs();
   },
   methods: {
-    ...mapActions('songs', ['fetchTotalSongs', 'fetchAllSongs']),
+    ...mapActions('songs', ['fetchTotalSongs']),
   }
 }
 </script>
