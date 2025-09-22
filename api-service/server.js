@@ -12,7 +12,7 @@ ports.forEach(port => {
 
         // Service Registry
         const token = generateToken('serviceRegistry');
-        axios.post('http://localhost:8000/register', {
+        axios.post('http://service-registry:8000/register', {
             name: `apiService:${port}`,
             url: `http://localhost:${port}`
         }, {
