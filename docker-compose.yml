@@ -42,6 +42,7 @@ services:
       - redis
     environment:
       - DATABASE_URL=postgres://postgres:1234@wp-api-db:5432/wp-api
+      - SERVICE_HOST=api-service
     volumes:
       - ./common-utils:/usr/src/app/common-utils
     env_file:
@@ -61,6 +62,7 @@ services:
       - service-registry
     environment:
       - DATABASE_URL=postgres://postgres:1234@wp-auth-db:5432/wp-auth
+      - SERVICE_HOST=auth-service
     volumes:
       - ./common-utils:/usr/src/app/common-utils
     env_file:
