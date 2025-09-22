@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import MusicCard from '@/components/MusicCard.vue';
 import Pagination from '@/components/Pagination.vue';
 

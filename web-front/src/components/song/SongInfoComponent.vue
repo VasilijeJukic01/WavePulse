@@ -32,7 +32,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style scoped>
@@ -40,24 +39,32 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background-color: #2b2b2b;
-  border-radius: 10px;
+  padding: 30px;
+  background: linear-gradient(145deg, #1e1e1e, #333333);
+  border-radius: 15px;
   text-align: center;
   color: #f1f1f1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  max-width: 450px;
+  transition: transform 0.3s ease;
 }
 
 .song-cover {
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 12px;
   margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.song-cover:hover {
+  transform: scale(1.05);
 }
 
 h2 {
   font-size: 28px;
-  margin: 10px 0;
+  margin: 12px 0;
   color: #ffffff;
 }
 
@@ -70,25 +77,25 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 15px 0;
+  margin: 20px 0;
 }
 
 .genre-chip {
-  background-color: #444;
+  background-color: #555;
   color: #fff;
   border-radius: 20px;
-  padding: 5px 12px;
-  font-size: 14px;
+  padding: 7px 15px;
+  font-size: 15px;
 }
 
 .rating .star {
-  font-size: 30px;
+  font-size: 32px;
   color: orange;
-  margin: 0 5px;
+  margin: 0 6px;
 }
 
 .play-count {
   font-size: 18px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 </style>

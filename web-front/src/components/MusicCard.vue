@@ -186,7 +186,7 @@ export default {
 .play-button,
 .details-button {
   position: absolute;
-  background-color: rgba(255, 75, 43, 0.8);
+  background-color: rgb(152,58,135);
   color: white;
   border: none;
   padding: 8px;
@@ -207,7 +207,7 @@ export default {
 }
 
 .play-button:hover {
-  background-color: rgba(255, 75, 43, 1);
+  background-color: rgb(93,41,83);
 }
 
 .details-button {
@@ -217,7 +217,7 @@ export default {
 }
 
 .details-button:hover {
-  background-color: rgba(255, 75, 43, 1);
+  background-color: rgb(93,41,83);
 }
 
 .music-details {
