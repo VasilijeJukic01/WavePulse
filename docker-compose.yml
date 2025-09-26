@@ -1,0 +1,107 @@
+services:
+  service-registry:
+    image: service-registry:latest
+    container_name: service-registry
+    build:
+      context: .
+      dockerfile: service-registry/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./common-utils:/usr/src/app/common-utils
+    env_file:
+      - service-registry/.env
+
+  api-gateway:
+    image: api-gateway:latest
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - service-registry
+    volumes:
+      - ./common-utils:/usr/src/app/common-utils
+    env_file:
+      - api-gateway/.env
+
+  api-service:
+    image: api-service:latest
+    container_name: api-service
+    build:
+      context: .
+      dockerfile: api-service/Dockerfile
+    ports:
+      - "8082:8082"
+      - "8092:8092"
+      - "8102:8102"
+    depends_on:
+      - service-registry
+      - redis
+    environment:
+      - DATABASE_URL=postgres://postgres:1234@wp-api-db:5432/wp-api
+      - SERVICE_HOST=api-service
+    volumes:
+      - ./common-utils:/usr/src/app/common-utils
+    env_file:
+      - api-service/.env
+
+  auth-service:
+    image: auth-service:latest
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - "8081:8081"
+      - "8091:8091"
+      - "8101:8101"
+    depends_on:
+      - service-registry
+    environment:
+      - DATABASE_URL=postgres://postgres:1234@wp-auth-db:5432/wp-auth
+      - SERVICE_HOST=auth-service
+    volumes:
+      - ./common-utils:/usr/src/app/common-utils
+    env_file:
+      - auth-service/.env
+
+  web-front:
+    image: web-front:latest
+    container_name: web-front
+    build:
+      context: ./web-front
+    ports:
+      - "8083:8083"
+    depends_on:
+      - service-registry
+    env_file:
+      - web-front/.env
+
+  wp-api-db:
+    image: postgres:latest
+    container_name: wp-api-db
+    environment:
+      POSTGRES_DB: wp-api
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+
+  wp-auth-db:
+    image: postgres:latest
+    container_name: wp-auth-db
+    environment:
+      POSTGRES_DB: wp-auth
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5433:5432"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"

@@ -1,47 +1,45 @@
 <template>
   <div class="terms-of-service-view">
     <div class="container">
-      <h1 class="title">Terms of Service</h1>
+      <h1 class="title">{{ $t('footer.terms_of_service.title') }}</h1>
       <div class="content">
-        <p>Welcome to Wave Pulse!</p>
-        <p>These Terms of Service ("Terms") govern your use of our website located at <a href="http://localhost:8083" target="_blank" rel="noopener noreferrer">http://localhost:8083</a> (the "Service") operated by WavePulse ("us", "we", or "our"). By accessing or using the Service, you agree to be bound by these Terms. If you do not agree with any part of the terms, then you may not access the Service.</p>
+        <p>{{ $t('footer.terms_of_service.welcome') }}</p>
+        <p v-html="$t('footer.terms_of_service.intro', { url: serviceUrl, linkText: 'WavePulse'})"></p>
 
-        <h2>1. Accounts</h2>
-        <p>To use certain features of the Service, you may be required to create an account. You agree to provide accurate, complete, and current information during the registration process and to update such information to keep it accurate, complete, and current. You are responsible for safeguarding the password you use to access the Service and for any activities or actions under your password.</p>
+        <h2>{{ $t('footer.terms_of_service.accounts') }}</h2>
+        <p>{{ $t('footer.terms_of_service.accounts_text') }}</p>
 
-        <h2>2. Intellectual Property</h2>
-        <p>The Service and its original content, features, and functionality are and will remain the exclusive property of WavePulse and its licensors. The Service is protected by copyright, trademark, and other laws of both Serbia and foreign countries.</p>
+        <h2>{{ $t('footer.terms_of_service.intellectual_property') }}</h2>
+        <p>{{ $t('footer.terms_of_service.intellectual_property_text') }}</p>
 
-        <h2>3. User Content</h2>
-        <p>By submitting content to the Service, you grant WavePulse a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and distribute your content in connection with operating and improving the Service. You are solely responsible for your content and the consequences of posting or publishing it.</p>
+        <h2>{{ $t('footer.terms_of_service.user_content') }}</h2>
+        <p>{{ $t('footer.terms_of_service.user_content_text') }}</p>
 
-        <h2>4. Prohibited Uses</h2>
-        <p>You may use the Service only for lawful purposes and in accordance with these Terms. You agree not to use the Service:</p>
+        <h2>{{ $t('footer.terms_of_service.prohibited_uses') }}</h2>
+        <p>{{ $t('footer.terms_of_service.prohibited_uses_text') }}</p>
         <ul>
-          <li>In any way that violates any applicable national or international law or regulation.</li>
-          <li>To exploit, harm, or attempt to exploit or harm minors in any way.</li>
-          <li>To transmit, or procure the sending of, any advertising or promotional material without our prior written consent.</li>
-          <li>To impersonate or attempt to impersonate WavePulse, a WavePulse employee, another user, or any other person or entity.</li>
+          <li v-for="(item, index) in $t('footer.terms_of_service.prohibited_uses_list')" :key="index">
+            {{ item }}
+          </li>
         </ul>
 
-        <h2>5. Termination</h2>
-        <p>We may terminate or suspend your account immediately, without prior notice or liability, if you breach any of the Terms or if we believe that you are using the Service in a manner that is not permitted under these Terms.</p>
+        <h2>{{ $t('footer.terms_of_service.termination') }}</h2>
+        <p>{{ $t('footer.terms_of_service.termination_text') }}</p>
 
-        <h2>6. Limitation of Liability</h2>
-        <p>In no event shall WavePulse, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from:</p>
+        <h2>{{ $t('footer.terms_of_service.limitation_of_liability') }}</h2>
+        <p>{{ $t('footer.terms_of_service.limitation_of_liability_text') }}</p>
         <ul>
-          <li>Your use or inability to use the Service;</li>
-          <li>Any unauthorized access to or use of our servers and/or any personal information stored therein;</li>
-          <li>Any interruption or cessation of transmission to or from the Service;</li>
-          <li>Any bugs, viruses, trojan horses, or the like that may be transmitted to or through the Service by any third party.</li>
+          <li v-for="(item, index) in $t('footer.terms_of_service.limitation_of_liability_list')" :key="index">
+            {{ item }}
+          </li>
         </ul>
 
-        <h2>7. Changes</h2>
-        <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. We will notify you of any changes by posting the new Terms on this page. You are advised to review these Terms periodically for any changes. Your continued use of the Service after any changes to these Terms constitutes acceptance of those changes.</p>
+        <h2>{{ $t('footer.terms_of_service.changes') }}</h2>
+        <p>{{ $t('footer.terms_of_service.changes_text') }}</p>
 
-        <h2>8. Contact Us</h2>
-        <p>If you have any questions about these Terms, please contact us at:</p>
-        <p>Email: <a href="mailto:wavepulse@gmail.com">wavepulse@gmail.com</a></p>
+        <h2>{{ $t('footer.terms_of_service.contact_us') }}</h2>
+        <p>{{ $t('footer.terms_of_service.contact_us_text') }}</p>
+        <p>{{ $t('footer.terms_of_service.contact_email') }}</p>
       </div>
     </div>
   </div>
@@ -49,9 +47,15 @@
 
 <script>
 export default {
-  name: 'TermsOfServiceView'
+  name: 'TermsOfServiceView',
+  data() {
+    return {
+      serviceUrl: process.env.VUE_APP_URL
+    };
+  }
 };
 </script>
+
 
 <style scoped>
 .terms-of-service-view {
@@ -99,6 +103,11 @@ ul {
 a {
   color: #1e90ff;
   text-decoration: none;
+}
+
+.terms-of-service-view  {
+  color: #4040ff !important;
+  font-weight: bold;
 }
 
 a:hover {

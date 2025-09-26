@@ -8,6 +8,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
+    meta: { requiresAuth: true },
     component: () => import('@/views/HomeView.vue')
   },
   {
@@ -23,16 +24,19 @@ const routes = [
   {
     path: '/edit-profile/:id',
     name: 'EditProfile',
+    meta: { requiresAuth: true },
     component: () => import('@/views/edit-profile/EditProfileView.vue')
   },
   {
     path: '/edit-profile/change-password/:id',
     name: 'EditProfileChangePassword',
+    meta: { requiresAuth: true },
     component: () => import('@/views/edit-profile/EditProfileChangePasswordView.vue')
   },
   {
     path: '/edit-profile/appearance/:id',
     name: 'EditProfileAppearance',
+    meta: { requiresAuth: true },
     component: () => import('@/views/edit-profile/EditProfileAppearanceView.vue')
   },
   {
@@ -44,6 +48,12 @@ const routes = [
     path: '/privacy',
     name: 'Privacy',
     component: () => import('@/views/policies/PrivacyPolicyView.vue')
+  },
+  {
+    path: '/song/:id',
+    name: 'SongDetails',
+    meta: { requiresAuth: true },
+    component: () => import('@/views/song/SongDetailsView.vue')
   },
   // Admin
   {
@@ -74,16 +84,19 @@ const routes = [
   {
     path: '/artist/edit-public-profile',
     name: 'EditPublicProfile',
+    meta: { requiresAuth: true, requiresRole: 3 },
     component: () => import('@/views/artist/EditPublicProfileView.vue')
   },
   {
     path: '/artist/manage-songs',
     name: 'ManageSongs',
+    meta: { requiresAuth: true, requiresRole: 3 },
     component: () => import('@/views/artist/ManageSongsView.vue')
   },
   {
     path: '/artist/analytics',
     name: 'ArtistAnalytics',
+    meta: { requiresAuth: true, requiresRole: 3 },
     component: () => import('@/views/artist/ArtistAnalytics.vue')
   },
   { path: '*', redirect: '/' },

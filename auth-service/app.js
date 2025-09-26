@@ -1,3 +1,4 @@
+const config = require('./config/config');
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -8,12 +9,8 @@ const cookieParser = require('cookie-parser');
 const { verifyToken } = require('./modules/serviceToken');
 require('dotenv').config();
 
-if (!process.env.ACCESS_TOKEN_SECRET) {
-    throw new Error('Missing ACCESS_TOKEN_SECRET environment variable');
-}
-
 const corsOptions = {
-    origin: ['http://localhost:8080', 'http://127.0.0.1:8080'],
+    origin: config.corsOrigins,
     optionsSuccessStatus: 200
 };
 

@@ -1,13 +1,13 @@
+const mongoose = require('mongoose');
 const app = require('./app.js');
-const { sequelize } = require("./models");
 const axios = require('axios');
 const { generateToken } = require('./modules/serviceToken');
+const config = require('./config/config.js');
 
 const ports = [8084];
 
 ports.forEach(port => {
     app.listen(port, async () => {
-        await sequelize.sync({ force: false });
         console.log(`Log Service Instance started on localhost:${port}`);
 
         // Service Registry
@@ -22,5 +22,15 @@ ports.forEach(port => {
         }).catch(err => {
             console.error(`Error registering Log service on port ${port}:`, err.message)
         });
+
+        try {
+            await mongoose.connect(config.development.uri, {
+                serverSelectionTimeoutMS: 30000,
+                socketTimeoutMS: 45000
+            });
+            console.log('Connected to MongoDB');
+        } catch (err) {
+            console.error('Error connecting to MongoDB:', err);
+        }
     });
 });

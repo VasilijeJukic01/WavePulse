@@ -1,38 +1,156 @@
 <template>
   <div class="music-card">
     <div class="image-container">
-      <img :src="music.cover" alt="Album Cover" class="album-cover" />
+      <img :src="music.cover || require('@/assets/default_cover.jpg')" alt="Album Cover" class="album-cover" />
       <button @click="playMusic" class="play-button">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24px" height="24px">
           <path d="M8 5v14l11-7z" />
         </svg>
       </button>
-      <button @click="viewDetails" class="details-button">Details</button>
+      <button @click="viewDetails" class="details-button">{{ $t('song_details.details')}}</button>
     </div>
     <div class="music-details">
       <h3 class="name">{{ music.name }}</h3>
       <div class="artist">{{ music.songArtists[0].Artist.name }}</div>
     </div>
+    <div v-if="playerReady" class="spotify-player" ref="spotifyPlayer" style="position: fixed; bottom: 0; width: 100%;"></div>
   </div>
 </template>
 
 <script>
+// TODO: Move to Vuex & Find API or use AWS S3
+import axios from "axios";
+
 export default {
   props: {
     music: Object,
   },
+  data() {
+    return {
+      player: null,
+      playerReady: false,
+    };
+  },
   methods: {
-    playMusic() {
-      console.log(`Playing music: ${this.music.name}`);
+    async playMusic() {
+      const songName = this.music.name;
+      const artistName = this.music.songArtists[0].Artist.name;
+
+      try {
+        const accessToken = await this.getAccessToken();
+        const response = await axios({
+          url: `https://api.spotify.com/v1/search`,
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          params: {
+            q: `track:${songName} artist:${artistName}`,
+            type: 'track',
+            limit: 1,
+          },
+        });
+
+        const tracks = response.data.tracks.items;
+        if (tracks.length > 0) {
+          const track = tracks[0];
+          this.loadSpotifySDK().then(() => {
+            this.initSpotifyPlayer(accessToken, track.uri);
+          });
+        } else {
+          console.error("No track found on Spotify.");
+        }
+      } catch (error) {
+        console.error("Error fetching track from Spotify:", error);
+      }
     },
+
+    async getAccessToken() {
+      return axios({
+        url: "https://accounts.spotify.com/api/token",
+        method: "POST",
+        headers: {
+          Authorization:
+            "Basic " +
+            btoa(`${process.env.VUE_APP_SPOTIFY_CLIENT_ID}:${process.env.VUE_APP_SPOTIFY_CLIENT_SECRET}`),
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        data: "grant_type=client_credentials",
+      }).then((response) => response.data.access_token);
+    },
+
+    loadSpotifySDK() {
+      return new Promise((resolve) => {
+        if (window.Spotify) {
+          resolve();
+        } else {
+          window.onSpotifyWebPlaybackSDKReady = () => {
+            resolve();
+          };
+          const script = document.createElement("script");
+          script.src = "https://sdk.scdn.co/spotify-player.js";
+          document.head.appendChild(script);
+        }
+      });
+    },
+
+    initSpotifyPlayer(accessToken, trackUri) {
+      if (!window.Spotify) {
+        console.error("Spotify SDK still not loaded.");
+        return;
+      }
+
+      if (!this.player) {
+        this.player = new Spotify.Player({
+          name: "Your Web Player",
+          getOAuthToken: (cb) => cb(accessToken),
+          volume: 0.8,
+        });
+
+        // Ready
+        this.player.addListener("ready", ({ device_id }) => {
+          console.log("Ready with Device ID", device_id);
+          this.playerReady = true;
+          this.transferPlaybackHere(device_id, trackUri, accessToken);
+        });
+
+        // Error handling
+        this.player.addListener("not_ready", ({ device_id }) => {
+          console.log("Device ID has gone offline", device_id);
+        });
+
+        this.player.connect();
+      }
+    },
+
+    transferPlaybackHere(device_id, trackUri, accessToken) {
+      axios({
+        url: `https://api.spotify.com/v1/me/player/play?device_id=${device_id}`,
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        data: {
+          uris: [trackUri],
+        },
+      }).catch((error) => {
+        console.error("Error starting playback:", error);
+      });
+    },
+
     viewDetails() {
-      console.log(`Viewing details for: ${this.music.name}`);
+      this.$router.push({ name: "SongDetails", params: { id: this.music.id } });
     },
   },
 };
 </script>
 
 <style scoped>
+.spotify-player {
+  height: 80px;
+  background-color: #1db954;
+  color: white;
+}
 .music-card {
   background-color: #1c1c1c;
   color: #fff;
@@ -68,7 +186,7 @@ export default {
 .play-button,
 .details-button {
   position: absolute;
-  background-color: rgba(255, 75, 43, 0.8);
+  background-color: rgb(152,58,135);
   color: white;
   border: none;
   padding: 8px;
@@ -89,7 +207,7 @@ export default {
 }
 
 .play-button:hover {
-  background-color: rgba(255, 75, 43, 1);
+  background-color: rgb(93,41,83);
 }
 
 .details-button {
@@ -99,7 +217,7 @@ export default {
 }
 
 .details-button:hover {
-  background-color: rgba(255, 75, 43, 1);
+  background-color: rgb(93,41,83);
 }
 
 .music-details {

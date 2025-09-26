@@ -1,13 +1,20 @@
+const config = require('../../config/config');
 const express = require('express');
+const { validationResult } = require('express-validator');
 const { sequelize } = require('../../models');
 const { Account } = require('../../models');
 const axios = require('axios');
 const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 const { verifyTokenAdmin } = require('../../../common-utils/modules/accessToken');
+const { updateAccountValidationRules,
+        updatePasswordValidationRules
+} = require('./validator/validationRules');
 require('dotenv').config();
 
 const router = express.Router();
+
+axios.defaults.baseURL = config.apiGateway.url;
 
 router.get('/account', verifyTokenAdmin(), async (req, res) => {
     try {
@@ -53,7 +60,7 @@ router.put('/account/status/:id', verifyTokenAdmin(), async (req, res) => {
             }
 
             axios.defaults.headers.common['Authorization'] = req.headers['authorization'];
-            await axios.post(`http://localhost:8080/api/artist/`, apiServicePayload)
+            await axios.post(`/api/artist/`, apiServicePayload)
                 .catch(async () => {
                     await transaction.rollback();
                     throw new Error('Failed to add artist in api-service');
@@ -72,7 +79,13 @@ router.put('/account/status/:id', verifyTokenAdmin(), async (req, res) => {
 });
 
 
-router.put('/account/:id', verifyTokenAdmin(), async (req, res) => {
+router.put('/account/:id', verifyTokenAdmin(), updateAccountValidationRules, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorMessages = errors.array().map(error => error.msg).join(', ');
+        return res.status(400).json({ error: errorMessages });
+    }
+
     const { id } = req.params;
     const { username, firstname, lastname, email, role, countryId, accountStatus } = req.body;
     const transaction = await sequelize.transaction();
@@ -97,7 +110,7 @@ router.put('/account/:id', verifyTokenAdmin(), async (req, res) => {
         }
 
         axios.defaults.headers.common['Authorization'] = req.headers['authorization'];
-        const roleData = await axios.get(`http://localhost:8080/api/role/name/${role}`);
+        const roleData = await axios.get(`/api/role/name/${role}`);
         if (!roleData.data) {
             await transaction.rollback();
             return res.status(400).json({ error: 'Role not found' });
@@ -122,7 +135,7 @@ router.put('/account/:id', verifyTokenAdmin(), async (req, res) => {
         }
 
         // Synchronous call to API service
-        await axios.put(`http://localhost:8080/api/user/${id}`, apiServicePayload)
+        await axios.put(`/api/user/${id}`, apiServicePayload)
             .catch(async () => {
                 await transaction.rollback();
                 throw new Error('Failed to update user in api-service');
@@ -137,7 +150,13 @@ router.put('/account/:id', verifyTokenAdmin(), async (req, res) => {
     }
 });
 
-router.put('/account/password/:id', verifyTokenAdmin(), async (req, res) => {
+router.put('/account/password/:id', verifyTokenAdmin(), updatePasswordValidationRules, async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        const errorMessages = errors.array().map(error => error.msg).join(', ');
+        return res.status(400).json({ error: errorMessages });
+    }
+
     const { id } = req.params;
     const { password } = req.body;
     try {
@@ -169,7 +188,7 @@ router.delete('/account/:id', verifyTokenAdmin(), async (req, res) => {
         await account.destroy({ transaction });
 
         // Synchronous call to API service
-        await axios.delete(`http://localhost:8080/api/user/${id}`)
+        await axios.delete(`/api/user/${id}`)
             .catch(async () => {
                 await transaction.rollback();
                 throw new Error('Failed to delete user in api-service');

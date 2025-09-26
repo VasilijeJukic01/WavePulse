@@ -3,23 +3,23 @@
     <aside class="w-64 h-screen bg-customColor text-white">
       <div class="p-6 flex items-center">
         <i class="fas fa-user-shield text-2xl mr-2"></i>
-        <span class="text-2xl font-semibold text-white">Admin Panel</span>
+        <span class="text-2xl font-semibold text-white">{{ $t('admin_panel.title') }}</span>
       </div>
       <nav class="mt-6">
         <ul>
           <li class="mb-4">
             <router-link to="/admin/manage-users" class="flex items-center py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 rounded transition duration-200">
-              <i class="fas fa-users mr-3"></i> Manage Users
+              <i class="fas fa-users mr-3"></i> {{ $t('admin_panel.manage_users') }}
             </router-link>
           </li>
           <li class="mb-4">
             <router-link to="/admin/pending-users" class="flex items-center py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 rounded transition duration-200">
-              <i class="fas fa-clock mr-3"></i> Pending Users
+              <i class="fas fa-clock mr-3"></i> {{ $t('admin_panel.pending_users') }}
             </router-link>
           </li>
           <li class="mb-4">
             <router-link to="/admin/logs" class="flex items-center py-2 px-4 text-gray-300 hover:text-white hover:bg-gray-700 rounded transition duration-200">
-              <i class="fas fa-cogs mr-3"></i> Security Logs
+              <i class="fas fa-cogs mr-3"></i> {{ $t('admin_panel.security_logs') }}
             </router-link>
           </li>
         </ul>

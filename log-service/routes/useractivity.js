@@ -1,6 +1,8 @@
 const express = require("express");
-const { UserActivity } = require("../models");
+const UserActivity = require("../models/useractivity");
 const { handleRoute } = require("./handler/handler");
+const { verifyToken } = require("../modules/serviceToken");
+const { verifyTokenAdmin } = require('../../common-utils/modules/accessToken');
 const Joi = require('joi');
 const route = express.Router();
 
@@ -17,51 +19,43 @@ route.use(express.urlencoded({ extended: true }));
 module.exports = route;
 
 const getAllUserActivities = async () => {
-    return await UserActivity.findAll();
+    return UserActivity.find();
 }
 
 const getUserActivityById = async (id) => {
-    return await UserActivity.findByPk(id);
+    return UserActivity.findById(id);
 }
 
 const createUserActivity = async (userActivityData) => {
-    return await UserActivity.create(userActivityData);
+    return UserActivity.create(userActivityData);
 }
 
 const updateUserActivity = async (id, userActivityData) => {
-    const userActivity = await UserActivity.findByPk(id);
-    userActivity.userId = userActivityData.userId;
-    userActivity.action = userActivityData.action;
-    userActivity.timestamp = userActivityData.timestamp;
-    userActivity.context = userActivityData.context;
-    await userActivity.save();
-    return userActivity;
+    return UserActivity.findByIdAndUpdate(id, userActivityData, { new: true });
 }
 
 const deleteUserActivity = async (id) => {
-    const userActivity = await UserActivity.findByPk(id);
-    await userActivity.destroy();
-    return userActivity.id;
+    return UserActivity.findByIdAndDelete(id);
 }
 
-route.get("/", async (req, res) => {
+route.get("/", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, getAllUserActivities);
 });
 
-route.get("/:id", async (req, res) => {
+route.get("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, getUserActivityById);
 });
 
-route.post("/", async (req, res) => {
+route.post("/", verifyToken("logService"), async (req, res) => {
     const { error } = userActivitySchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
     await handleRoute(req, res, createUserActivity);
 });
 
-route.put("/:id", async (req, res) => {
+route.put("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, updateUserActivity);
 });
 
-route.delete("/:id", async (req, res) => {
+route.delete("/:id", verifyTokenAdmin(), async (req, res) => {
     await handleRoute(req, res, deleteUserActivity);
 });

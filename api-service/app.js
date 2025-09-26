@@ -6,6 +6,9 @@ app.get('/', (req, res) => {
     res.send('Hello from REST API service');
 });
 
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 const routes = {
     '/album': require('./routes/album.js'),
     '/album-rating': require('./routes/albumrating.js'),
@@ -28,6 +31,7 @@ const routes = {
     '/user-settings': require('./routes/usersettings.js'),
     '/concert-artist': require('./routes/concertartist.js'),
     "/song-artist": require("./routes/songartist.js"),
+    "/redis": require('./redis/redisRoutes')
 };
 
 Object.entries(routes).forEach(([path, route]) => {

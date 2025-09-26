@@ -23,7 +23,9 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       albumId: {
         type: Sequelize.INTEGER,
@@ -31,7 +33,9 @@ module.exports = {
         references: {
           model: 'Albums',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,

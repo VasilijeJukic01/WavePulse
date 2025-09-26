@@ -1,0 +1,32 @@
+{
+  "transports": [
+    {
+      "type": "Console",
+      "format": {
+        "timestamp": true,
+        "colorize": {
+          "all": true
+        },
+        "statusColors": {
+          "500": "\u001b[31m",
+          "400": "\u001b[33m",
+          "300": "\u001b[36m",
+          "200": "\u001b[32m"
+        },
+        "serviceColors": {
+          "REDIS_": "\u001b[31m",
+          "AUTH_SERVICE": "\u001b[35m",
+          "API_SERVICE": "\u001b[34m",
+          "LOG_SERVICE": "\u001b[32m",
+          "DEFAULT": "\u001b[36m"
+        },
+        "resetColor": "\u001b[0m"
+      }
+    }
+  ],
+  "meta": true,
+  "msg": "HTTP {{req.method}} {{req.url}}",
+  "expressFormat": true,
+  "colorize": false,
+  "ignoreRoute": "return false"
+}

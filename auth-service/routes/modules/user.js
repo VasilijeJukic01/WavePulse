@@ -1,5 +1,6 @@
+const config = require('../../config/config');
 const express = require('express');
-const { body, validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { Account, sequelize } = require('../../models');
@@ -8,7 +9,14 @@ const axios = require('axios');
 const { Op } = require('sequelize');
 const { verifyTokenUser } = require('../../../common-utils/modules/accessToken');
 const { generateToken } = require('../../../common-utils/modules/serviceToken');
+const { registerValidationRules,
+        loginValidationRules,
+        changePasswordValidationRules,
+        editProfileValidationRules
+} = require('./validator/validationRules');
 require('dotenv').config();
+
+axios.defaults.baseURL = config.apiGateway.url;
 
 const router = express.Router();
 
@@ -18,48 +26,8 @@ const loginLimiter = rateLimit({
     message: 'Too many login attempts from this IP, please try again after 15 minutes'
 });
 
-// Validation rules
-const registerValidationRules = [
-    body('username')
-        .isString().withMessage('Username must be a string')
-        .isLength({ min: 3 }).withMessage('Username requires minimum 3 characters'),
-    body('firstname')
-        .isString().withMessage('First name must be a string')
-        .isLength({ min: 1 }).withMessage('First name requires minimum 2 characters'),
-    body('lastname')
-        .isString().withMessage('Last name must be a string')
-        .isLength({ min: 1 }).withMessage('Last name requires minimum 2 characters'),
-    body('email')
-        .isEmail().withMessage('Email must be valid'),
-    body('password')
-        .isLength({ min: 8 }).withMessage('Password requires minimum 8 characters')
-];
-
-const loginValidationRules = [
-    body('username').isString(),
-    body('password').isString()
-];
-
-const changePasswordValidationRules = [
-    body('newPassword').isString().isLength({ min: 8 })
-];
-
-const editProfileValidationRules = [
-    body('username')
-        .isString().withMessage('Username must be a string')
-        .isLength({ min: 3 }).withMessage('Username requires minimum 3 characters'),
-    body('firstname')
-        .isString().withMessage('First name must be a string')
-        .isLength({ min: 1 }).withMessage('First name requires minimum 1 character'),
-    body('lastname')
-        .isString().withMessage('Last name must be a string')
-        .isLength({ min: 1 }).withMessage('Last name requires minimum 1 character'),
-    body('email')
-        .isEmail().withMessage('Email must be valid')
-];
-
 const generateUserToken = (user) => {
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+    return jwt.sign(user, config.tokenSecret, { expiresIn: '1h' });
 };
 
 router.post('/register', registerValidationRules, async (req, res) => {
@@ -116,7 +84,7 @@ router.post('/register', registerValidationRules, async (req, res) => {
 
         // Synchronous call to API service
         const globalToken = generateToken('authService');
-        await axios.post('http://localhost:8080/api/user', userCreationPayload, {
+        await axios.post('/api/user', userCreationPayload, {
             headers: { 'Authorization': globalToken }
         }).catch(async error => {
             console.log("11")
@@ -237,7 +205,7 @@ router.post('/password-reset-request', verifyTokenUser(), async (req, res) => {
 router.post('/password-reset', verifyTokenUser(), async (req, res) => {
     const { token, newPassword } = req.body;
     try {
-        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const decoded = jwt.verify(token, config.tokenSecret);
         const user = await Account.findOne({ where: { id: decoded.userId, passwordResetToken: token } });
         if (!user || user.passwordResetExpires < new Date()) {
             return res.status(400).json({ error: 'Invalid or expired token' });
@@ -296,7 +264,7 @@ router.put('/edit-profile/:id', verifyTokenUser(), editProfileValidationRules, a
         };
 
         // Synchronous call to API service
-        await axios.put(`http://localhost:8080/api/user/${id}`, apiServicePayload)
+        await axios.put(`/api/user/${id}`, apiServicePayload)
             .catch(async () => {
                 await transaction.rollback();
                 throw new Error('Failed to update user in api-service');

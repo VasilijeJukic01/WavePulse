@@ -3,10 +3,10 @@
     <Sidebar />
     <div class="flex-1 form-bg py-8 px-4 sm:px-6 lg:px-8">
       <div class="w-full max-w-lg space-y-8 mx-auto mt-12">
-        <h1 class="mb-6 text-center text-3xl font-bold text-white">Change Password</h1>
+        <h1 class="mb-6 text-center text-3xl font-bold text-white">{{ $t('settings.change_password.title') }}</h1>
         <form @submit.prevent="changePassword" class="mt-8 space-y-6">
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="oldPassword">Old Password</label>
+            <label class="block text-white text-sm font-bold mb-2" for="oldPassword">{{ $t('settings.change_password.old_password') }}</label>
             <input
               type="password"
               id="oldPassword"
@@ -16,7 +16,7 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="newPassword">New Password</label>
+            <label class="block text-white text-sm font-bold mb-2" for="newPassword">{{ $t('settings.change_password.new_password') }}</label>
             <input
               type="password"
               id="newPassword"
@@ -26,7 +26,7 @@
             />
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="repeatNewPassword">Repeat New Password</label>
+            <label class="block text-white text-sm font-bold mb-2" for="repeatNewPassword">{{ $t('settings.change_password.repeat_new_password') }}</label>
             <input
               type="password"
               id="repeatNewPassword"
@@ -36,18 +36,18 @@
             />
           </div>
           <div v-if="errorMessage" class="mb-4 text-red-500 text-sm">
-            {{ errorMessage }}
+            {{ $t('settings.change_password.error_message') }}: {{ errorMessage }}
           </div>
           <div v-if="validationErrors.length" class="mb-4 text-red-500 text-sm">
             <ul>
-              <li v-for="error in validationErrors" :key="error.msg">{{ error.msg }}</li>
+              <li v-for="error in validationErrors" :key="error.msg">{{ $t('settings.change_password.validation_errors') }}: {{ error.msg }}</li>
             </ul>
           </div>
           <div class="flex items-center justify-between">
             <button
               class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               type="submit">
-              Update Password
+              {{ $t('settings.change_password.update_password') }}
             </button>
           </div>
         </form>

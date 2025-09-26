@@ -4,18 +4,19 @@ const axios = require('axios');
 const { generateToken } = require('./modules/serviceToken');
 
 const ports = [8081, 8091, 8101];
+const serviceHost = process.env.SERVICE_HOST || 'localhost';
 
 ports.forEach(port => {
     app.listen(port, async () => {
         try {
             await sequelize.authenticate()
-            console.log(`Auth Service Instance started on localhost:${port}`);
+            console.log(`Auth Service Instance started on ${serviceHost}:${port}`);
 
             // Service Registry
             const token = generateToken('serviceRegistry');
-            axios.post('http://localhost:8000/register', {
+            axios.post('http://service-registry:8000/register',{
                 name: `authService:${port}`,
-                url: `http://localhost:${port}`
+                url: `http://${serviceHost}:${port}`
             }, {
                 headers: { 'Authorization': token }
             }).then(() => {

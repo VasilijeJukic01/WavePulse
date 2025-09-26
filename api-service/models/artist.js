@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       Artist.belongsTo(Country, { foreignKey: 'countryId' });
       Artist.belongsTo(User, { foreignKey: 'userId' });
 
-      Artist.hasMany(Album, { foreignKey: 'artistId' });
+      Artist.hasMany(Album, { foreignKey: 'artistId', onDelete: 'CASCADE' });
 
-      Artist.belongsToMany(Concert, { through: "ConcertArtists", foreignKey: 'artistId' });
-      Artist.belongsToMany(Song, { through: 'SongArtist', foreignKey: 'artistId' })
-      Artist.belongsToMany(User, { through: 'Follow', foreignKey: 'artistId' });
+      Artist.belongsToMany(Concert, { through: "ConcertArtists", foreignKey: 'artistId', onDelete: 'CASCADE' });
+      Artist.belongsToMany(Song, { through: 'SongArtist', foreignKey: 'artistId', onDelete: 'CASCADE' })
+      Artist.belongsToMany(User, { through: 'Follow', foreignKey: 'artistId', onDelete: 'CASCADE' });
     }
   }
   Artist.init({

@@ -4,18 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init-db": "node ./scripts/init-db.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.3",
+    "common-utils": "file:../common-utils",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.12.0",
-    "sequelize": "^6.37.3",
-    "common-utils": "file:../common-utils"
+    "mongoose": "^8.7.1"
   }
 }

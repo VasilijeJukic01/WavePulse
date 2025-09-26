@@ -3,41 +3,41 @@
     <Sidebar />
     <div class="flex-1 form-bg py-8 px-4 sm:px-6 lg:px-8">
       <div class="w-full max-w-lg space-y-8 mx-auto mt-12">
-        <h1 class="mb-6 text-center text-3xl font-bold text-white">Modify User</h1>
+        <h1 class="mb-6 text-center text-3xl font-bold text-white">{{ $t('admin_panel.modify_user_view.modify_user') }}</h1>
         <form @submit.prevent="modifyUser" class="mt-8 space-y-6">
           <div v-if="errorMessage" class="text-red-500 text-sm mb-4">{{ errorMessage }}</div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="firstName">First Name</label>
+            <label class="block text-white text-sm font-bold mb-2" for="firstName">{{ $t('admin_panel.modify_user_view.first_name') }}</label>
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="firstName" v-model="account.firstname" type="text" required>
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="lastName">Last Name</label>
+            <label class="block text-white text-sm font-bold mb-2" for="lastName">{{ $t('admin_panel.modify_user_view.last_name') }}</label>
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="lastName" v-model="account.lastname" type="text" required>
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="username">Username</label>
+            <label class="block text-white text-sm font-bold mb-2" for="username">{{ $t('admin_panel.modify_user_view.username') }}</label>
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="username" v-model="account.username" type="text" required>
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="email">Email</label>
+            <label class="block text-white text-sm font-bold mb-2" for="email">{{ $t('admin_panel.modify_user_view.email') }}</label>
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="email" v-model="account.email" type="email" required>
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="countryId">Country ID</label>
+            <label class="block text-white text-sm font-bold mb-2" for="countryId">{{ $t('admin_panel.modify_user_view.country_id') }}</label>
             <input
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="countryId" v-model="account.countryId" type="number" required>
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="accountStatus">Account Status</label>
+            <label class="block text-white text-sm font-bold mb-2" for="accountStatus">{{ $t('admin_panel.modify_user_view.account_status') }}</label>
             <select
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="accountStatus" v-model="account.accountStatus" required>
@@ -48,7 +48,7 @@
             </select>
           </div>
           <div class="mb-4">
-            <label class="block text-white text-sm font-bold mb-2" for="role">Role</label>
+            <label class="block text-white text-sm font-bold mb-2" for="role">{{ $t('admin_panel.modify_user_view.role') }}</label>
             <select
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="role" v-model="account.role" required>
@@ -61,13 +61,13 @@
             <button
               class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               type="submit">
-              Save Changes
+              {{ $t('admin_panel.modify_user_view.save_changes') }}
             </button>
           </div>
         </form>
         <hr class="my-6 border-t border-gray-200">
         <div class="mb-4">
-          <label class="block text-white text-sm font-bold mb-2" for="password">Password</label>
+          <label class="block text-white text-sm font-bold mb-2" for="password">{{ $t('admin_panel.modify_user_view.password') }}</label>
           <input
             class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             id="password" v-model="password" type="password">
@@ -76,7 +76,7 @@
           <button
             class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             @click="changeAccountPassword">
-            Update Password
+            {{ $t('admin_panel.modify_user_view.update_password') }}
           </button>
         </div>
       </div>

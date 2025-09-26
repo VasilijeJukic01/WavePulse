@@ -34,7 +34,9 @@ module.exports = {
         references: {
           model: 'Users',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       countryId: {
         type: Sequelize.INTEGER,
@@ -42,7 +44,9 @@ module.exports = {
         references: {
           model: 'Countries',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,

@@ -2,7 +2,7 @@
   <div class="flex min-h-screen bg-gray-900">
     <ArtistPanelSidebar />
     <div class="flex-1 artist-analytics py-8 px-4 sm:px-6 lg:px-8">
-      <h2>Artist Analytics</h2>
+      <h2>{{ $t('artist_panel.artist_analytics.title') }}</h2>
       <div class="charts">
         <div class="chart-container">
           <canvas id="averageRatingsChart"></canvas>

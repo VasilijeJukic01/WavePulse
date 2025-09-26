@@ -1,4 +1,4 @@
-const { generateToken, verifyToken } = require('common-utils/modules/serviceToken');
+const { generateToken, verifyToken } = require('../../common-utils/modules/serviceToken');
 
 module.exports = {
     generateToken,

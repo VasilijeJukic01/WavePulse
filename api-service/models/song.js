@@ -11,15 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({ Album, Artist, Playlist, SongRating, SongReview, Tag, Genre, SongArtist, SongGenre }) {
       Song.belongsTo(Album, { foreignKey: 'albumId' });
-      Song.hasMany(SongRating, { foreignKey: 'songId' });
-      Song.hasMany(SongReview, { foreignKey: 'songId' });
-      Song.belongsToMany(Tag, { through: 'SongTag', foreignKey: 'songId' });
-      Song.belongsToMany(Playlist, { through: 'PlaylistSong', foreignKey: 'songId' });
-      Song.belongsToMany(Artist, { through: 'SongArtist', foreignKey: 'songId' })
-      Song.belongsToMany(Genre, { through: 'SongGenre', foreignKey: 'songId' });
+      Song.hasMany(SongRating, { foreignKey: 'songId', onDelete: 'CASCADE' });
+      Song.hasMany(SongReview, { foreignKey: 'songId', onDelete: 'CASCADE' });
+      Song.belongsToMany(Tag, { through: 'SongTag', foreignKey: 'songId', onDelete: 'CASCADE' });
+      Song.belongsToMany(Playlist, { through: 'PlaylistSong', foreignKey: 'songId', onDelete: 'CASCADE' });
+      Song.belongsToMany(Artist, { through: 'SongArtist', foreignKey: 'songId', onDelete: 'CASCADE' })
+      Song.belongsToMany(Genre, { through: 'SongGenre', foreignKey: 'songId', onDelete: 'CASCADE' });
 
-      Song.hasMany(SongArtist, { as: 'songArtists', foreignKey: 'songId' });
-      Song.hasMany(SongGenre, { as: 'songGenres', foreignKey: 'songId' });
+      Song.hasMany(SongArtist, { as: 'songArtists', foreignKey: 'songId' , onDelete: 'CASCADE'});
+      Song.hasMany(SongGenre, { as: 'songGenres', foreignKey: 'songId' , onDelete: 'CASCADE'});
     }
   }
   Song.init({
@@ -43,6 +43,12 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         is: /^\d{4}$/
       }
+    },
+    imageUUID: {
+        type: DataTypes.STRING,
+        validate: {
+          isUUID: 4
+        }
     },
     playCount: {
         type: DataTypes.INTEGER,

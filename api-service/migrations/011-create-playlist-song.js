@@ -15,7 +15,9 @@ module.exports = {
         references: {
           model: 'Songs',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       playlistId: {
         type: Sequelize.INTEGER,
@@ -23,7 +25,9 @@ module.exports = {
         references: {
           model: 'Playlists',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       createdAt: {
         allowNull: false,

@@ -31,7 +31,7 @@ const createUserSettings = async (userSettingsData) => {
 const updateUserSettings = async (id, userSettingsData) => {
     const userSettings = await UserSettings.findByPk(id);
     userSettings.userId = userSettingsData.userId;
-    userSettings.language = userSettingsData.language;
+    userSettings.language = userSettingsData.language.toUpperCase();
     userSettings.theme = userSettingsData.theme;
     await userSettings.save();
     return userSettings;
